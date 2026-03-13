@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "fuente": "Manual de Reformas de Vehículos — Sección I",
+    "seccion": "Preámbulo",
+    "paginas": [
+      3,
+      12
+    ],
+    "revision_manual": "7ª",
+    "total_chunks": 9
+  },
+  "interpretacion_ars_texto": "4. Actos reglamentarios (en lo sucesivo AR).\nEn este apartado se incluye una tabla de los AR aplicables para cada CR, teniendo en cuenta\nsu campo de aplicación y la categoría del vehículo al que se realiza la transformación.\nLos AR se aplicarán según columna 3 o requisitos alternativos de la columna 4 del Anexo I del\nReal Decreto 2028/1986, de 6 de junio, teniendo en cuenta los siguientes criterios de\naplicación:\n(1) El AR se aplica en su última actualización en vigor, a fecha de tramitación de la reforma.\n(2) El AR se aplica en la actualización en vigor en la fecha de la primera matriculación del\nvehículo, si la homologación del mismo exige el AR incluido en la tabla. En caso que el AR\nno fuera exigido para la homologación del vehículo en la fecha de su primera matriculación,\nse deberá aplicar al menos el AR en la primera versión incluida en el Real Decreto\n2028/1986, de 6 de junio, como obligatoria (A).\n(3) El AR se aplica en la actualización previa a la entrada en vigor de los Reglamentos\nDelegados y de Ejecución que desarrollan los Reglamentos (UE) Nº 167/2013 o 168/2013.\n(-) El AR no es aplicable a la categoría del vehículo.\n(X) No es posible realizar la reforma al vehículo, coincidiendo en este caso con un NO en el\ncampo de aplicación para esa categoría.\nEn el caso de que la reforma implique cambio de categoría, los AR no afectados por la/las\nreforma/s, se aplicaran en la actualización en vigor en la fecha de la primera matriculación del\nvehículo para la nueva categoría. El IC deberá incluir justificación de los mismos, según alguna\nde las alternativas permitidas en el apartado 5.3.\nEl emisor del informe analizará únicamente los puntos del AR que se vean afectados por la\nreforma.\nEn el caso de que la transformación afecte al cumplimiento de varios CR, se aplicará siempre\nel nivel más restrictivo de los AR implicados en la misma.",
+  "chunks": [
+    {
+      "apartado": "marco_legal",
+      "titulo": "Marco legal y definición de reforma",
+      "paginas": [
+        3,
+        3
+      ],
+      "texto": "La Directiva 2007/46/CE del Parlamento europeo y del Consejo, de 5 de septiembre de 2007,\npor la que se crea un marco para la homologación de los vehículos de motor y sus remolques,\nsistemas, componentes y unidades técnicas independientes destinados a dichos vehículos fue\ntranspuesta al derecho interno español a través de la Orden ITC/1620/2008, de 5 de junio, por\nla que se actualizan los anexos I y II del Real Decreto 2028/1986, de 6 junio, sobre las normas\npara la aplicación de determinadas directivas de la CE, relativas a la homologación de tipo de\nvehículos automóviles, remolques, semirremolques, motocicletas, ciclomotores y vehículos\nagrícolas, así como de partes y piezas de dichos vehículos. La citada directiva entró en vigor el\n29 de abril de 2009.\nEl Real Decreto 736/1988, de 8 de julio, por el que se regula la tramitación de reformas de\nimportancia de vehículos de carretera y se modifica el artículo 252 del Código de la Circulación\npermitía las reformas de los vehículos antes de su matriculación mientras que la Directiva\n2007/46/CE no contempla esta posibilidad.\nEl nuevo Real Decreto 866/2010, de 2 de julio, por el que se regula la tramitación de las\nreformas de vehículos, tiene como objeto unificar criterios de la legislación española en la\nmateria y la emitida por la Unión Europea. Este real decreto mantiene la coherencia entre la\nnormativa europea de homologación de vehículos y la nacional sobre las reformas de los\nmismos; su aplicación permitirá mantener las condiciones de seguridad activa y pasiva de los\nvehículos y su comportamiento en lo que se refiere a la protección al medio ambiente.\nAsimismo, establece la documentación que se debe presentar ante los órganos de la\nAdministración competente en materia de Inspección técnica de vehículos, la tramitación y los\nrequisitos específicos exigibles serán los contenidos en este Manual de Reformas de vehículos.\nEste manual ha sido elaborado por el Ministerio de Industria, Comercio y Turismo en\ncolaboración con los órganos competentes en materia de ITV de las Comunidades Autónomas.\nEste documento estará disponible, en su última actualización, en la página web del Ministerio\nEl Real Decreto 866/2010, de 2 de julio, en su artículo 3, punto 20, define el Manual de\nReformas de Vehículos de este modo:\n“Documento elaborado por el Ministerio de Industria, Turismo y Comercio en colaboración con\nlos órganos competentes en materia de ITV de las Comunidades Autónomas, que establece las\ndescripciones de las reformas tipificadas, su codificación y la documentación precisa para su\ntramitación. Este Manual estará disponible para consulta de los solicitantes de una reforma en\ntodas las Estaciones de ITV. El Manual será actualizado cuando se modifique la tipificación de\nlas reformas o los criterios reglamentarios en materia de vehículos, tanto de carácter nacional\ncomo de la Unión Europea.”\nSe debe entender que una modificación, sustitución, actuación, incorporación o supresión\nefectuada en un vehículo y que no cambie las características por las que un vehículo puede ser\ndefinido, o que no afecta a ninguno de los actos reglamentarios aplicables ni a las\nprescripciones contenidas en las Directivas 2002/24/CE, 2003/37/CE y 2007/46/CE, marcos, no\ndebe ser considerada como reforma del vehículo.\nLos trenes turísticos no se tratan de forma específica en este manual. Para legalizar cualquier\nmodificación, el usuario deberá presentar un informe emitido por el servicio técnico de\nhomologación que realizó los ensayos de la aplicación particular, justificando que los niveles de\nseguridad son equivalentes a los de la fecha de matriculación del vehículo. A efectos de poder\nanotar la transformación, la reforma se anotará en tarjeta ITV como CR11.0, previa superación\nde una inspección técnica completa, según la sección VI del Manual de Procedimiento de\nInspección de Estaciones ITV.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "marco_legal",
+        "titulo": "Marco legal y definición de reforma",
+        "paginas": [
+          3,
+          3
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": false,
+        "keywords_activacion": []
+      }
+    },
+    {
+      "apartado": "estructura_manual",
+      "titulo": "Estructura del manual y grupos de reforma",
+      "paginas": [
+        4,
+        4
+      ],
+      "texto": "ESTRUCTURA DEL MANUAL\nEste manual establece los criterios, procedimientos y requisitos que se deben cumplir para la\ntramitación de las reformas de vehículos. Para este propósito se ha dividido en cuatro\nsecciones:\nI. VEHÍCULOS DE LAS CATEGORÍAS M, N y O.\nII. VEHÍCULOS DE CATEGORÍAS L, QUADS Y UTV.\nIII. VEHÍCULOS AGRÍCOLAS.\nIV. VEHÍCULOS DE OBRAS Y/O SERVICIOS.\nDe conformidad con el anexo I del Real Decreto 866/2010, de 2 de julio, de tipificación de las\nreformas de vehículos, cada una de estas secciones está dividida en las siguientes funciones o\ngrupos:\n1. Identificación\n2. Unidad motriz\n3. Transmisión\n4. Ejes\n5. Suspensión\n6. Dirección\n7. Frenos\n8. Carrocería\n9. Dispositivos de alumbrado y señalización\n10. Uniones entre vehículos tractores y sus remolques o semirremolques\n11. Modificaciones de los datos que aparecen en la tarjeta de ITV\nCada una de estas funciones o grupos están divididos en códigos de reformas (en adelante\nCR) que identifican las modificaciones realizadas sobre un vehículo.\nPara la restitución, el nivel de cumplimiento de los actos reglamentarios que le sean de\naplicación, serán los correspondientes en la fecha de la matriculación del vehículo. Además, se\ntramitará por el/los código/s de reforma/s que se vieran implicados en la instalación, salvo\ncasos específicos, que se desarrollaran en los códigos de reformas correspondientes.\nLa variación de color de los vehículos no tendrá consideración de reforma. En el caso de\nvehículos de categoría M1, cuando se detecte en la inspección técnica periódica obligatoria, se\ndiligenciará en la tarjeta ITV si el dato ya estaba reflejado en ella, y existe una variación.\nNo todos los códigos de reformas aparecerán en las cuatro secciones puesto que no todas las\nreformas son viables en las distintas categorías de vehículos.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "estructura_manual",
+        "titulo": "Estructura del manual y grupos de reforma",
+        "paginas": [
+          4,
+          4
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": false,
+        "keywords_activacion": []
+      }
+    },
+    {
+      "apartado": "estructura_ficha",
+      "titulo": "Estructura de las fichas CR — apartados 1 a 3",
+      "paginas": [
+        5,
+        5
+      ],
+      "texto": "Cada función o grupo está compuesto por fichas pertenecientes a los grupos citados, que\nincluyen el análisis de las posibles transformaciones efectuadas en el vehículo mediante CR.\nCada ficha incluye los siguientes apartados.\n1. Grupo.\nIdentifica de forma general la parte o sistema del vehículo afectado por las posibles\ntransformaciones, enumeradas mediante CR.\n2. Descripción.\nSe describen las transformaciones que se realizan en el vehículo y que afectan al grupo\nindicado. Se identificarán según CR.\n3. Campo de aplicación.\nSe indica por categoría de vehículos en la que puede o no realizarse la reforma (SI/NO).\nEn todos los casos, la categoría del vehículo se obtendrá del apartado previsto a tal efecto en\nsu tarjeta ITV, según se indica en el anexo XII del Real Decreto 750/2010, de 4 de junio o en su\nhomologación de tipo. Si ello no fuera posible, a efectos de la reforma, se considerará\nencuadrado en la categoría que le corresponda en el momento de la inspección.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "estructura_ficha",
+        "titulo": "Estructura de las fichas CR — apartados 1 a 3",
+        "paginas": [
+          5,
+          5
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": false,
+        "keywords_activacion": []
+      }
+    },
+    {
+      "apartado": "interpretacion_ars",
+      "titulo": "Interpretación de los Actos Reglamentarios — valores (1), (2), (3), -, x",
+      "paginas": [
+        5,
+        5
+      ],
+      "texto": "4. Actos reglamentarios (en lo sucesivo AR).\nEn este apartado se incluye una tabla de los AR aplicables para cada CR, teniendo en cuenta\nsu campo de aplicación y la categoría del vehículo al que se realiza la transformación.\nLos AR se aplicarán según columna 3 o requisitos alternativos de la columna 4 del Anexo I del\nReal Decreto 2028/1986, de 6 de junio, teniendo en cuenta los siguientes criterios de\naplicación:\n(1) El AR se aplica en su última actualización en vigor, a fecha de tramitación de la reforma.\n(2) El AR se aplica en la actualización en vigor en la fecha de la primera matriculación del\nvehículo, si la homologación del mismo exige el AR incluido en la tabla. En caso que el AR\nno fuera exigido para la homologación del vehículo en la fecha de su primera matriculación,\nse deberá aplicar al menos el AR en la primera versión incluida en el Real Decreto\n2028/1986, de 6 de junio, como obligatoria (A).\n(3) El AR se aplica en la actualización previa a la entrada en vigor de los Reglamentos\nDelegados y de Ejecución que desarrollan los Reglamentos (UE) Nº 167/2013 o 168/2013.\n(-) El AR no es aplicable a la categoría del vehículo.\n(X) No es posible realizar la reforma al vehículo, coincidiendo en este caso con un NO en el\ncampo de aplicación para esa categoría.\nEn el caso de que la reforma implique cambio de categoría, los AR no afectados por la/las\nreforma/s, se aplicaran en la actualización en vigor en la fecha de la primera matriculación del\nvehículo para la nueva categoría. El IC deberá incluir justificación de los mismos, según alguna\nde las alternativas permitidas en el apartado 5.3.\nEl emisor del informe analizará únicamente los puntos del AR que se vean afectados por la\nreforma.\nEn el caso de que la transformación afecte al cumplimiento de varios CR, se aplicará siempre\nel nivel más restrictivo de los AR implicados en la misma.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "interpretacion_ars",
+        "titulo": "Interpretación de los Actos Reglamentarios — valores (1), (2), (3), -, x",
+        "paginas": [
+          5,
+          5
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": true,
+        "retrieval_condicional": false,
+        "keywords_activacion": []
+      }
+    },
+    {
+      "apartado": "proyecto_tecnico",
+      "titulo": "Documentación exigible — Proyecto Técnico (apartado 5.1)",
+      "paginas": [
+        6,
+        8
+      ],
+      "texto": "5. Documentación exigible.\nEn este apartado se relaciona la documentación necesaria para la tramitación de la reforma,\nparticularizando para cada una de ellas la información que debe contener.\nToda la documentación, que en cada caso se requiera, se podrá presentar en papel o formato\nelectrónico validado, surtirá efectos de solicitud y, será requisito previo al inicio de tramitación\nde las reformas. Las fechas de la solicitud y de la documentación aportada deberán cumplir los\nplazos establecidos en la Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo\nComún de las Administraciones Públicas.\nLa no correspondencia de la documentación con la reforma efectuada dará lugar a la\nparalización del expediente hasta que la correspondencia quede acreditada. En tanto no se\nacredite dicho extremo no se podrá solicitar la legalización de la reforma en otra estación ITV\nsalvo autorización expresa del organismo competente.\nEl emisor del informe de conformidad considerará para la justificación de los AR, la\ndocumentación que se indica a continuación, además de la que se considere en el apartado de\n“documentación adicional” de cada CR así como los puntos del AR que se han visto afectados\npor la reforma. El emisor del IC deberá mantener registro de todos los documentos necesarios\npara la reforma, independientemente de si han sido utilizados para la justificación del\ncumplimiento de los AR.\nProyecto técnico y certificación final de obra.\nProyecto técnico emitido por técnico/s competente/s y certificación final de obra.\n5.1.- Proyecto Técnico\nDeberá identificarse: técnico competente, el vehículo (marca, tipo, variante, denominación\ncomercial, número de identificación, matrícula) y las reformas realizadas.\nEn el caso de correspondencia del vehículo reformado con un tipo homologado en primera o\nsucesivas fases, se podrá realizar la reforma sin proyecto técnico. Del mismo modo no será\nnecesaria la presentación del proyecto técnico cuando se trate de una\nrestitución/desinstalación de elementos si el vehículo resultante está amparado por una\nhomologación de tipo.\nEl proyecto técnico deberá recoger todas las transformaciones a realizar en el vehículo que se\npretenden legalizar, identificando también aquellas modificaciones asociadas a CRs para los\nque el proyecto técnico no es obligatorio. No será necesario incluir cálculos específicos para\nestos últimos.\nEl proyecto debe estar identificado de forma inequívoca en todo su contenido, con todas las\npáginas numeradas e indicando en todas ellas el número final de páginas, incluyendo los\nanexos. Los planos del documento podrán acogerse a un sistema de numeración\nindependiente, siempre y cuando se encuentren numerados y se indique el número total de\nplanos.\nEl proyecto técnico para garantizar que, tanto el taller transformador como el firmante del\ninforme de conformidad, como la estación ITV tengan a disposición la misma versión, debe\nincluir en el mismo los datos profesionales del titular, incluyendo los relativos a su titulación,\nindicando además en cada una de las hojas los siguientes datos:\n- Número o código de Proyecto técnico, incluyendo el nivel de modificación (“0” para la versión\ninicial).\nEl contenido mínimo del proyecto técnico, además de lo que se determine en cada una de las\nfichas de este Manual, deberá incluir:\n5.1.1.- Memoria\n5.1.1.1.- Objeto\nIncluyendo los datos que identifiquen al vehículo.\n5.1.1.2.- Antecedentes.\nIdentificación de acuerdo con el RD 866/2010, de 2 de julio, de la reforma a realizar y, en su\ncaso, motivos que originan dicha realización y normativa aplicable en relación con los AR que\npuedan verse afectados por la reforma.\n5.1.1.3.- Características del vehículo antes de la reforma. (*)\nUtilizando el formato de ficha reducida de características técnicas o ficha de características\ntécnicas correspondiente al tipo de vehículo de que se trate contemplado en el RD 750/2010.\n5.1.1.4.- Características del vehículo después de la reforma. (*)\nUtilizando el formato de ficha reducida de características técnicas o ficha de características\ntécnicas correspondiente al tipo de vehículo de que se trate contemplado en el RD 750/2010.\n______\n(*) Solo será necesario identificar el vehículo e indicar las características que cambian\nantes y después de la reforma, no siendo necesario incluir el formato completo de las\ndescripciones contempladas en el R.D.750/2010.\n5.1.1.5.- Descripción de la reforma.\nEl proyecto técnico deberá recoger los datos necesarios para que el emisor del informe de\nconformidad pueda evaluar el cumplimiento o no afectación de los AR obligatorios en cada CR,\nhaciendo mención expresa a cada elemento o sistema modificado o añadido.\nDescribiendo el proceso de realización de la reforma según los siguientes apartados.\n5.1.1.5.1.- Desmontajes realizados\n5.1.1.5.2.- Variaciones y sustituciones.\n5.1.1.5.3.- Materiales empleados.\n5.1.1.5.4.- Montajes realizados.\n5.1.2.- Cálculos justificativos.\nEn este apartado deberá justificarse el reparto de masas por eje con la reforma efectuada.\nComo norma general deberá justificarse el cálculo del sistema de fijación de cualquier elemento\nañadido objeto del proyecto técnico y en el caso de sustituciones sólo cuando no se utilicen los\nsistemas de fijación originales. En el caso de vehículos con bastidor independiente, análisis de\nesfuerzos sobre el bastidor (cortantes, flectores, etc.) y resistencia del mismo, en el caso de\nelementos fijados a él.\nCuando el elemento sustituido, añadido o modificado tenga una función específica sobre la\nseguridad activa o pasiva o el comportamiento sobre la protección al medio ambiente, deberá\nanalizarse de manera integral el resultado de la misma en el vehículo reformado, y deberá\ncomprobarse que se mantienen las condiciones exigibles de dicha función con el nuevo\nelemento.\n5.1.3.- Pliego de condiciones.\n5.1.3.1.- Calidad de los materiales empleados.\n5.1.3.2.- Normas de ejecución.\n5.1.3.3.- Certificados y autorizaciones.\n5.1.4.- Planos.\n- Esquema del vehículo y sus características fundamentales antes de la reforma.\n- Esquema del vehículo y sus características fundamentales después de la reforma.\n- Detalles constructivos.\nCualquier equipo o sistema modificado, sustituido o incorporado, debe ser identificado\nindicando sus referencias (marca, modelo, número de homologación o marcaje), si éstas\nexisten, en el informe de conformidad, en el proyecto técnico y en el certificado del taller\ndebiendo coincidir con la modificación, sustitución o incorporación que se haya realizado.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "proyecto_tecnico",
+        "titulo": "Documentación exigible — Proyecto Técnico (apartado 5.1)",
+        "paginas": [
+          6,
+          8
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": true,
+        "keywords_activacion": [
+          "proyecto técnico",
+          "certificación final",
+          "memoria",
+          "cálculos"
+        ]
+      }
+    },
+    {
+      "apartado": "informe_conformidad",
+      "titulo": "Documentación exigible — Informe de Conformidad y Cert. Final de Obra (5.2 y 5.3)",
+      "paginas": [
+        8,
+        10
+      ],
+      "texto": "5.2 Certificado de dirección final de obra.\nDeberá identificarse: técnico competente, el vehículo (marca, tipo, variante, denominación\ncomercial, número de identificación, matrícula y una o varias fotografías del vehículo después\nde la reforma), reformas realizadas y taller/es donde se ha/n ejecutado la/s reforma/s. Las\nfotografías deben mostrar el aspecto general del vehículo y los detalles de la reforma realizada.\nEl certificado de dirección final de obra debe estar identificado de forma inequívoca en todas\nsus páginas, con las páginas numeradas e indicando en todas ellas el número final de páginas,\nincluyendo los anexos. Además, hará referencia a la identificación inequívoca del proyecto\nincluyendo, los siguientes datos:\n- Datos profesionales del titular, incluyendo los relativos a su titulación.\n- Número o código de Proyecto técnico, incluyendo el nivel de modificación (“0” para la versión\ninicial)”.\nSe certificará que se han efectuado la/s reforma/s en el vehículo referenciado, de acuerdo al\nproyecto técnico y la documentación adicional correspondientes.\nLa fecha del Certificado de Dirección Final de Obra será siempre igual o posterior a la fecha del\nCertificado de Taller.\n5.3 Informe de conformidad.\nSi la transformación de un vehículo implica distintas reformas con diferentes AR afectados, el\nemisor del informe deberá identificarlas mediante los códigos de reformas asignados en este\nManual, salvo indicación contraria en el propio CR.\nEn el informe de conformidad, deberán, en todos los casos, describirse los equipos, sistemas\nmodificados, sustituidos o incorporados indicando las características esenciales de cada uno\npara que permitan identificarlos durante la inspección y en especial, lo indicado para cada CR.\nDel mismo modo, en el informe de conformidad deberán indicarse expresamente todos los\ndatos del vehículo que varíen de los contenidos en la tarjeta ITV o sea necesario añadir según\nla \"normalización de la anotación de la reforma en la tarjeta ITV\" indicada para cada código de\nreforma.\nRespecto a emisiones contaminantes, para vehículos ligeros de categorías M y N,\nhomologados según Reglamento (UE) 2017/1151 o posteriores, el emisor del informe de\nconformidad deberá comprobar que el AR de emisiones sigue siendo válido en todos los\ncódigos de reforma, según la categoría del vehículo transformado. No será necesario incluir el\ndato de CO2, salvo mención explícita en el CR correspondiente.\nNo se admitirán reformas soportadas por más de un informe de conformidad, salvo en los\ncasos de instalación de dispositivos de acoplamiento y/o defensas delanteras que dispongan\nde homologación del componente y de la homologación de la instalación del mismo. En estos\ncasos se admitirán los correspondientes informes de conformidad del fabricante del dispositivo\ny otro informe de conformidad para el resto de las modificaciones.\nEjemplo:\nTipificada/s con el/los Código/s de Reforma/s: 8.1 y 8.4\nA los efectos de la firma del informe de conformidad para vehículos completados, se entenderá\npor fabricante tanto el del vehículo base como el/los fabricante/s del vehículo completado. El\nfabricante del vehículo base informará exclusivamente sobre las reformas que afecten a los AR\nde los que es titular, pudiendo usar información de Actos Reglamentarios, Conjuntos\nFuncionales o Informes H de los que no sea titular.\nPara vehículos completados, cuando el emisor del informe de conformidad sea el fabricante del\nvehículo de última fase, se basará en otro/s informe/s emitido/s por el/los fabricante/s de\nsucesiva/s fase/s o de un Servicio Técnico cuando las reformas afecten AR de los que no es\ntitular. Para la tramitación de las reformas, el usuario presentará ante los órganos de la\nAdministración competente en materia de Inspección técnica de vehículos el informe emitido\npor el/los fabricante/s de fase/s anterior/es que mantendrá el formato del informe de\nCualquier elemento, equipo, dispositivo, sistema, componente o unidad técnica independiente\nmodificado, sustituido o incorporado, debe ser identificado indicando sus referencias (marca,\nmodelo, número de homologación o marcaje, pero no el número de serie), si éstas existen, y de\nacuerdo con los textos utilizados en el campo \"Normalización de la anotación de la reforma en\nla tarjeta ITV\" que aparece en cada CR, en el informe de conformidad, en el proyecto técnico y\nen el certificado del taller, debiendo coincidir con la modificación, sustitución o incorporación\nque se haya realizado.\nEn el caso de ser necesario un proyecto, se identificará el mismo en el informe de conformidad\nincluyendo los siguientes datos:\n- Datos profesionales del titular, incluyendo los relativos a su titulación\n- Número o código de Proyecto técnico, incluyendo el nivel de modificación (“0” para la versión\ninicial)”.\nEjemplo:\nEspecificaciones técnicas afectadas:\nEn la columna de la izquierda deben identificarse los AR base como aparecen detallados en las\nfichas del Manual según los códigos de reformas afectados. En la columna de la derecha debe\nindicarse la contraseña de homologación o número de informe que avale el cumplimiento de la\nReglamentación aplicable afectada por las transformaciones realizadas en el vehículo.\nReglamentación Contraseña de homologación o informe que avala su\naplicable cumplimiento\nAR AR según nota H nº XXXXXX (*)\nAR e2*74/60*2000/4*2578*00 (*)\nAR Informe de ensayo Servicio Técnico nº XXXXXX (**)\nAR Amparado por la homologación de tipo e9*2007/46*0000 (*)\nAR Conjunto funcional Nº XXXXXX\nRealizado en base a documentación de la que dispongan, nº de\nAR\ninforme XXXXXXX (***)\nInforme del Fabricante del Vehículo de fases anteriores, (anexo al\nAR presente informe) basado en certificaciones/Informes H de los que\nes titular.\n(*) Esta opción sólo podrá utilizarse cuando el informe de conformidad lo emita el fabricante\ntitular de esta homologación.\n(**) Informe particularizado al vehículo objeto de la reforma.\n(***) Se admitirán informes emitidos por Servicios Técnicos de homologación designados por\notros Estados Miembros del Espacio Económico Europeo siempre que el informe cubra\nexplícitamente los Actos Reglamentarios afectados por la reforma, amparado en\ncontraseñas concedidas por la Autoridad de Homologación.\nEl Informe de Conformidad dejará de tener validez en el momento en que cualquiera de los AR\na los que se refiera haya perdido su vigencia.\nLa fecha del Informe de Conformidad será siempre igual o posterior a la fecha del Certificado\nde Taller, y en su caso, de la del Certificado de Dirección Final de Obra.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "informe_conformidad",
+        "titulo": "Documentación exigible — Informe de Conformidad y Cert. Final de Obra (5.2 y 5.3)",
+        "paginas": [
+          8,
+          10
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": true,
+        "keywords_activacion": [
+          "informe de conformidad",
+          "servicio técnico",
+          "actos reglamentarios"
+        ]
+      }
+    },
+    {
+      "apartado": "certificado_taller",
+      "titulo": "Documentación exigible — Certificado de Taller (apartado 5.4)",
+      "paginas": [
+        10,
+        11
+      ],
+      "texto": "5.4 Certificado de Taller (Según modelo del Anexo III del Real Decreto 866/2010)\nDebe especificar en el apartado de Observaciones la identificación de los equipos o sistemas\nmodificados y especificando antes de su apartado de firma que se garantiza que se cumple lo\nprevisto en el artículo 6 del Reglamento General de vehículos y, en su caso, en el artículo 9 del\nReal Decreto 1457/1986, de 10 de enero, por el que se regula la actividad industrial en talleres\nde vehículos automóviles, de equipos y sus componentes, modificado por 455/2010, de 16 de\nabril.\nCualquier equipo o sistema modificado, sustituido o incorporado, debe ser identificado\nindicando sus referencias (marca, modelo, número de homologación o marcaje), si éstas\nexisten, en el informe de conformidad, en el proyecto técnico y en el certificado del taller,\ndebiendo coincidir con la modificación, sustitución o incorporación que se haya realizado.\nEl certificado de taller, si procede, podrá incluir como anexo los esquemas o la información\nadecuada que sirvan al emisor del informe de conformidad para poder evaluar los actos\nreglamentarios afectados por la reforma.\nAdemás, en caso de ser necesario un proyecto técnico, debe identificar de forma inequívoca el\nmismo en el certificado de taller incluyendo los siguientes datos:\n- Datos profesionales del titular, incluyendo los relativos a su titulación\n- Número o código de Proyecto técnico, incluyendo el nivel de modificación (“0” para la versión\ninicial)”.\nEn caso de ser necesario la redacción de proyecto técnico para la tramitación de reforma, la\nfecha del Certificado de Taller será siempre igual o posterior a la fecha del Proyecto Técnico",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "certificado_taller",
+        "titulo": "Documentación exigible — Certificado de Taller (apartado 5.4)",
+        "paginas": [
+          10,
+          11
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": true,
+        "keywords_activacion": [
+          "certificado del taller",
+          "taller"
+        ]
+      }
+    },
+    {
+      "apartado": "apartados_6_al_10",
+      "titulo": "Apartados 6-10: Documentación adicional, Conjunto funcional, Inspección, Normalización, Información adicional",
+      "paginas": [
+        11,
+        12
+      ],
+      "texto": "6. Documentación adicional.\nIndica la documentación necesaria para completar la información sobre la reforma realizada en\nel vehículo.\n7. Conjunto funcional.\nEl firmante del informe de conformidad según anexo II verificará que la reglamentación objeto\nde evaluación del conjunto funcional se encuentra actualizada en la fecha de ejecución de la\nreforma. En caso contrario, no se autorizará la reforma mientras no se actualice la vigencia de\ndicho conjunto funcional.\nPrevia solicitud del fabricante del conjunto funcional, la Autoridad de homologación, previo\ninforme del servicio técnico que realizó los ensayos previos a la autorización inicial, podrá\nrealizar una extensión del conjunto funcional que haya perdido su vigencia, actualizándolo.\nEn el caso de una reforma amparada por un conjunto funcional autorizado por la Autoridad de\nHomologación, no será necesaria la presentación del proyecto técnico y la certificación final de\nobra.\nLos kits en los vehículos que hayan sido autorizados por la Autoridad de Homologación y\ncumplan con los AR marcados en la columna 3 del Real Decreto 2028/1986, de 6 de junio, se\nactualizarán a conjunto funcional previo informe del servicio técnico, mediante resolución de\neste Ministerio.\n8. Inspección específica. Puntos a verificar.\nLa estación ITV realizará la comprobación de la correspondencia entre la documentación y el\nvehículo de acuerdo a lo indicado en la Sección V del Manual de Procedimiento de Inspección\nde Estaciones ITV vigente.\nRespecto a la inspección técnica unitaria, se incluyen los puntos a verificar por la estación ITV\ny su correspondencia con los capítulos del Manual de Procedimientos de Inspección de las\nEstaciones ITV.\nEn todos los casos será obligatoria la identificación del vehículo según capítulo 1 de dicho\nManual. Además de la identificación del vehículo, deberán verificarse según los apartados del\nmismo indicados para cada CR, aquellos subapartados que hayan podido verse afectados por\nla reforma según el método descrito y aplicando la interpretación de defectos. Si el CR requiere\nalgún capítulo que comporta la utilización de equipo de la línea de inspección, deberá\nrealizarse la prueba correspondiente.\n9. Normalización de la anotación de la Reforma en la Tarjeta ITV.\nSe incluye la anotación tipo para cumplimentar las tarjetas ITV tras la legalización de la\nreforma.\nEn general, cualquier variación de las características técnicas del vehículo (masas,\ndimensiones, etc.) que como resultado de la reforma se hayan modificado respecto de los\ndatos indicados en la tarjeta ITV o tengan que incluirse en la anotación normalizada de la\nreforma, deberán indicarse en el informe de conformidad, siendo este documento el que se\nutilice en la inspección técnica para realizar las anotaciones necesarias en la Tarjeta ITV. Estas\nindicaciones se adaptarán a los modelos que se especifican en cada uno de los CR.\nEn la anotación de modificaciones en tarjeta ITV realizadas mediante diligencia, se indicará la\nanotación comenzando por el texto “diligencia…”\n10. Información adicional.\nAclaraciones o requisitos adicionales a cada CR.",
+      "metadata": {
+        "tipo": "preambulo",
+        "apartado": "apartados_6_al_10",
+        "titulo": "Apartados 6-10: Documentación adicional, Conjunto funcional, Inspección, Normalización, Información adicional",
+        "paginas": [
+          11,
+          12
+        ],
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": false,
+        "keywords_activacion": []
+      }
+    },
+    {
+      "apartado": "glosario_siglas",
+      "titulo": "Glosario de siglas y acrónimos del Manual de Reformas",
+      "paginas": null,
+      "texto": "Glosario de siglas y acrónimos utilizados en el Manual de Reformas de Vehículos:\n\nAR — Acto Reglamentario: directiva, reglamento europeo o norma nacional que regula un sistema o componente específico del vehículo. Cada ficha CR incluye una tabla con los ARs aplicables y su nivel de exigencia según la categoría del vehículo.\n\nCR — Código de Reforma: identificador numérico (ej. CR 4.1, CR 8.52) que tipifica una modificación concreta del vehículo. Cada CR tiene asociada una ficha con su campo de aplicación, documentación exigible e inspección específica.\n\nIC — Informe de Conformidad: documento emitido por un servicio técnico o fabricante que justifica el cumplimiento de los actos reglamentarios afectados por la reforma.\n\nITV — Inspección Técnica de Vehículos: estación oficial donde se tramita y legaliza la reforma tras aportar la documentación exigible.\n\nDGT — Dirección General de Tráfico: organismo competente en materia de circulación y matriculación de vehículos en España.\n\nPT — Proyecto Técnico: documento técnico elaborado por un técnico competente que describe y justifica la reforma. Obligatorio en reformas de Vía A.\n\nCFO — Certificación Final de Obra: documento emitido por el técnico competente que certifica que la reforma se ha ejecutado conforme al proyecto técnico.\n\nCT — Certificado de Taller: documento emitido por el taller ejecutor que acredita la realización de la reforma.\n\nMMTA — Masa Máxima Técnicamente Admisible: masa máxima del vehículo según su construcción. Determina la categoría técnica del vehículo (N1, N2, N3...), independientemente de la MMA.\n\nMMA — Masa Máxima Autorizada: masa máxima permitida administrativamente para circular. Puede ser inferior a la MMTA sin cambiar la categoría técnica del vehículo.\n\nCEPE/ONU — Comisión Económica para Europa de Naciones Unidas: organismo que emite los Reglamentos técnicos internacionales (ej. Reglamento CEPE/ONU nº 13, nº 48...) referenciados en las tablas de ARs.\n\nRD — Real Decreto: norma de rango reglamentario. Los más relevantes para reformas son el RD 866/2010 (tramitación de reformas) y el RD 2028/1986 (actos reglamentarios aplicables).\n\nDOUE — Diario Oficial de la Unión Europea: publicación oficial donde se promulgan las directivas y reglamentos europeos referenciados como ARs.",
+      "metadata": {
+        "tipo": "glosario",
+        "apartado": "glosario_siglas",
+        "titulo": "Glosario de siglas y acrónimos del Manual de Reformas",
+        "paginas": null,
+        "fuente": "Manual de Reformas de Vehículos — Sección I",
+        "revision_manual": "7ª",
+        "inyectar_en_fichas": false,
+        "retrieval_condicional": false,
+        "keywords_activacion": [
+          "AR",
+          "CR",
+          "IC",
+          "ITV",
+          "DGT",
+          "PT",
+          "CFO",
+          "CT",
+          "MMTA",
+          "MMA",
+          "CEPE",
+          "ONU",
+          "RD",
+          "DOUE",
+          "siglas",
+          "acrónimos",
+          "qué significa",
+          "qué es"
+        ]
+      }
+    }
+  ]
+}
