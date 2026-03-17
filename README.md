@@ -1,38 +1,91 @@
-# POC — Sistema RAG de Reformas de Vehículos
+# Sistema RAG — Reformas de Vehículos + Generador de Proyectos Técnicos
 
-> Diseño de parsers, enriquecimiento e indexación  
-> Sección I del Manual de Reformas · Reglamento (UE) 2018/858
+> Sección I del Manual de Reformas DGT · Reglamento (UE) 2018/858
+> RAG de consulta + Generación automática de proyectos técnicos Vía A
 
 ---
 
 ## Índice
 
 1. [Visión general](#1-visión-general)
-2. [Parsers](#2-parsers)
-3. [Enriquecimiento](#3-enriquecimiento)
-4. [Indexación](#4-indexación)
-5. [Relaciones entre documentos](#5-relaciones-entre-documentos)
-6. [Scripts y flujo de trabajo](#6-scripts-y-flujo-de-trabajo)
-7. [Pendiente](#7-pendiente)
+2. [Arquitectura del sistema](#2-arquitectura-del-sistema)
+3. [Módulo RAG — Parsers e indexación](#3-módulo-rag--parsers-e-indexación)
+4. [Módulo Generador de Proyectos Técnicos](#4-módulo-generador-de-proyectos-técnicos)
+5. [Flujo completo de generación](#5-flujo-completo-de-generación)
+6. [API REST (FastAPI)](#6-api-rest-fastapi)
+7. [Frontend Streamlit](#7-frontend-streamlit)
+8. [Generación del documento Word](#8-generación-del-documento-word)
+9. [Scripts y puesta en marcha](#9-scripts-y-puesta-en-marcha)
+10. [Estructura del proyecto](#10-estructura-del-proyecto)
+11. [Pendiente / Roadmap](#11-pendiente--roadmap)
 
 ---
 
 ## 1. Visión general
 
-El objetivo de la POC es construir un sistema RAG (Retrieval-Augmented Generation) que permita consultar y redactar proyectos técnicos de reformas de vehículos a partir del Manual de Reformas de la DGT (Sección I) y normativa europea aplicable.
+El sistema tiene dos módulos principales:
 
-El sistema tiene dos funciones principales:
+### 1.1 Chatbot RAG de consulta (`/frontend`, `/backend`)
 
-- **Chatbot de consulta** — responde preguntas sobre qué documentación exige una reforma, qué categorías de vehículo aplican, qué actos reglamentarios hay que cumplir, etc.
-- **Redacción de proyecto técnico** — workflow guiado (n8n) que genera el proyecto técnico a partir de los datos del vehículo y la reforma.
+Responde preguntas sobre el Manual de Reformas DGT: qué documentación exige una reforma, qué categorías de vehículo aplican, qué Actos Reglamentarios hay que cumplir, qué vía de tramitación corresponde, etc.
 
-### 1.1 Scope de la POC
+### 1.2 Generador de Proyectos Técnicos Vía A (`/proyecto_tecnico`)
 
-La POC se limita a la **Sección I** del Manual de Reformas, que cubre las categorías M, N y O (turismos, furgonetas, camiones y remolques).
+Genera automáticamente el proyecto técnico completo para una reforma de vehículo (Vía A) a partir de los datos introducidos por el ingeniero. El sistema:
 
-Quedan **fuera del scope**: secciones II, III y IV del manual, normativa externa completa (directivas, RD 866/2010), e interfaz de usuario final.
+1. Identifica los CRs aplicables consultando la ChromaDB
+2. Filtra los Actos Reglamentarios por categoría del vehículo
+3. Redacta todas las secciones del proyecto técnico usando LLMs
+4. Permite al ingeniero revisar, aprobar o solicitar reescritura de cada sección
+5. Genera el documento Word final maquetado (portada, índice, tablas, cabecera/pie)
 
-### 1.2 Documentos parseados
+---
+
+## 2. Arquitectura del sistema
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend Streamlit                    │
+│         proyecto_tecnico/frontend/proyecto_tecnico_app.py│
+└──────────────────────────┬──────────────────────────────┘
+                           │ llama directamente al grafo
+┌──────────────────────────▼──────────────────────────────┐
+│              LangGraph (proyecto_tecnico/graph.py)        │
+│                                                          │
+│  identificador_cr ──► [redactor_memoria               ]  │
+│                        [redactor_pliego    ] (paralelo)  │
+│                        [redactor_conclusiones          ]  │
+│                              │                           │
+│                        revision_humana ◄── interrupt     │
+│                              │                           │
+│                         ensamblador                      │
+│                              │                           │
+│                          .docx                           │
+└──────────────────────────┬──────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────┐
+│              ChromaDB (scripts_index/chroma_db/)         │
+│  Colección fichas_cr · 76 fichas CR Sección I            │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Modelos usados:**
+
+| Agente | Modelo | Rol |
+|---|---|---|
+| Identificador CR | `gpt-4o` | Análisis semántico + filtrado de ARs |
+| Validador CRs | `gpt-4o` | Validación de vías + CRs adicionales |
+| Redactor Memoria | `gpt-4o-mini` | Secciones 0, 1.1, 1.2, 1.3.1, 1.4 |
+| Redactor Pliego | `gpt-4o-mini` | Secciones 3.1, 3.2, 3.3, 3.4 |
+| Redactor Conclusiones | `gpt-4o-mini` | Sección 8 |
+| Ensamblador | Node.js (`docx`) | Documento Word final |
+| Embeddings | `text-embedding-3-small` | Indexación y búsqueda semántica |
+
+---
+
+## 3. Módulo RAG — Parsers e indexación
+
+### 3.1 Documentos parseados
 
 | Documento | Fuente | Output JSON | Chunks / Fichas |
 |---|---|---|---|
@@ -40,39 +93,13 @@ Quedan **fuera del scope**: secciones II, III y IV del manual, normativa externa
 | Preámbulo (Sección I) | Manual de Reformas DGT | `preambulo_seccion1.json` | 9 chunks |
 | Reglamento (UE) 2018/858 | DOUE L 151, 14.6.2018 | `reglamento_ue_2018_858.json` | 8 chunks |
 
----
+### 3.2 Parsers
 
-## 2. Parsers
+- **`scripts_parser/parser_cr_seccion1.py`** — Extrae las 76 fichas CR con `pdfplumber`. Arquitectura híbrida: `extract_tables()` para tablas de campo de aplicación y ARs, `extract_text()` para campos de texto libre.
+- **`scripts_parser/parser_preambulo.py`** — 9 chunks semánticos. El chunk `interpretacion_ars` se inyecta en el texto de embedding de cada ficha CR.
+- **`scripts_parser/parser_reglamento_ue.py`** — Artículos 3 y 4 + Anexo I del Reglamento (UE) 2018/858. Normaliza subíndices (M₁→M1) extraídos en líneas separadas.
 
-### 2.1 Fichas CR — `parser_cr_seccion1.py`
-
-Extrae las 76 fichas CR de la Sección I usando `pdfplumber` con arquitectura híbrida:
-- `extract_tables()` → tablas de campo de aplicación y actos reglamentarios
-- `extract_text()` → campos de texto libre
-
-#### Campos extraídos por ficha
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `cr` | str | Código de reforma (ej. `2.1`, `8.52`) |
-| `grupo_numero` | int | Número de grupo (1-11) |
-| `descripcion_grupo` | str | Descripción del grupo de reforma |
-| `descripcion_cr` | str | Descripción específica de la reforma |
-| `campo_aplicacion` | dict | SI/NO por cada categoría M1-O4 |
-| `categorias_aplicables` | list | Solo las categorías con SI |
-| `actos_reglamentarios` | list | ARs con aplicabilidad por categoría |
-| `documentacion_necesaria` | dict | PT / CFO / IC / CT / Doc adicional: SI o NO |
-| `via_tramitacion` | str | Vía A, B, C o D |
-| `via_tramitacion_desc` | str | Descripción legible de la vía |
-| `keywords_reformas` | list | Términos del cliente (vacío hasta enriquecimiento) |
-| `inspeccion_especifica` | str | Capítulos ITV a inspeccionar |
-| `informacion_adicional` | str | Notas y condiciones especiales |
-| `conjunto_funcional` | str / null | Referencia a conjunto funcional si aplica |
-| `paginas` | list[int] | Páginas del PDF `[inicio, fin]` |
-
-#### 2.1.1 Vías de tramitación
-
-Cada ficha se clasifica en una de cuatro vías según la documentación exigible. Esta clasificación es clave para el retrieval condicional y el workflow de redacción.
+### 3.3 Vías de tramitación
 
 | Vía | Condición | Documentación exigible | Fichas |
 |---|---|---|---|
@@ -81,217 +108,382 @@ Cada ficha se clasifica en una de cuatro vías según la documentación exigible
 | **C** | Solo CT | Certificado de Taller | 2 |
 | **D** | Solo doc. adicional | Documentación específica | 1 |
 
----
+### 3.4 Indexación — ChromaDB
 
-### 2.2 Preámbulo — `parser_preambulo.py`
+**Embeddings:** `text-embedding-3-small` (OpenAI). Mismo modelo en indexación y consulta.
 
-Extrae el preámbulo en 9 chunks semánticos. Cada chunk tiene metadatos que controlan cómo se recupera en el RAG.
-
-| Chunk | Páginas | Uso en RAG |
+| Colección | Documentos | Metadatos de filtrado |
 |---|---|---|
-| `marco_legal` | 3 | Contexto general |
-| `estructura_manual` | 4 | Contexto general |
-| `estructura_ficha` | 5 | Contexto general |
-| `interpretacion_ars` | 5 | **Inyectado en todas las fichas CR al indexar** |
-| `proyecto_tecnico` | 6-8 | Retrieval condicional (vía A) |
-| `informe_conformidad` | 8-10 | Retrieval condicional (vía B) |
-| `certificado_taller` | 10-11 | Retrieval condicional (vías C y D) |
-| `apartados_6_al_10` | 11-12 | Conjunto funcional, inspección, normalización |
-| `glosario_siglas` | — | Chunk estático, no extraído del PDF |
-
-#### Chunk `interpretacion_ars`
-
-Es especial: no se indexa como documento independiente, sino que su texto se **inyecta directamente dentro del texto de embedding de cada ficha CR**. Esto garantiza que el modelo siempre tenga el contexto de qué significan los valores `(1)`, `(2)`, `(3)`, `-` y `x` en las tablas de actos reglamentarios, sin depender del retriever para encontrarlo.
-
-#### Chunk `glosario_siglas`
-
-Chunk estático (no extraído del PDF) con las siglas del dominio. Se define directamente en el parser como la constante `GLOSARIO_SIGLAS`:
-
-```
-AR, CR, IC, ITV, DGT, PT, CFO, CT, MMTA, MMA, CEPE/ONU, RD, DOUE
-```
-
----
-
-### 2.3 Reglamento (UE) 2018/858 — `parser_reglamento_ue.py`
-
-Extrae los artículos 3 y 4 y el Anexo I del reglamento europeo que **deroga la Directiva 2007/46/CE**. Es la fuente oficial para las definiciones de categorías de vehículos M, N y O.
-
-| Chunk | Páginas | Contenido |
-|---|---|---|
-| `art3_definiciones` | 11-14 | 58 definiciones (homologación, fabricante, matrícula...) |
-| `art4_categorias_vehiculos` | 14 | Definiciones oficiales M1-M3, N1-N3, O1-O4 |
-| `anexo1_intro_definiciones` | 66-67 | Plaza de asiento, masa máxima, mercancías |
-| `anexo1_criterios_categorizacion` | 67-72 | Criterios para clasificar en M, N, O y subcategoría G |
-| `anexo1_tipos_carroceria_M1` | 73-75 | Tipos de carrocería para M1 |
-| `anexo1_tipos_carroceria_M2_M3` | 75-76 | Tipos de carrocería para M2 y M3 |
-| `anexo1_tipos_carroceria_N_O` | 76-83 | Tipos de carrocería para N y O |
-| `anexo1_apendice_todoterreno` | 84-86 | Procedimiento de verificación subcategoría G |
-
-> **Nota técnica:** El PDF tiene los subíndices (M₁, N₁...) extraídos en líneas separadas (`M` en una línea, `1` en la siguiente). El parser normaliza este patrón con un post-proceso línea a línea antes de guardar el JSON.
-
----
-
-## 3. Enriquecimiento
-
-El campo `keywords_reformas` de cada ficha CR nace vacío. El enriquecimiento es el proceso de rellenar ese campo con términos reales de taller que el cliente aporta desde su experiencia.
-
-### 3.1 CSV de keywords — `keywords_reformas.csv`
-
-Fichero editable en Excel con cuatro columnas:
-
-| Columna | Obligatoria | Descripción |
-|---|---|---|
-| `cr` | Sí | Código de reforma (ej. `2.1`). Debe existir en el JSON. |
-| `keyword` | Sí | Término del cliente (ej. `cold air intake`, `turbo`) |
-| `fuente` | No | Origen: `cliente`, `tecnico` o `admin` |
-| `fecha_añadido` | No | Fecha de alta para trazabilidad (`YYYY-MM-DD`) |
-
-Ejemplo:
-
-```csv
-cr,keyword,fuente,fecha_añadido
-2.1,filtro de aire,cliente,2025-01-01
-2.1,cold air intake,cliente,2025-01-01
-2.1,snorkel,cliente,2025-01-01
-2.4,conversión eléctrica,cliente,2025-01-01
-```
-
-El script **deduplica automáticamente** (case-insensitive) y avisa si un CR del CSV no existe en el JSON.
-
-### 3.2 Script — `enriquecimiento.py`
-
-Solo modifica `fichas_cr_seccion1.json`. Los JSONs del preámbulo y del reglamento no tienen keywords porque sus chunks son texto normativo fijo.
-
-```bash
-python enriquecimiento.py                        # usa paths por defecto
-python enriquecimiento.py --csv otro.csv         # CSV alternativo
-python enriquecimiento.py --csv otro.csv --fichas otra_ruta.json
-```
-
----
-
-## 4. Indexación
-
-### 4.1 Base vectorial: ChromaDB
-
-Se usa ChromaDB por su simplicidad para la POC local: un `pip install`, sin servidor, persiste en disco. La arquitectura es **dockerizable**: en el `docker-compose` final Chroma corre como servicio y el script usa `HttpClient` en lugar de `PersistentClient`.
-
-### 4.2 Embeddings: `text-embedding-3-small` (OpenAI)
-
-Se usa el modelo definitivo desde el principio, sin modelos intermedios. Razones:
-
-- **Comprensión semántica real en español técnico**: `sistema de admisión` y `cold air intake` quedan cerca en el espacio vectorial.
-- **Coste negligible**: el indexado inicial de 93 documentos cuesta menos de 0,01 USD.
-- **Consistencia**: el modelo de indexado y el de consulta deben ser siempre el mismo. Usar el modelo definitivo desde el principio evita tener que reindexar.
-
-La API key se carga desde `.env` (`OPENAI_API_KEY=sk-...`) y nunca se hardcodea en el código.
-
-### 4.3 Colecciones en Chroma
-
-| Colección | Documentos | Filtros de metadatos disponibles |
-|---|---|---|
-| `fichas_cr` | 76 | `via_tramitacion`, `categorias`, `grupo_numero`, `requiere_proyecto` |
-| `preambulo` | 9 | `tipo`, `apartado`, `retrieval_condicional`, `inyectar_en_fichas` |
+| `fichas_cr` | 76 | `via_tramitacion`, `categorias`, `grupo_numero`, `requiere_proyecto`, `cr` |
+| `preambulo` | 9 | `tipo`, `apartado`, `retrieval_condicional` |
 | `reglamento_ue` | 8 | `tipo`, `articulo`, `parte`, `categorias` |
 
-### 4.4 Texto de embedding por tipo de documento
+El texto de embedding de cada ficha CR incluye: descripción, categorías, vía, documentación, keywords del cliente e **interpretación de ARs inyectada**.
 
-#### Fichas CR
+### 3.5 Enriquecimiento de keywords
 
-El texto que se embeddea no es el texto plano de la ficha sino un **bloque enriquecido** que combina:
+```bash
+# El cliente añade términos reales de taller en:
+scripts_enrich/keywords_reformas.csv
 
-1. CR + descripción de la reforma
-2. Grupo y descripción del grupo
-3. Categorías de vehículos aplicables
-4. Vía de tramitación y descripción
-5. Documentación exigible (PT, CFO, IC, CT)
-6. Inspección ITV específica
-7. Información adicional
-8. Keywords del cliente (tras enriquecimiento)
-9. **Texto completo de interpretación de ARs** (inyectado siempre)
-
-#### Preámbulo y reglamento
-
-Se indexa el texto extraído directamente del PDF. Los metadatos controlan el retrieval condicional.
-
-### 4.5 Metadatos para filtrado
-
-Los metadatos de Chroma solo admiten tipos primitivos (`str`, `int`, `float`, `bool`). Las listas se convierten a string separado por comas:
-
-```python
-# En lugar de:
-"categorias_aplicables": ["M1", "M2", "N1"]
-
-# Se indexa como:
-"categorias": "M1,M2,N1"
+# Aplicar enriquecimiento:
+python scripts_enrich/enriquecimiento.py
+python scripts_index/indexado.py --reset
 ```
 
-Esto permite filtrar en consulta por vía de tramitación, categoría de vehículo, o si requiere proyecto técnico.
-
 ---
 
-## 5. Relaciones entre documentos
+## 4. Módulo Generador de Proyectos Técnicos
 
-Los tres conjuntos de documentos no son independientes. Hay cuatro tipos de relación gestionadas en el pipeline:
+### 4.1 Secciones generadas automáticamente
 
-| Relación | Documentos implicados | Solución |
+| Sección | ID interno | Agente |
 |---|---|---|
-| Interpretación de ARs | Fichas CR ← Preámbulo | Inyección en indexado: texto de `interpretacion_ars` incluido en cada ficha |
-| Referencias cruzadas entre fichas | Ficha CR ↔ Ficha CR | Campo `crs_relacionados` en metadatos (regex sobre `informacion_adicional`) |
-| Documentación exigible | Fichas CR ← Preámbulo (5.1-5.4) | Retrieval condicional según `via_tramitacion` de la ficha recuperada |
-| Categorías de vehículos | Fichas CR ← Reglamento UE | Colección separada; el retriever la consulta cuando la query menciona M1, N1, etc. |
+| 0. Peticionario | `peticionario` | Redactor Memoria |
+| 1.1 Objeto | `objeto` | Redactor Memoria |
+| 1.2 Antecedentes | `antecedentes` | Redactor Memoria |
+| 1.3.1 Identificación del vehículo | `identificacion_vehiculo` | Redactor Memoria |
+| 1.4 Descripción de la reforma | `descripcion_reforma` | Redactor Memoria |
+| 3.1 Calidad de materiales | `calidad_materiales` | Redactor Pliego |
+| 3.2 Normas de ejecución | `normas_ejecucion` | Redactor Pliego |
+| 3.3 Certificados y autorizaciones | `certificados` | Redactor Pliego |
+| 3.4 Taller ejecutor | `taller_ejecutor` | Redactor Pliego |
+| 8. Conclusiones | `conclusiones` | Redactor Conclusiones |
+
+### 4.2 Secciones completadas por el ingeniero (con uploader)
+
+| Sección | Marcador en el Word |
+|---|---|
+| 1.3.2 Características antes de la reforma | `[COMPLETAR]` en rojo |
+| 1.3.3 Características después de la reforma | `[COMPLETAR]` en rojo |
+| 2. Cálculos justificativos | Fichero adjunto o `[COMPLETAR]` |
+| 4. Presupuesto | Fichero adjunto o `[COMPLETAR]` |
+| 5. Planos | Fichero adjunto o `[COMPLETAR]` |
+| 6. Reportaje fotográfico | Imagen incrustada o `[COMPLETAR]` |
+| 7. Documentación del vehículo | Fichero adjunto o `[COMPLETAR]` |
+
+### 4.3 Agentes
+
+#### `identificador_cr.py` (Agente 1 — `gpt-4o`)
+
+- Si el ingeniero indica CRs → recuperación exacta por metadato `cr` en ChromaDB (sin búsqueda semántica)
+- Si no indica CRs → búsqueda semántica en ChromaDB sobre la descripción de la reforma
+- Filtra los ARs de cada ficha CR por la categoría del vehículo
+- Detecta CRs adicionales mencionados en `informacion_adicional`
+
+#### `redactor_memoria.py` (Agente 2 — `gpt-4o-mini`)
+
+Genera las secciones 0, 1.1, 1.2, 1.3.1 y 1.4 en paralelo. Los prompts instruyen al LLM a:
+- **1.2 Antecedentes**: solo texto en párrafos (sin tablas markdown). Las tablas de CRs y ARs las añade el ensamblador.
+- **1.3.1 Identificación del vehículo**: solo 1-2 frases introductorias. La ficha técnica la añade el ensamblador como tabla Word.
+
+#### `redactor_pliego.py` (Agente 3 — `gpt-4o-mini`)
+
+Genera las secciones 3.1, 3.2, 3.3 y 3.4 del Pliego de Condiciones.
+
+#### `redactor_conclusiones.py` (Agente 4 — `gpt-4o-mini`)
+
+Genera la sección 8 (Conclusiones) con declaración de viabilidad técnica, CRs aplicables, ARs a verificar en ITV y bloque de firma del ingeniero.
+
+#### `ensamblador.py` (Agente 5 — Node.js)
+
+Genera el `.docx` final. Funcionalidades especiales:
+- **Sección 1.2**: añade tabla Word de CRs + tabla Word de ARs tras el texto introductorio
+- **Sección 1.3.1**: añade tabla Word con todos los datos del vehículo (Marca, Modelo, VIN, Matrícula, Categoría, Fecha de matriculación, Color, Kilometraje)
+- **Secciones del ingeniero**: incrusta imágenes (JPG/PNG) directamente en el documento; para PDFs/DWG muestra indicador `📎 Adjunto: nombre.pdf`
+
+### 4.4 Validador de CRs (`validador_crs.py`)
+
+Endpoint previo a la generación que:
+1. Recupera cada CR indicado por búsqueda exacta en ChromaDB
+2. Clasifica en Vía A (incluir) y otras vías (excluir)
+3. Analiza `informacion_adicional` con el LLM para detectar CRs adicionales vía A
+4. Si ningún CR es Vía A → devuelve `valido=False` bloqueando la generación
 
 ---
 
-## 6. Scripts y flujo de trabajo
+## 5. Flujo completo de generación
+
+```
+Ingeniero rellena formulario (datos vehículo, reforma, taller, ingeniero)
+        │
+        ▼
+[Opcional] Validar CRs → resumen de CRs incluidos/excluidos/adicionales
+        │
+        ▼
+Generar proyecto técnico
+        │
+        ▼
+Agente 1: Identificador CR
+  - Recupera fichas CR de ChromaDB (exacto o semántico)
+  - Filtra ARs por categoría del vehículo
+        │
+        ▼
+Agentes 2, 3, 4 en paralelo:
+  - Redactor Memoria   → secciones 0, 1.1, 1.2, 1.3.1, 1.4
+  - Redactor Pliego    → secciones 3.1, 3.2, 3.3, 3.4
+  - Redactor Conclusiones → sección 8
+        │
+        ▼
+interrupt_before("revision_humana")
+  → Frontend muestra secciones al ingeniero (tabs)
+  → El ingeniero puede: Aprobar | Solicitar reescritura (con motivo)
+        │
+        ├─ Si hay reescrituras → agentes correspondientes regeneran
+        │  (solo las secciones marcadas, con contexto del motivo)
+        │
+        ▼
+Ingeniero sube ficheros (cálculos, presupuesto, planos, fotos, documentación)
+        │
+        ▼
+Generar documento Word
+  → Ensamblador Node.js construye el .docx
+  → Portada + Índice automático + Secciones + Tablas + Imágenes
+        │
+        ▼
+Descarga del .docx
+```
+
+### 5.1 Lógica de reescritura
+
+Cuando el ingeniero solicita reescritura de una sección:
+- El grafo reanuda desde `revision_humana` vía `update_state(as_node="revision_humana")`
+- `enrutar_regeneracion()` determina qué agente debe regenerar según la sección:
+  - Secciones 0, 1.x → `redactor_memoria`
+  - Secciones 3.x → `redactor_pliego`
+  - Sección 8 → `redactor_conclusiones`
+- El agente recibe el motivo de la reescritura y la versión anterior como contexto
+- Solo se regeneran las secciones marcadas, el resto se conserva
+
+---
+
+## 6. API REST (FastAPI)
+
+Servidor en `http://localhost:8000`. Router montado en `/proyecto-tecnico`.
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `POST` | `/proyecto-tecnico/validar-crs` | Valida CRs antes de generar |
+| `POST` | `/proyecto-tecnico/generar` | Inicia generación del proyecto |
+| `POST` | `/proyecto-tecnico/{id}/revisar` | Registra aprobación o reescritura |
+| `POST` | `/proyecto-tecnico/{id}/adjunto` | Sube fichero a una sección |
+| `POST` | `/proyecto-tecnico/{id}/documento` | Genera el Word final |
+| `GET`  | `/proyecto-tecnico/{id}/descargar` | Descarga el .docx generado |
+
+```bash
+# Arrancar backend
+uvicorn backend.main:app --reload --port 8000
+```
+
+---
+
+## 7. Frontend Streamlit
+
+Interfaz de 4 pasos en `proyecto_tecnico/frontend/proyecto_tecnico_app.py`.
+
+```bash
+streamlit run proyecto_tecnico/frontend/proyecto_tecnico_app.py --server.port 8502
+```
+
+**Paso 1 — Formulario de entrada**
+- Datos del vehículo (marca, modelo, VIN, matrícula, categoría, color, km)
+- Datos del ingeniero (nombre, titulación, colegio, nº colegiado)
+- Datos del taller ejecutor
+- Descripción libre de la reforma
+- CRs identificados (opcional; si se indican, se validan antes de generar)
+- Componentes instalados (con marca, modelo, referencia, nº homologación)
+
+**Paso 2 — Generación**
+- Barra de progreso con estado en tiempo real
+- El grafo LangGraph se ejecuta directamente (sin HTTP)
+
+**Paso 3 — Revisión**
+- Tab por sección con el texto generado
+- Botones: Aprobar / Solicitar reescritura (con campo de motivo)
+- Uploader de ficheros para secciones del ingeniero (2, 4, 5, 6, 7)
+- Botón "Aprobar todas las pendientes" para agilizar
+- Botón "Regenerar secciones marcadas" lanza solo los agentes necesarios
+
+**Paso 4 — Descarga**
+- Descarga del `.docx` generado
+
+---
+
+## 8. Generación del documento Word
+
+El ensamblador escribe un script Node.js en `/tmp` y lo ejecuta con `subprocess`. La librería `docx` (npm) genera el `.docx`.
+
+### 8.1 Estructura del documento
+
+1. **Portada** (sin cabecera/pie): título, datos del vehículo, CRs, ingeniero, expediente, fecha
+2. **Índice automático** (TOC con hipervínculos)
+3. **Secciones del proyecto** con cabecera (vehículo + bastidor) y pie (ingeniero + nº página)
+
+### 8.2 Tablas generadas automáticamente
+
+| Tabla | Sección | Contenido |
+|---|---|---|
+| Tabla de CRs | 1.2 Antecedentes | Código · Denominación · Vía |
+| Tabla de ARs | 1.2 Antecedentes | Sistema · Referencia · Nivel · Descripción |
+| Ficha técnica del vehículo | 1.3.1 Identificación | Marca, Modelo, VIN, Matrícula, Categoría, Fecha, Color, Km |
+
+### 8.3 Adjuntos incrustados
+
+- **Imágenes** (JPG, JPEG, PNG): se incrustan inline en el documento Word con `ImageRun` (500×350 px)
+- **Otros formatos** (PDF, DWG, XLSX): se muestra indicador `📎 Adjunto: nombre_fichero`
+- **Sin adjunto**: marcador `[COMPLETAR POR EL INGENIERO]` en rojo con borde discontinuo
+
+### 8.4 Payload al script JS
+
+```json
+{
+  "proyecto_id": "...",
+  "metadata": {
+    "vehiculo": "VW Golf",
+    "bastidor": "WVWZZZ...",
+    "matricula": "1234 ABC",
+    "categoria": "M1",
+    "fecha_matriculacion": "15/03/2018",
+    "color": "Blanco",
+    "kilometraje": "85.000 km",
+    "ingeniero": "Juan García",
+    ...
+  },
+  "crs": [{"codigo": "2.1", "denominacion": "...", "via": "A"}],
+  "ars": [{"sistema": "...", "referencia": "...", "nivel": "(1)", "descripcion": "..."}],
+  "secciones": [{"id": "peticionario", "titulo": "0. Peticionario", "contenido": "..."}],
+  "adjuntos": {
+    "calculos": {"nombre": "calculos.pdf", "path": "/tmp/xxx.pdf", "es_imagen": false},
+    "fotografias": {"nombre": "coche.jpg", "path": "/tmp/yyy.jpg", "es_imagen": true}
+  }
+}
+```
+
+---
+
+## 9. Scripts y puesta en marcha
+
+### Requisitos previos
+
+```bash
+# Python
+pip install -r requirements.txt
+
+# Node.js (para el ensamblador)
+cd proyecto_tecnico
+npm install docx
+
+# Variables de entorno
+echo "OPENAI_API_KEY=sk-..." > .env
+```
 
 ### Preparación inicial (una sola vez)
 
 ```bash
-python parser_cr_seccion1.py       # → fichas_cr_seccion1.json
-python parser_preambulo.py         # → preambulo_seccion1.json
-python parser_reglamento_ue.py     # → reglamento_ue_2018_858.json
+# Parsear documentos
+python scripts_parser/parser_cr_seccion1.py
+python scripts_parser/parser_preambulo.py
+python scripts_parser/parser_reglamento_ue.py
 
-# El cliente rellena keywords_reformas.csv
+# Enriquecer con keywords del cliente
+python scripts_enrich/enriquecimiento.py
 
-python enriquecimiento.py          # → fichas_cr_seccion1.json (actualizado)
-python indexado.py --reset         # → chroma_db/
+# Indexar en ChromaDB
+python scripts_index/indexado.py --reset
+```
+
+### Arrancar el sistema
+
+```bash
+# Terminal 1 — Backend FastAPI
+uvicorn backend.main:app --reload --port 8000
+
+# Terminal 2 — Frontend generador de proyectos técnicos
+streamlit run proyecto_tecnico/frontend/proyecto_tecnico_app.py --server.port 8502
+
+# Terminal 3 — Chatbot RAG (opcional)
+streamlit run frontend/app.py --server.port 8501
+```
+
+### Verificación de la base vectorial
+
+```bash
+python scripts_index/inspect_chroma.py                        # resumen de colecciones
+python scripts_index/inspect_chroma.py --col fichas_cr        # detalle colección
+python scripts_index/indexado.py --test                       # queries de prueba
 ```
 
 ### Actualización de keywords (recurrente)
 
 ```bash
-# El cliente añade filas en keywords_reformas.csv
-python enriquecimiento.py
-python indexado.py --reset --solo fichas
+# Añadir filas en scripts_enrich/keywords_reformas.csv
+python scripts_enrich/enriquecimiento.py
+python scripts_index/indexado.py --reset
 ```
-
-### Verificación
-
-```bash
-python inspect_chroma.py                              # resumen de todas las colecciones
-python inspect_chroma.py --col fichas_cr              # detalle de la colección
-python inspect_chroma.py --col fichas_cr --id cr_2_1  # documento concreto
-python indexado.py --test                             # queries de prueba
-```
-
-### Requisitos (`requirements.txt`)
-
-| Paquete | Uso |
-|---|---|
-| `pdfplumber` | Extracción de texto y tablas de los PDFs |
-| `chromadb` | Base vectorial local |
-| `openai` | Embeddings (`text-embedding-3-small`) |
-| `python-dotenv` | Carga de `OPENAI_API_KEY` desde `.env` |
 
 ---
 
-## 7. Pendiente
+## 10. Estructura del proyecto
 
-- [ ] Chatbot RAG: lógica de retrieval + generación con Claude/GPT
-- [ ] Workflow de redacción de proyecto técnico (n8n)
-- [ ] Interfaz de usuario (Streamlit o similar)
-- [ ] Dockerización: `docker-compose` con Chroma como servicio + app
+```
+Proyecto_homologaciones/
+├── .env                          # OPENAI_API_KEY (no subir a git)
+├── requirements.txt
+│
+├── scripts_parser/               # Parsers de PDFs
+│   ├── parser_cr_seccion1.py
+│   ├── parser_preambulo.py
+│   └── parser_reglamento_ue.py
+│
+├── scripts_enrich/               # Enriquecimiento de keywords
+│   ├── enriquecimiento.py
+│   └── keywords_reformas.csv
+│
+├── scripts_index/                # Indexación ChromaDB
+│   ├── indexado.py
+│   ├── inspect_chroma.py
+│   └── chroma_db/                # Base vectorial (no subir a git)
+│
+├── json/                         # JSONs parseados
+│   ├── fichas_cr_seccion1.json
+│   ├── preambulo_seccion1.json
+│   └── reglamento_ue_2018_858.json
+│
+├── backend/                      # FastAPI
+│   └── main.py
+│
+├── frontend/                     # Chatbot RAG Streamlit
+│   └── app.py
+│
+├── proyecto_tecnico/             # Generador de Proyectos Técnicos
+│   ├── models.py                 # Esquemas Pydantic
+│   ├── graph.py                  # Grafo LangGraph
+│   ├── validador_crs.py          # Validación previa de CRs
+│   ├── router_proyecto_tecnico.py # Endpoints FastAPI
+│   │
+│   ├── agents/
+│   │   ├── identificador_cr.py
+│   │   ├── redactor_memoria.py
+│   │   ├── redactor_pliego.py
+│   │   ├── redactor_conclusiones.py
+│   │   └── ensamblador.py
+│   │
+│   └── frontend/
+│       └── proyecto_tecnico_app.py
+│
+└── outputs/
+    └── proyectos/                # .docx generados (no subir a git)
+```
+
+---
+
+## 11. Pendiente / Roadmap
+
+- [ ] Incrustación de PDFs en el Word (requiere conversión a imagen o adjunto como objeto OLE)
+- [ ] Soporte para reformas Vía B (Informe de Conformidad) y Vía C (Certificado de Taller)
 - [ ] Secciones II, III y IV del Manual de Reformas
+- [ ] Cálculo automático de sección 1.3.2 y 1.3.3 (características antes/después)
+- [ ] Dockerización: `docker-compose` con ChromaDB como servicio
+- [ ] Exportación a PDF además de Word
 - [ ] Normativa externa completa (RD 866/2010, directivas referenciadas en ARs)
+- [ ] Tests automatizados del pipeline de generación

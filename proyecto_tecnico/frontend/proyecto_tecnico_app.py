@@ -29,19 +29,6 @@ from proyecto_tecnico.graph import grafo, crear_estado_inicial
 #  CONFIGURACIÓN DE PÁGINA
 # ─────────────────────────────────────────────
 
-st.set_page_config(
-    page_title="Generador de Proyectos Técnicos",
-    page_icon="📋",
-    layout="wide",
-)
-
-st.title("📋 Generador de Proyectos Técnicos — Vía A")
-st.caption("Sistema de redacción asistida por IA para reformas de vehículos (Manual DGT Sección I)")
-
-# ─────────────────────────────────────────────
-#  ESTADO DE SESIÓN
-# ─────────────────────────────────────────────
-
 def _init_session():
     defaults = {
         "paso": 1,
@@ -718,28 +705,44 @@ def paso_descarga():
 
 
 # ─────────────────────────────────────────────
-#  ROUTER PRINCIPAL
+#  PUNTO DE ENTRADA (modo embebido o standalone)
 # ─────────────────────────────────────────────
 
-# Indicador de paso en la barra lateral
-with st.sidebar:
-    st.header("Progreso")
-    pasos = ["Datos del proyecto", "Generación", "Revisión", "Documento final"]
-    for i, nombre in enumerate(pasos, 1):
-        icono = "✅" if i < st.session_state.paso else ("🔵" if i == st.session_state.paso else "⚪")
-        st.markdown(f"{icono} **Paso {i}:** {nombre}")
+def render():
+    """Renderiza la app del generador de proyectos técnicos.
+    Llamar desde el hub principal (frontend/app.py) o directamente."""
 
-    st.divider()
-    st.caption("Sistema RAG — Manual de Reformas DGT")
-    st.caption("Reglamento (UE) 2018/858")
+    st.title("📋 Generador de Proyectos Técnicos — Vía A")
+    st.caption("Sistema de redacción asistida por IA para reformas de vehículos (Manual DGT Sección I)")
 
-# Renderizar el paso actual
-paso = st.session_state.paso
-if paso == 1:
-    paso_formulario()
-elif paso == 2:
-    paso_generacion()
-elif paso == 3:
-    paso_revision()
-elif paso == 4:
-    paso_descarga()
+    _init_session()
+
+    with st.sidebar:
+        st.header("Progreso")
+        pasos = ["Datos del proyecto", "Generación", "Revisión", "Documento final"]
+        for i, nombre in enumerate(pasos, 1):
+            icono = "✅" if i < st.session_state.paso else ("🔵" if i == st.session_state.paso else "⚪")
+            st.markdown(f"{icono} **Paso {i}:** {nombre}")
+
+        st.divider()
+        st.caption("Sistema RAG — Manual de Reformas DGT")
+        st.caption("Reglamento (UE) 2018/858")
+
+    paso = st.session_state.paso
+    if paso == 1:
+        paso_formulario()
+    elif paso == 2:
+        paso_generacion()
+    elif paso == 3:
+        paso_revision()
+    elif paso == 4:
+        paso_descarga()
+
+
+if __name__ == "__main__":
+    st.set_page_config(
+        page_title="Generador de Proyectos Técnicos",
+        page_icon="📋",
+        layout="wide",
+    )
+    render()

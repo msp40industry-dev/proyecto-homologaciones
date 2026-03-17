@@ -33,8 +33,29 @@ async def ensamblar_documento(
     """
     Genera el .docx y devuelve la ruta del fichero.
     """
+    adjuntos = adjuntos or {}
+
+    # Guardar bytes de adjuntos en ficheros temporales para que el JS pueda leerlos
+    adjuntos_info: dict[str, dict] = {}
+    temp_adjunto_files: list[str] = []
+    _FORMATOS_IMAGEN = {".jpg", ".jpeg", ".png"}
+
+    for k, v in adjuntos.items():
+        if not (v.get("bytes") and v.get("nombre")):
+            continue
+        normalized = k.lstrip("_")
+        suffix = Path(v["nombre"]).suffix.lower() or ".bin"
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=suffix, delete=False) as f:
+            f.write(v["bytes"])
+            temp_adjunto_files.append(f.name)
+        adjuntos_info[normalized] = {
+            "nombre": v["nombre"],
+            "path": f.name,
+            "es_imagen": suffix in _FORMATOS_IMAGEN,
+        }
+
     # Construir el payload de datos para el script JS
-    payload = _construir_payload(proyecto_id, entrada, secciones, crs, ars, adjuntos or {})
+    payload = _construir_payload(proyecto_id, entrada, secciones, crs, ars, adjuntos_info)
 
     # Guardar payload en fichero temporal
     with tempfile.NamedTemporaryFile(
@@ -58,6 +79,11 @@ async def ensamblar_documento(
             raise RuntimeError(f"Error en generación docx: {result.stderr}")
     finally:
         os.unlink(payload_path)
+        for tmp in temp_adjunto_files:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
 
     return output_path
 
@@ -121,12 +147,8 @@ def _construir_payload(
             {"id": sid, "titulo": titulo}
             for sid, titulo in _SECCIONES_INGENIERO.items()
         ],
-        # Adjuntos subidos por el ingeniero: clave normalizada → nombre del fichero
-        "adjuntos": {
-            k.lstrip("_"): v["nombre"]
-            for k, v in adjuntos.items()
-            if v.get("nombre")
-        },
+        # Adjuntos subidos por el ingeniero: clave normalizada → {nombre, path, es_imagen}
+        "adjuntos": adjuntos,
     }
 
 
@@ -162,7 +184,7 @@ def _escribir_script_js() -> str:
     script = r"""
 const fs = require('fs');
 const {
-  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+  Document, Packer, Paragraph, TextRun, ImageRun, Table, TableRow, TableCell,
   Header, Footer, AlignmentType, HeadingLevel, BorderStyle, WidthType,
   ShadingType, VerticalAlign, PageNumber, NumberFormat, LevelFormat,
   TableOfContents,
@@ -244,17 +266,30 @@ function marcadorCompletar(titulo) {
 }
 
 function seccionIngenieroBloque(id, titulo, adjuntos) {
-  const nombre = adjuntos[id];
-  if (nombre) {
+  const adj = adjuntos[id];
+  if (!adj) return marcadorCompletar(titulo);
+
+  if (adj.es_imagen) {
+    const imgData = fs.readFileSync(adj.path);
     return new Paragraph({
       children: [
-        new TextRun({ text: "📎 Adjunto: ", bold: true, size: 22, font: "Arial", color: "2E75B6" }),
-        new TextRun({ text: nombre, size: 22, font: "Arial", color: "2E75B6" }),
+        new ImageRun({
+          data: imgData,
+          transformation: { width: 500, height: 350 },
+        }),
       ],
       spacing: { before: 160, after: 200 },
     });
   }
-  return marcadorCompletar(titulo);
+
+  // Para PDF, DWG, XLSX u otros: indicador de fichero adjunto
+  return new Paragraph({
+    children: [
+      new TextRun({ text: "📎 Adjunto: ", bold: true, size: 22, font: "Arial", color: "2E75B6" }),
+      new TextRun({ text: adj.nombre, size: 22, font: "Arial", color: "2E75B6" }),
+    ],
+    spacing: { before: 160, after: 200 },
+  });
 }
 
 function tablaARs(ars) {
