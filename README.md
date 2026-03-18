@@ -154,8 +154,8 @@ python scripts_index/indexado.py --reset
 
 | Sección | Marcador en el Word |
 |---|---|
-| 1.3.2 Características antes de la reforma | `[COMPLETAR]` en rojo |
-| 1.3.3 Características después de la reforma | `[COMPLETAR]` en rojo |
+| 1.3.2 Características antes de la reforma | Caja de texto editable en revisión; si se deja vacía → `[COMPLETAR]` en rojo |
+| 1.3.3 Características después de la reforma | Caja de texto editable en revisión; si se deja vacía → `[COMPLETAR]` en rojo |
 | 2. Cálculos justificativos | Fichero adjunto o `[COMPLETAR]` |
 | 4. Presupuesto | Fichero adjunto o `[COMPLETAR]` |
 | 5. Planos | Fichero adjunto o `[COMPLETAR]` |
@@ -361,59 +361,109 @@ El ensamblador escribe un script Node.js en `/tmp` y lo ejecuta con `subprocess`
 
 ---
 
-## 9. Scripts y puesta en marcha
+## 9. Puesta en marcha
 
-### Requisitos previos
+### 9.0 Prerrequisito: variables de entorno
+
+Copia el fichero de ejemplo y rellena tu clave de OpenAI:
 
 ```bash
-# Python
-pip install -r requirements.txt
-
-# Node.js (para el ensamblador)
-cd proyecto_tecnico
-npm install docx
-
-# Variables de entorno
-echo "OPENAI_API_KEY=sk-..." > .env
+cp .env.example .env
 ```
 
-### Preparación inicial (una sola vez)
+Edita `.env` y añade al menos:
+
+```
+OPENAI_API_KEY=sk-...
+```
+
+Las variables de LangSmith son opcionales. Si no las necesitas, deja `LANGCHAIN_TRACING_V2=false` y el resto vacío.
+
+---
+
+### 9.1 Preparación inicial de la base vectorial (una sola vez)
+
+La ChromaDB debe indexarse antes de arrancar el sistema, independientemente de si se usa Docker o entorno local.
 
 ```bash
-# Parsear documentos
+# Parsear los documentos fuente
 python scripts_parser/parser_cr_seccion1.py
 python scripts_parser/parser_preambulo.py
 python scripts_parser/parser_reglamento_ue.py
 
-# Enriquecer con keywords del cliente
+# Enriquecer con keywords del cliente (opcional)
 python scripts_enrich/enriquecimiento.py
 
-# Indexar en ChromaDB
+# Indexar en ChromaDB (crea scripts_index/chroma_db/)
 python scripts_index/indexado.py --reset
 ```
 
-### Arrancar el sistema
+Verificación:
 
 ```bash
+python scripts_index/inspect_chroma.py               # resumen de colecciones
+python scripts_index/inspect_chroma.py --col fichas_cr  # detalle colección
+```
+
+---
+
+### 9.2 Opción A — Docker (recomendado para ejecutar en cualquier máquina)
+
+**Requisitos:** Docker Desktop instalado y corriendo.
+
+```bash
+# 1. Asegúrate de tener el .env y la chroma_db indexada (ver 9.0 y 9.1)
+
+# 2. Construir y arrancar los contenedores
+docker compose up --build
+
+# Para arrancar en segundo plano
+docker compose up --build -d
+
+# Para parar
+docker compose down
+```
+
+Una vez arrancado:
+- Frontend: [http://localhost:8501](http://localhost:8501)
+- Backend (API): [http://localhost:8000](http://localhost:8000)
+- Documentación API: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+Los documentos Word generados se guardan en `outputs/proyectos/` en el host.
+
+---
+
+### 9.3 Opción B — Entorno virtual local (desarrollo)
+
+**Requisitos:** Python 3.11, Node.js 20 LTS.
+
+```bash
+# 1. Crear el entorno virtual
+python3.11 -m venv hm_venv
+
+# 2. Activarlo
+source hm_venv/bin/activate          # macOS / Linux
+# hm_venv\Scripts\activate           # Windows
+
+# 3. Instalar dependencias Python
+pip install -r requirements.txt
+
+# 4. Instalar dependencia Node.js para el ensamblador
+npm install
+
+# 5. Asegúrate de tener el .env y la chroma_db indexada (ver 9.0 y 9.1)
+
+# 6. Arrancar
 # Terminal 1 — Backend FastAPI
 uvicorn backend.main:app --reload --port 8000
 
-# Terminal 2 — Frontend generador de proyectos técnicos
-streamlit run proyecto_tecnico/frontend/proyecto_tecnico_app.py --server.port 8502
-
-# Terminal 3 — Chatbot RAG (opcional)
+# Terminal 2 — Frontend (hub con chatbot + generador)
 streamlit run frontend/app.py --server.port 8501
 ```
 
-### Verificación de la base vectorial
+---
 
-```bash
-python scripts_index/inspect_chroma.py                        # resumen de colecciones
-python scripts_index/inspect_chroma.py --col fichas_cr        # detalle colección
-python scripts_index/indexado.py --test                       # queries de prueba
-```
-
-### Actualización de keywords (recurrente)
+### 9.4 Actualización de keywords (recurrente)
 
 ```bash
 # Añadir filas en scripts_enrich/keywords_reformas.csv
@@ -483,7 +533,7 @@ Proyecto_homologaciones/
 - [ ] Soporte para reformas Vía B (Informe de Conformidad) y Vía C (Certificado de Taller)
 - [ ] Secciones II, III y IV del Manual de Reformas
 - [ ] Cálculo automático de sección 1.3.2 y 1.3.3 (características antes/después)
-- [ ] Dockerización: `docker-compose` con ChromaDB como servicio
+- [x] Dockerización: `docker-compose` con backend y frontend
 - [ ] Exportación a PDF además de Word
 - [ ] Normativa externa completa (RD 866/2010, directivas referenciadas en ARs)
 - [ ] Tests automatizados del pipeline de generación

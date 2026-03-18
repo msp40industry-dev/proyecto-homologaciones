@@ -29,11 +29,13 @@ async def ensamblar_documento(
     crs: list[FichaCR],
     ars: list[ARFiltrado],
     adjuntos: dict | None = None,
+    textos_manuales: dict | None = None,
 ) -> str:
     """
     Genera el .docx y devuelve la ruta del fichero.
     """
     adjuntos = adjuntos or {}
+    textos_manuales = textos_manuales or {}
 
     # Guardar bytes de adjuntos en ficheros temporales para que el JS pueda leerlos
     adjuntos_info: dict[str, dict] = {}
@@ -55,7 +57,7 @@ async def ensamblar_documento(
         }
 
     # Construir el payload de datos para el script JS
-    payload = _construir_payload(proyecto_id, entrada, secciones, crs, ars, adjuntos_info)
+    payload = _construir_payload(proyecto_id, entrada, secciones, crs, ars, adjuntos_info, textos_manuales)
 
     # Guardar payload en fichero temporal
     with tempfile.NamedTemporaryFile(
@@ -95,6 +97,7 @@ def _construir_payload(
     crs: list[FichaCR],
     ars: list[ARFiltrado],
     adjuntos: dict,
+    textos_manuales: dict,
 ) -> dict:
     v = entrada.vehiculo
     ing = entrada.ingeniero
@@ -149,6 +152,11 @@ def _construir_payload(
         ],
         # Adjuntos subidos por el ingeniero: clave normalizada → {nombre, path, es_imagen}
         "adjuntos": adjuntos,
+        # Textos escritos manualmente por el ingeniero (1.3.2 y 1.3.3)
+        "textos_manuales": {
+            "caracteristicas_antes":   textos_manuales.get("caracteristicas_antes", ""),
+            "caracteristicas_despues": textos_manuales.get("caracteristicas_despues", ""),
+        },
     }
 
 
@@ -232,7 +240,7 @@ function parrafo(text, opts = {}) {
     new Paragraph({
       children: [new TextRun({
         text: linea,
-        size: 22, // 11pt
+        size: 22,
         font: "Arial",
         color: NEGRO,
         ...opts,
@@ -241,6 +249,88 @@ function parrafo(text, opts = {}) {
       alignment: AlignmentType.JUSTIFIED,
     })
   );
+}
+
+// Parsea fragmentos de texto con **negrita** inline
+function parseBold(text) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/);
+  return parts.filter(p => p !== '').map(part => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return new TextRun({ text: part.slice(2, -2), bold: true, size: 22, font: "Arial", color: NEGRO });
+    }
+    return new TextRun({ text: part, size: 22, font: "Arial", color: NEGRO });
+  });
+}
+
+// Renderiza contenido generado por el LLM con soporte de:
+//   ## Título nivel 2      → heading2
+//   ### Título nivel 3     → negrita azul, tamaño 22
+//   - item / * item / • item → lista con viñetas
+//   1. item                → párrafo con sangría y número
+//   **texto**              → negrita inline
+//   resto                  → párrafo justificado normal
+function renderContenido(text) {
+  const lineas = text.split('\n');
+  const bloques = [];
+
+  for (const linea of lineas) {
+    const t = linea.trim();
+    if (!t) {
+      bloques.push(new Paragraph({ spacing: { after: 60 } }));
+      continue;
+    }
+
+    // ## Título (heading 2)
+    if (t.startsWith('## ')) {
+      bloques.push(heading2(t.slice(3).trim()));
+    }
+    // ### Subtítulo (bold azul, sin outline)
+    else if (t.startsWith('### ')) {
+      bloques.push(new Paragraph({
+        children: [new TextRun({ text: t.slice(4).trim(), bold: true, size: 22, font: "Arial", color: AZUL_MED })],
+        spacing: { before: 160, after: 80 },
+      }));
+    }
+    // Línea completa en negrita como subtítulo (ej. **Documentación exigible:**)
+    else if (/^\*\*[^*]+\*\*:?$/.test(t)) {
+      bloques.push(new Paragraph({
+        children: [new TextRun({ text: t.replace(/\*\*/g, '').replace(/:$/, ':'), bold: true, size: 22, font: "Arial", color: AZUL_MED })],
+        spacing: { before: 160, after: 80 },
+      }));
+    }
+    // Lista con viñetas (- / * / •)
+    else if (/^[-*•]\s/.test(t)) {
+      const contenido = t.replace(/^[-*•]\s+/, '');
+      bloques.push(new Paragraph({
+        numbering: { reference: "bullets", level: 0 },
+        children: parseBold(contenido),
+        spacing: { after: 80 },
+      }));
+    }
+    // Lista numerada (1. 2. …)
+    else if (/^\d+\.\s/.test(t)) {
+      const num = t.match(/^(\d+\.)/)[1];
+      const contenido = t.replace(/^\d+\.\s+/, '');
+      bloques.push(new Paragraph({
+        children: [
+          new TextRun({ text: num + ' ', bold: true, size: 22, font: "Arial", color: NEGRO }),
+          ...parseBold(contenido),
+        ],
+        spacing: { after: 80 },
+        indent: { left: 360 },
+      }));
+    }
+    // Párrafo normal
+    else {
+      bloques.push(new Paragraph({
+        children: parseBold(t),
+        spacing: { after: 120 },
+        alignment: AlignmentType.JUSTIFIED,
+      }));
+    }
+  }
+
+  return bloques;
 }
 
 function marcadorCompletar(titulo) {
@@ -494,7 +584,7 @@ function construirSecciones(data) {
 
     // Para "antecedentes" insertamos también las tablas de CRs y ARs
     if (sec.id === "antecedentes") {
-      bloques.push(...parrafo(sec.contenido));
+      bloques.push(...renderContenido(sec.contenido));
       if (data.crs.length > 0) {
         bloques.push(
           new Paragraph({ children: [new TextRun({ text: "Códigos de Reforma aplicables:", bold: true, size: 22, font: "Arial" })], spacing: { before: 200, after: 120 } }),
@@ -507,14 +597,14 @@ function construirSecciones(data) {
       }
     } else if (sec.id === "identificacion_vehiculo") {
       // Texto introductorio + tabla de datos del vehículo
-      bloques.push(...parrafo(sec.contenido));
+      bloques.push(...renderContenido(sec.contenido));
       bloques.push(
         new Paragraph({ spacing: { after: 120 } }),
         tablaVehiculo(data.metadata),
         new Paragraph({ spacing: { after: 200 } }),
       );
     } else {
-      bloques.push(...parrafo(sec.contenido));
+      bloques.push(...renderContenido(sec.contenido));
     }
 
     // Indicador de adjunto
@@ -534,10 +624,22 @@ function construirSecciones(data) {
 
     // Insertar secciones del ingeniero en los puntos correctos
     if (sec.id === "identificacion_vehiculo") {
+      const textoAntes   = (data.textos_manuales && data.textos_manuales.caracteristicas_antes   || "").trim();
+      const textoDespues = (data.textos_manuales && data.textos_manuales.caracteristicas_despues || "").trim();
+
       bloques.push(heading2("1.3.2 Características del vehículo antes de la reforma"));
-      bloques.push(marcadorCompletar("1.3.2 Características antes de la reforma"));
+      if (textoAntes) {
+        bloques.push(...renderContenido(textoAntes));
+      } else {
+        bloques.push(marcadorCompletar("1.3.2 Características antes de la reforma"));
+      }
+
       bloques.push(heading2("1.3.3 Características del vehículo después de la reforma"));
-      bloques.push(marcadorCompletar("1.3.3 Características después de la reforma"));
+      if (textoDespues) {
+        bloques.push(...renderContenido(textoDespues));
+      } else {
+        bloques.push(marcadorCompletar("1.3.3 Características después de la reforma"));
+      }
     }
 
     if (sec.id === "descripcion_reforma") {

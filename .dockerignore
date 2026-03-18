@@ -1,0 +1,16 @@
+hm_venv/
+.venv/
+venv/
+outputs/
+.env
+.git/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+node_modules/
+docs/
+README_POC_Reformas.docx
+get-pip.py
+*.egg-info/

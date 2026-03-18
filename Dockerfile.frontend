@@ -1,0 +1,34 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Dependencias del sistema + Node.js 20 LTS (necesario para el ensamblador docx)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Instalar el paquete docx de Node.js en /app/node_modules
+# El ensamblador escribe el script en /tmp y lo ejecuta; NODE_PATH
+# le indica a Node dónde buscar los módulos instalados.
+COPY package.json .
+RUN npm install --omit=dev
+ENV NODE_PATH=/app/node_modules
+
+COPY . .
+
+RUN mkdir -p outputs/proyectos
+
+EXPOSE 8501
+
+CMD ["streamlit", "run", "frontend/app.py", \
+     "--server.port=8501", \
+     "--server.address=0.0.0.0", \
+     "--server.headless=true"]

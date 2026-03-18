@@ -1,0 +1,9 @@
+{
+  "name": "proyecto-homologaciones-assembler",
+  "version": "1.0.0",
+  "description": "Node.js dependencies for the Word document assembler",
+  "private": true,
+  "dependencies": {
+    "docx": "^9.5.0"
+  }
+}

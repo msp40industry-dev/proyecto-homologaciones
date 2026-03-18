@@ -36,6 +36,7 @@ def _init_session():
         "config_grafo": None,
         "secciones": {},
         "revisiones": {},
+        "textos_manuales": {},          # Textos de secciones 1.3.2 y 1.3.3
         "docx_path": None,
         "error": None,
         "num_componentes": 1,
@@ -386,6 +387,8 @@ SECCIONES_CONFIG = {
     "objeto":                 {"titulo": "1.1 Objeto",                         "adjunto": False},
     "antecedentes":           {"titulo": "1.2 Antecedentes",                   "adjunto": False},
     "identificacion_vehiculo":{"titulo": "1.3.1 Identificación del vehículo",  "adjunto": False},
+    "caracteristicas_antes":  {"titulo": "1.3.2 Características antes de la reforma",  "adjunto": False, "manual": True},
+    "caracteristicas_despues":{"titulo": "1.3.3 Características después de la reforma","adjunto": False, "manual": True},
     "descripcion_reforma":    {"titulo": "1.4 Descripción de la reforma",       "adjunto": False},
     "calidad_materiales":     {"titulo": "3.1 Calidad de materiales",           "adjunto": False},
     "normas_ejecucion":       {"titulo": "3.2 Normas de ejecución",             "adjunto": False},
@@ -504,6 +507,40 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
             st.success(f"✅ Fichero adjuntado: {archivo.name}")
         return
 
+    # Sección de texto manual (1.3.2 y 1.3.3)
+    if cfg.get("manual"):
+        st.subheader(cfg["titulo"])
+        placeholders = {
+            "caracteristicas_antes": (
+                "Indica las características técnicas del vehículo ANTES de la reforma.\n\n"
+                "Por ejemplo:\n"
+                "- Motor: [tipo, cilindrada, potencia original en CV/kW]\n"
+                "- Transmisión: [tipo]\n"
+                "- Suspensión: [delantera / trasera]\n"
+                "- Frenos: [delanteros / traseros]\n"
+                "- Masa en orden de marcha: [kg]"
+            ),
+            "caracteristicas_despues": (
+                "Indica las características técnicas del vehículo DESPUÉS de la reforma.\n\n"
+                "Por ejemplo:\n"
+                "- Motor: [tipo, cilindrada, nueva potencia en CV/kW]\n"
+                "- Transmisión: [tipo]\n"
+                "- Suspensión: [si ha cambiado]\n"
+                "- Frenos: [si han cambiado]\n"
+                "- Masa en orden de marcha: [kg]"
+            ),
+        }
+        texto = st.text_area(
+            "Descripción (editable)",
+            value=st.session_state.textos_manuales.get(sid, ""),
+            height=280,
+            key=f"manual_{sid}",
+            placeholder=placeholders.get(sid, ""),
+        )
+        if texto != st.session_state.textos_manuales.get(sid, ""):
+            st.session_state.textos_manuales[sid] = texto
+        return
+
     # Sección con texto generado
     if sid not in secciones:
         st.info("Esta sección no está disponible.")
@@ -521,14 +558,17 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
     with col2:
         st.metric("Estado", ESTADOS_ICONOS.get(estado, "⏳") + " " + estado.capitalize())
 
-    # Texto generado
-    st.text_area(
-        "Texto generado",
+    # Texto generado (editable)
+    texto_editado = st.text_area(
+        "Texto generado (editable)",
         value=sec.contenido,
         height=350,
         key=f"texto_{sid}",
-        disabled=True,
     )
+
+    # Guardar edición manual si el usuario modificó el texto
+    if texto_editado != sec.contenido:
+        st.session_state.secciones[sid].contenido = texto_editado
 
     # Botones de revisión
     st.caption("¿Es correcto el texto generado?")
@@ -649,6 +689,7 @@ def _generar_documento():
             crs=estado["crs_identificados"],
             ars=estado["ars_filtrados"],
             adjuntos=st.session_state.get("adjuntos", {}),
+            textos_manuales=st.session_state.get("textos_manuales", {}),
         )
         st.session_state.docx_path = path
 
