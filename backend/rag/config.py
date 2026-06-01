@@ -52,7 +52,7 @@ COLECCION_PREAMBULO  = "preambulo"
 COLECCION_REGLAMENTO = "reglamento_ue"
 
 # Número de chunks a recuperar por colección en cada consulta
-N_RESULTS_FICHAS     = 3
+N_RESULTS_FICHAS     = 5
 N_RESULTS_PREAMBULO  = 2
 N_RESULTS_REGLAMENTO = 2
 

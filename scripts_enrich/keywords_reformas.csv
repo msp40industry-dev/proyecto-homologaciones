@@ -3,7 +3,134 @@ cr,keyword
 2.1,turbocompresor
 2.1,sobrealimentación
 2.1,intercooler
+2.1,chiptuning
+2.1,reprogramación motor
+2.1,más potencia
+2.1,aumentar caballos
+2.1,kw motor
+2.1,cv motor
+2.2,carburador
+2.2,inyección
+2.2,sistema de alimentación
+2.2,combustible
+2.4,cambio de motor
+2.4,motor nuevo
+2.4,motor distinto
+2.4,swap motor
+2.4,sustituir motor
+2.5,tracción
+2.5,4x4
+2.5,tracción total
+2.5,cambiar tracción
+2.6,caja de cambios
+2.6,transmisión automática
+2.6,transmisión manual
+2.6,cambiar caja
+2.7,embrague
+2.8,escape
+2.8,tubo de escape
+2.8,catalizador
+2.8,silenciador
+2.8,downpipe
+2.8,escape deportivo
+2.8,FAP
+2.8,filtro de partículas
+2.9,climatización
+2.9,aire acondicionado
+2.9,GLP
+2.9,GNC
+2.9,gas licuado
+2.9,gas natural
+2.9,bifuel
+4.1,frenos
+4.1,pastillas de freno
+4.1,discos de freno
+4.1,sistema de frenado
+4.1,frenos mejorados
+4.1,upgrade frenos
+4.2,ABS
+4.2,sistema antibloqueo
+4.3,freno de mano
+4.3,freno de estacionamiento
+4.3,freno de parking
+5.1,amortiguadores
+5.1,muelles
+5.1,muelle
+5.1,bajar
+5.1,subir altura
+5.1,suspensión deportiva
+5.1,resortes
+5.1,ballesta
+5.1,barras estabilizadoras
+5.1,coilovers
+5.1,altura del vehículo
+5.1,altura libre al suelo
+5.1,lowering
+5.1,suspensión roscada
+5.1,kit de suspensión
+5.1,rebaje
+5.1,elevar
+5.1,lift kit
+5.2,dirección
+5.2,servo dirección
+5.2,dirección asistida
+5.2,columna de dirección
+5.2,timonería
+5.2,EPS
+6.1,carrocería
+6.1,estructura
+6.1,bastidor
+6.2,techo
+6.2,cabrio
+6.2,descapotable
+6.2,cortar techo
+6.3,volante
+6.3,volante deportivo
+6.3,volante pequeño
+6.3,cambiar volante
+6.3,quick release
+7.1,neumáticos
+7.1,llantas
+7.1,ruedas
+7.1,tamaño neumático
+7.1,perfil neumático
+7.1,cambiar neumáticos
+7.1,cambiar llantas
+7.1,anchura rueda
+7.2,alumbrado
+7.2,luces
+7.2,faros
+7.2,LED
+7.2,xenon
+7.2,faros de xenon
+7.2,faros LED
+7.3,freno pie
+7.3,pedal freno
 8.20,alerón
 8.20,spoiler
 8.20,splitter
 8.20,difusor
+8.20,bodykit
+8.20,kit carrocería
+8.20,faldones
+8.20,lip
+8.20,aerodinámica
+8.50,tracción integral
+8.50,4WD
+8.56,calefacción
+8.56,climatizador
+9.1,remolque
+9.1,enganche
+9.1,bola remolque
+9.1,punto remolque
+9.2,portabicicletas
+9.2,porta esquís
+10.1,gas
+10.1,GLP
+10.1,propano
+10.1,butano
+10.1,gas licuado del petróleo
+10.6,eléctrico
+10.6,motor eléctrico
+10.6,conversión eléctrica
+10.6,EV
