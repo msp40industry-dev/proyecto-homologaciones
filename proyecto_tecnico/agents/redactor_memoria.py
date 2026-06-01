@@ -20,8 +20,9 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from proyecto_tecnico.models import (
     EntradaProyecto, FichaCR, ARFiltrado, SeccionGenerada, EstadoRevision
 )
+from proyecto_tecnico.config import MODELO_REDACCION
 
-_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
+_llm = ChatOpenAI(model=MODELO_REDACCION, temperature=0.0)
 
 # ─── Prompts de sistema por sección ──────────────────────────────────────────
 

@@ -32,8 +32,8 @@ if not OPENAI_API_KEY:
         "  OPENAI_API_KEY=sk-..."
     )
 
-EMBEDDING_MODEL  = "text-embedding-3-small"
-GENERATION_MODEL = "gpt-4o-mini"
+EMBEDDING_MODEL  = os.environ.get("MODELO_EMBEDDING", "text-embedding-3-small")
+GENERATION_MODEL = os.environ.get("MODELO_REDACCION", "gpt-4o-mini")
 
 # ─── LangSmith ────────────────────────────────────────────────────────────────
 # Opcional — si no se configura, simplemente no hay trazas

@@ -16,8 +16,10 @@
 7. [Frontend Streamlit](#7-frontend-streamlit)
 8. [Generación del documento Word](#8-generación-del-documento-word)
 9. [Scripts y puesta en marcha](#9-scripts-y-puesta-en-marcha)
-10. [Estructura del proyecto](#10-estructura-del-proyecto)
-11. [Pendiente / Roadmap](#11-pendiente--roadmap)
+10. [Configuración de modelos](#10-configuración-de-modelos)
+11. [Tests](#11-tests)
+12. [Estructura del proyecto](#12-estructura-del-proyecto)
+13. [Pendiente / Roadmap](#13-pendiente--roadmap)
 
 ---
 
@@ -69,17 +71,17 @@ Genera automáticamente el proyecto técnico completo para una reforma de vehíc
 └─────────────────────────────────────────────────────────┘
 ```
 
-**Modelos usados:**
+**Modelos usados (configurables vía `.env` — ver [sección 10](#10-configuración-de-modelos)):**
 
-| Agente | Modelo | Rol |
-|---|---|---|
-| Identificador CR | `gpt-4o` | Análisis semántico + filtrado de ARs |
-| Validador CRs | `gpt-4o` | Validación de vías + CRs adicionales |
-| Redactor Memoria | `gpt-4o-mini` | Secciones 0, 1.1, 1.2, 1.3.1, 1.4 |
-| Redactor Pliego | `gpt-4o-mini` | Secciones 3.1, 3.2, 3.3, 3.4 |
-| Redactor Conclusiones | `gpt-4o-mini` | Sección 8 |
-| Ensamblador | Node.js (`docx`) | Documento Word final |
-| Embeddings | `text-embedding-3-small` | Indexación y búsqueda semántica |
+| Agente | Variable `.env` | Default | Rol |
+|---|---|---|---|
+| Identificador CR | `MODELO_RAZONAMIENTO` | `gpt-4o` | Análisis semántico + filtrado de ARs |
+| Validador CRs | `MODELO_RAZONAMIENTO` | `gpt-4o` | Validación de vías + CRs adicionales |
+| Redactor Memoria | `MODELO_REDACCION` | `gpt-4o-mini` | Secciones 0, 1.1, 1.2, 1.3.1, 1.4 |
+| Redactor Pliego | `MODELO_REDACCION` | `gpt-4o-mini` | Secciones 3.1, 3.2, 3.3, 3.4 |
+| Redactor Conclusiones | `MODELO_REDACCION` | `gpt-4o-mini` | Sección 8 |
+| Ensamblador | — | Node.js (`docx`) | Documento Word final |
+| Embeddings | `MODELO_EMBEDDING` | `text-embedding-3-small` | Indexación y búsqueda semántica |
 
 ---
 
@@ -164,24 +166,25 @@ python scripts_index/indexado.py --reset
 
 ### 4.3 Agentes
 
-#### `identificador_cr.py` (Agente 1 — `gpt-4o`)
+#### `identificador_cr.py` (Agente 1 — `MODELO_RAZONAMIENTO`)
 
 - Si el ingeniero indica CRs → recuperación exacta por metadato `cr` en ChromaDB (sin búsqueda semántica)
 - Si no indica CRs → búsqueda semántica en ChromaDB sobre la descripción de la reforma
 - Filtra los ARs de cada ficha CR por la categoría del vehículo
 - Detecta CRs adicionales mencionados en `informacion_adicional`
+- Usa **tool calling** (`with_structured_output`) para obtener la respuesta del LLM como objeto Pydantic validado, sin parsing manual de JSON
 
-#### `redactor_memoria.py` (Agente 2 — `gpt-4o-mini`)
+#### `redactor_memoria.py` (Agente 2 — `MODELO_REDACCION`)
 
 Genera las secciones 0, 1.1, 1.2, 1.3.1 y 1.4 en paralelo. Los prompts instruyen al LLM a:
 - **1.2 Antecedentes**: solo texto en párrafos (sin tablas markdown). Las tablas de CRs y ARs las añade el ensamblador.
 - **1.3.1 Identificación del vehículo**: solo 1-2 frases introductorias. La ficha técnica la añade el ensamblador como tabla Word.
 
-#### `redactor_pliego.py` (Agente 3 — `gpt-4o-mini`)
+#### `redactor_pliego.py` (Agente 3 — `MODELO_REDACCION`)
 
 Genera las secciones 3.1, 3.2, 3.3 y 3.4 del Pliego de Condiciones.
 
-#### `redactor_conclusiones.py` (Agente 4 — `gpt-4o-mini`)
+#### `redactor_conclusiones.py` (Agente 4 — `MODELO_REDACCION`)
 
 Genera la sección 8 (Conclusiones) con declaración de viabilidad técnica, CRs aplicables, ARs a verificar en ITV y bloque de firma del ingeniero.
 
@@ -379,6 +382,8 @@ OPENAI_API_KEY=sk-...
 
 Las variables de LangSmith son opcionales. Si no las necesitas, deja `LANGCHAIN_TRACING_V2=false` y el resto vacío.
 
+Los modelos tienen defaults seguros y **no es necesario definirlos** para que el sistema funcione. Solo añádelos si quieres cambiar el modelo por defecto (ver [sección 10](#10-configuración-de-modelos)).
+
 ---
 
 ### 9.1 Preparación inicial de la base vectorial (una sola vez)
@@ -473,12 +478,83 @@ python scripts_index/indexado.py --reset
 
 ---
 
-## 10. Estructura del proyecto
+## 10. Configuración de modelos
+
+Los modelos de cada agente son configurables mediante variables de entorno sin necesidad de modificar código. La configuración vive en `proyecto_tecnico/config.py` (generador) y `backend/rag/config.py` (RAG).
+
+### 10.1 Variables disponibles
+
+| Variable | Default | Afecta a |
+|---|---|---|
+| `MODELO_RAZONAMIENTO` | `gpt-4o` | Identificador CR, Validador CRs |
+| `MODELO_REDACCION` | `gpt-4o-mini` | Redactor Memoria, Pliego, Conclusiones, RAG chain |
+| `MODELO_EMBEDDING` | `text-embedding-3-small` | ChromaDB (indexación y búsqueda) |
+
+### 10.2 Cómo actualizar a un nuevo modelo
+
+```bash
+# En .env, añadir o modificar:
+MODELO_RAZONAMIENTO=gpt-4.1
+MODELO_REDACCION=gpt-4o-mini-2025-04-14
+```
+
+Reiniciar el backend y el frontend. No hace falta tocar ningún fichero de código.
+
+> **⚠️ Cambio de `MODELO_EMBEDDING`:** si se cambia el modelo de embeddings hay que re-indexar la ChromaDB completa, ya que los vectores almacenados son incompatibles con un modelo diferente:
+> ```bash
+> python scripts_index/indexado.py --reset
+> ```
+
+### 10.3 Salidas estructuradas (tool calling)
+
+El `identificador_cr.py` usa `ChatOpenAI.with_structured_output()` para obtener la respuesta del LLM directamente como un objeto Pydantic validado, en lugar de parsear JSON manualmente. El esquema de salida está definido en `_RespuestaCRs`:
+
+```python
+class _RespuestaCRs(BaseModel):
+    crs_identificados: list[_CRIdentificado]
+    crs_adicionales_detectados: list[_CRAdicional]
+```
+
+Esto elimina el riesgo de JSON malformado y aprovecha la API de function calling de OpenAI, que garantiza la estructura de la respuesta.
+
+---
+
+## 11. Tests
+
+Suite de tests unitarios en `tests/`. No requieren conexión a OpenAI ni a ChromaDB — toda dependencia externa está mockeada.
+
+```bash
+# Ejecutar todos los tests
+python -m pytest tests/ -v
+
+# Ejecutar un fichero concreto
+python -m pytest tests/test_rag_chain.py -v
+```
+
+### 11.1 Ficheros de test
+
+| Fichero | Qué prueba | Tests |
+|---|---|---|
+| `test_models.py` | Validación de modelos Pydantic (DatosVehiculo, FichaCR, ARFiltrado…) | 16 |
+| `test_rag_chain.py` | Helpers de la cadena RAG: filtrado ARs, formateo fichas, contexto, fuentes | 17 |
+| `test_rag_retriever.py` | Lógica del retriever: `_necesita_preambulo`, `_necesita_reglamento`, `_filtro_fichas` | 25 |
+| `test_identificador_cr.py` | Helpers del identificador: `_deduplicar_docs`, extracción de campos de fichas | 19 |
+| `test_ensamblador.py` | `_construir_payload`: estructura y contenido del payload al script Node.js | 11 |
+| `test_api.py` | Endpoints FastAPI con `TestClient` y mocks | 18 |
+| `test_enriquecimiento.py` | `cargar_csv` y `enriquecer` con ficheros temporales (`tmp_path`) | 16 |
+
+**Total: 126 tests · 0 llamadas reales a APIs externas**
+
+---
+
+## 12. Estructura del proyecto
 
 ```
 Proyecto_homologaciones/
-├── .env                          # OPENAI_API_KEY (no subir a git)
+├── .env                          # OPENAI_API_KEY + modelos (no subir a git)
+├── .env.example                  # Plantilla de variables de entorno
 ├── requirements.txt
+├── package.json                  # Dependencia Node.js: docx
 │
 ├── scripts_parser/               # Parsers de PDFs
 │   ├── parser_cr_seccion1.py
@@ -495,31 +571,49 @@ Proyecto_homologaciones/
 │   └── chroma_db/                # Base vectorial (no subir a git)
 │
 ├── json/                         # JSONs parseados
-│   ├── fichas_cr_seccion1.json
+│   ├── fichas_cr_seccion1_v3.json
 │   ├── preambulo_seccion1.json
 │   └── reglamento_ue_2018_858.json
 │
-├── backend/                      # FastAPI
-│   └── main.py
+├── backend/                      # FastAPI + RAG chain
+│   ├── main.py
+│   └── rag/
+│       ├── config.py             # Variables de entorno y paths (modelos configurables)
+│       ├── chain.py              # Pipeline RAG completo
+│       └── retriever.py          # Retrieval condicional en ChromaDB
 │
-├── frontend/                     # Chatbot RAG Streamlit
+├── frontend/                     # Hub Streamlit (menú central)
 │   └── app.py
 │
 ├── proyecto_tecnico/             # Generador de Proyectos Técnicos
+│   ├── config.py                 # Roles de modelos (MODELO_RAZONAMIENTO, etc.)
 │   ├── models.py                 # Esquemas Pydantic
 │   ├── graph.py                  # Grafo LangGraph
 │   ├── validador_crs.py          # Validación previa de CRs
 │   ├── router_proyecto_tecnico.py # Endpoints FastAPI
 │   │
 │   ├── agents/
-│   │   ├── identificador_cr.py
-│   │   ├── redactor_memoria.py
-│   │   ├── redactor_pliego.py
-│   │   ├── redactor_conclusiones.py
-│   │   └── ensamblador.py
+│   │   ├── identificador_cr.py   # Agente 1: gpt-4o + tool calling
+│   │   ├── redactor_memoria.py   # Agente 2: secciones 0, 1.x
+│   │   ├── redactor_pliego.py    # Agente 3: secciones 3.x
+│   │   ├── redactor_conclusiones.py # Agente 4: sección 8
+│   │   └── ensamblador.py        # Agente 5: genera .docx vía Node.js
 │   │
 │   └── frontend/
 │       └── proyecto_tecnico_app.py
+│
+├── tests/                        # Suite de tests unitarios (126 tests)
+│   ├── conftest.py
+│   ├── test_models.py
+│   ├── test_rag_chain.py
+│   ├── test_rag_retriever.py
+│   ├── test_identificador_cr.py
+│   ├── test_ensamblador.py
+│   ├── test_api.py
+│   └── test_enriquecimiento.py
+│
+├── docs/
+│   └── TFM_Memoria.md            # Memoria del Trabajo Fin de Máster
 │
 └── outputs/
     └── proyectos/                # .docx generados (no subir a git)
@@ -527,7 +621,7 @@ Proyecto_homologaciones/
 
 ---
 
-## 11. Pendiente / Roadmap
+## 13. Pendiente / Roadmap
 
 - [ ] Incrustación de PDFs en el Word (requiere conversión a imagen o adjunto como objeto OLE)
 - [ ] Soporte para reformas Vía B (Informe de Conformidad) y Vía C (Certificado de Taller)
@@ -536,4 +630,8 @@ Proyecto_homologaciones/
 - [x] Dockerización: `docker-compose` con backend y frontend
 - [ ] Exportación a PDF además de Word
 - [ ] Normativa externa completa (RD 866/2010, directivas referenciadas en ARs)
-- [ ] Tests automatizados del pipeline de generación
+- [x] Tests automatizados: 126 tests unitarios sin dependencias externas
+- [x] Configuración dinámica de modelos vía variables de entorno
+- [x] Tool calling (structured outputs) en el Identificador CR
+- [ ] Evaluación automática con RAGAS (faithfulness, answer relevancy, context precision)
+- [ ] Modelos locales con Ollama (eliminar dependencia de la API de OpenAI)

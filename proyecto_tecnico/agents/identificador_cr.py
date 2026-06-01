@@ -12,12 +12,12 @@ Responsabilidad:
 """
 
 from __future__ import annotations
-import json
 import re
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_core.messages import SystemMessage, HumanMessage
+from pydantic import BaseModel, Field
 import sys
 from pathlib import Path
 
@@ -27,11 +27,35 @@ sys.path.insert(0, str(ROOT / "backend"))   # para encontrar rag/
 
 from rag.retriever import recuperar
 from proyecto_tecnico.models import FichaCR, ARFiltrado
+from proyecto_tecnico.config import MODELO_RAZONAMIENTO, MODELO_EMBEDDING
+
+
+# ── Esquema de salida estructurada ────────────────────────────────────────────
+
+class _CRIdentificado(BaseModel):
+    codigo: str = Field(description="Código de reforma, ej. '2.1'")
+    justificacion: str = Field(description="Motivo por el que este CR aplica a la reforma descrita")
+
+class _CRAdicional(BaseModel):
+    codigo: str = Field(description="Código de reforma adicional detectado")
+    fuente: str = Field(description="Campo informacion_adicional donde se menciona")
+    justificacion: str = Field(description="Motivo por el que este CR adicional aplica")
+
+class _RespuestaCRs(BaseModel):
+    crs_identificados: list[_CRIdentificado] = Field(
+        default_factory=list,
+        description="CRs que aplican directamente a la reforma descrita",
+    )
+    crs_adicionales_detectados: list[_CRAdicional] = Field(
+        default_factory=list,
+        description="CRs adicionales detectados vía informacion_adicional de las fichas",
+    )
 
 _CHROMA_DIR = ROOT / "scripts_index" / "chroma_db"
 
-# Modelo: gpt-4o — tarea crítica de razonamiento
-_llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+# Modelo configurable vía MODELO_RAZONAMIENTO en .env
+_llm = ChatOpenAI(model=MODELO_RAZONAMIENTO, temperature=0.0)
+_llm_structured = _llm.with_structured_output(_RespuestaCRs)
 
 DESCRIPCIONES_NIVEL = {
     "(1)": "Se aplica en su última actualización en vigor a fecha de tramitación",
@@ -46,29 +70,11 @@ Se te proporcionará:
 1. La descripción de la reforma realizada por el ingeniero.
 2. Los documentos de las fichas CR recuperadas del sistema RAG.
 
-Debes responder ÚNICAMENTE con un JSON válido con esta estructura:
-{
-  "crs_identificados": [
-    {
-      "codigo": "2.1",
-      "justificacion": "La reforma descrita corresponde a una modificación del motor..."
-    }
-  ],
-  "crs_adicionales_detectados": [
-    {
-      "codigo": "4.4",
-      "fuente": "El campo informacion_adicional del CR 2.1 indica que implica validación del CR 4.4",
-      "justificacion": "..."
-    }
-  ]
-}
-
 REGLAS:
 - Solo incluye CRs que estén claramente justificados por la descripción de la reforma.
 - Revisa SIEMPRE el campo informacion_adicional de cada ficha CR para detectar CRs adicionales implícitos.
-- Si la reforma no corresponde a ningún CR recuperado, indica crs_identificados vacío.
-- No inventes CRs. Solo usa los que aparezcan en los documentos proporcionados.
-- No añadas texto fuera del JSON."""
+- Si la reforma no corresponde a ningún CR recuperado, deja crs_identificados vacío.
+- No inventes CRs. Solo usa los que aparezcan en los documentos proporcionados."""
 
 
 async def identificar_crs(
@@ -111,24 +117,17 @@ FICHAS CR RECUPERADAS DEL SISTEMA RAG:
 
 Analiza la descripción y los documentos. Identifica todos los CRs aplicables."""
 
-    respuesta = await _llm.ainvoke([
+    datos: _RespuestaCRs = await _llm_structured.ainvoke([
         SystemMessage(content=SYSTEM_PROMPT),
         HumanMessage(content=prompt_usuario),
     ])
 
-    # ── 3. Parsear la respuesta JSON ───────────────────────────────────────────
-    try:
-        datos = json.loads(respuesta.content)
-    except json.JSONDecodeError:
-        # Intentar extraer JSON si el modelo añadió texto extra
-        match = re.search(r'\{.*\}', respuesta.content, re.DOTALL)
-        datos = json.loads(match.group()) if match else {"crs_identificados": [], "crs_adicionales_detectados": []}
-
+    # ── 3. Extraer códigos de la respuesta estructurada ───────────────────────
     codigos_finales = set()
-    for item in datos.get("crs_identificados", []):
-        codigos_finales.add(item["codigo"])
-    for item in datos.get("crs_adicionales_detectados", []):
-        codigos_finales.add(item["codigo"])
+    for item in datos.crs_identificados:
+        codigos_finales.add(item.codigo)
+    for item in datos.crs_adicionales_detectados:
+        codigos_finales.add(item.codigo)
     # Añadir siempre los indicados por el ingeniero
     for cr in crs_indicados:
         codigos_finales.add(cr)
@@ -150,7 +149,7 @@ def _recuperar_ficha_por_codigo(cr: str) -> Document | None:
     """Recupera una ficha CR por código exacto usando metadatos (sin búsqueda semántica)."""
     col = Chroma(
         collection_name="fichas_cr",
-        embedding_function=OpenAIEmbeddings(model="text-embedding-3-small"),
+        embedding_function=OpenAIEmbeddings(model=MODELO_EMBEDDING),
         persist_directory=str(_CHROMA_DIR),
     )
     resultado = col.get(where={"cr": cr}, include=["documents", "metadatas"])

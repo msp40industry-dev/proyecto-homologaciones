@@ -15,8 +15,9 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from proyecto_tecnico.models import (
     EntradaProyecto, FichaCR, SeccionGenerada, EstadoRevision
 )
+from proyecto_tecnico.config import MODELO_REDACCION
 
-_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
+_llm = ChatOpenAI(model=MODELO_REDACCION, temperature=0.0)
 
 _SYSTEM = """Eres un redactor técnico especializado en proyectos de reforma de vehículos en España.
 Redactas el Pliego de Condiciones en lenguaje formal de ingeniería, en español.
