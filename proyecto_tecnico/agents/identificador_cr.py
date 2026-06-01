@@ -174,7 +174,10 @@ Analiza la descripción y los documentos. Identifica todos los CRs aplicables.""
         ars_grafo=resultado_grafo.ars_por_cr if resultado_grafo else {},
     )
 
-    return fichas, ars
+    # ── 6. Construir contexto KAG para los agentes redactores ─────────────────
+    contexto_kag = _construir_contexto_kag(resultado_grafo)
+
+    return fichas, ars, contexto_kag
 
 
 # ─────────────────────────────────────────────
@@ -240,6 +243,48 @@ def _construir_fichas_cr(codigos: set[str], docs: list) -> list[FichaCR]:
         fichas.append(ficha)
 
     return fichas
+
+
+def _construir_contexto_kag(resultado_grafo) -> str:
+    """Serializa el resultado del grafo KAG como texto para los prompts de los redactores."""
+    if resultado_grafo is None:
+        return ""
+
+    partes: list[str] = []
+
+    if resultado_grafo.crs_implicadas:
+        lineas = ["CRs adicionales implicadas estructuralmente:"]
+        for cr in resultado_grafo.crs_implicadas:
+            linea = f"  - CR {cr.codigo} (implicada por CR {cr.cr_origen})"
+            if cr.condicion:
+                linea += f"\n    Condición: {cr.condicion}"
+            if cr.fuente_literal:
+                linea += f'\n    Fuente: "{cr.fuente_literal[:200]}"'
+            lineas.append(linea)
+        partes.append("\n".join(lineas))
+
+    if resultado_grafo.incorporaciones:
+        lineas = ["Incorporaciones físicas requeridas (sin tramitar CR adicional):"]
+        for inc in resultado_grafo.incorporaciones:
+            linea = f"  - (CR {inc.cr_origen}) {inc.descripcion[:200]}"
+            if inc.condicion:
+                linea += f"\n    Condición: {inc.condicion}"
+            lineas.append(linea)
+        partes.append("\n".join(lineas))
+
+    if resultado_grafo.restricciones:
+        lineas = ["Restricciones y condiciones específicas para este vehículo:"]
+        for res in resultado_grafo.restricciones:
+            linea = f"  - (CR {res.cr_origen}) {res.descripcion[:200]}"
+            if res.condicion:
+                linea += f"\n    Condición: {res.condicion}"
+            lineas.append(linea)
+        partes.append("\n".join(lineas))
+
+    if not partes:
+        return ""
+
+    return "RELACIONES ESTRUCTURADAS DEL GRAFO KAG:\n" + "\n\n".join(partes)
 
 
 def _filtrar_ars_con_grafo(

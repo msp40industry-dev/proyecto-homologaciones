@@ -36,8 +36,9 @@ async def redactar_conclusiones(
     entrada: EntradaProyecto,
     crs: list[FichaCR],
     ars: list[ARFiltrado],
-    secciones_existentes: dict[str, SeccionGenerada],
-    secciones_a_regenerar: list[str],
+    contexto_kag: str = "",
+    secciones_existentes: dict[str, SeccionGenerada] = {},
+    secciones_a_regenerar: list[str] = [],
 ) -> dict[str, SeccionGenerada]:
 
     if secciones_a_regenerar and "conclusiones" not in secciones_a_regenerar:
@@ -65,7 +66,7 @@ Versión anterior:
 ---
 Corrige el problema indicado."""
 
-    contexto = _construir_contexto(entrada, crs, ars)
+    contexto = _construir_contexto(entrada, crs, ars, contexto_kag)
     respuesta = await _llm.ainvoke([
         SystemMessage(content=_SYSTEM),
         HumanMessage(content=f"{instruccion}\n\nDATOS DEL PROYECTO:\n{contexto}"),
@@ -86,6 +87,7 @@ def _construir_contexto(
     entrada: EntradaProyecto,
     crs: list[FichaCR],
     ars: list[ARFiltrado],
+    contexto_kag: str = "",
 ) -> str:
     v = entrada.vehiculo
     ing = entrada.ingeniero
@@ -96,7 +98,7 @@ def _construir_contexto(
         for ar in ars
     ])
 
-    return f"""VEHÍCULO: {v.marca} {v.modelo} | Bastidor: {v.bastidor} | Categoría: {v.categoria}
+    base = f"""VEHÍCULO: {v.marca} {v.modelo} | Bastidor: {v.bastidor} | Categoría: {v.categoria}
 INGENIERO: {ing.nombre} {ing.apellidos} — Colegiado nº {ing.numero_colegiado}
 COLEGIO: {ing.colegio_profesional}
 FECHA: {entrada.fecha_proyecto or '[COMPLETAR]'}
@@ -107,3 +109,6 @@ DESCRIPCIÓN DE LA REFORMA: {entrada.descripcion_reforma}
 
 ACTOS REGLAMENTARIOS A VERIFICAR EN ITV:
 {ars_texto or '  [Ninguno]'}"""
+    if contexto_kag:
+        base += f"\n\n{contexto_kag}"
+    return base

@@ -64,8 +64,9 @@ Incluye:
 async def redactar_pliego(
     entrada: EntradaProyecto,
     crs: list[FichaCR],
-    secciones_existentes: dict[str, SeccionGenerada],
-    secciones_a_regenerar: list[str],
+    contexto_kag: str = "",
+    secciones_existentes: dict[str, SeccionGenerada] = {},
+    secciones_a_regenerar: list[str] = [],
 ) -> dict[str, SeccionGenerada]:
     ids_pliego = list(_PROMPTS.keys())
 
@@ -99,7 +100,7 @@ Versión anterior:
 ---
 Corrige el problema indicado."""
 
-        contexto = _construir_contexto(entrada, crs)
+        contexto = _construir_contexto(entrada, crs, contexto_kag)
         respuesta = await _llm.ainvoke([
             SystemMessage(content=_SYSTEM),
             HumanMessage(content=f"{instruccion}\n\nDATOS DEL PROYECTO:\n{contexto}"),
@@ -116,7 +117,7 @@ Corrige el problema indicado."""
     return resultado
 
 
-def _construir_contexto(entrada: EntradaProyecto, crs: list[FichaCR]) -> str:
+def _construir_contexto(entrada: EntradaProyecto, crs: list[FichaCR], contexto_kag: str = "") -> str:
     taller = entrada.taller
     v = entrada.vehiculo
 
@@ -133,7 +134,7 @@ def _construir_contexto(entrada: EntradaProyecto, crs: list[FichaCR]) -> str:
         for c in entrada.componentes
     ]) or "  [No especificados]"
 
-    return f"""TALLER EJECUTOR:
+    base = f"""TALLER EJECUTOR:
   {taller.nombre}
   {taller.direccion}, {taller.localidad} ({taller.provincia})
   Nº autorización: {taller.numero_autorizacion or '[COMPLETAR]'}
@@ -148,6 +149,9 @@ COMPONENTES INSTALADOS:
 
 DESCRIPCIÓN DE LA REFORMA:
 {entrada.descripcion_reforma}"""
+    if contexto_kag:
+        base += f"\n\n{contexto_kag}"
+    return base
 
 
 def _titulo(sid: str) -> str:

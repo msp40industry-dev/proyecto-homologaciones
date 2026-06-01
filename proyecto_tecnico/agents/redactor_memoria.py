@@ -85,8 +85,9 @@ async def redactar_memoria(
     entrada: EntradaProyecto,
     crs: list[FichaCR],
     ars: list[ARFiltrado],
-    secciones_existentes: dict[str, SeccionGenerada],
-    secciones_a_regenerar: list[str],
+    contexto_kag: str = "",
+    secciones_existentes: dict[str, SeccionGenerada] = {},
+    secciones_a_regenerar: list[str] = [],
 ) -> dict[str, SeccionGenerada]:
     """
     Genera o regenera las secciones de la memoria.
@@ -120,6 +121,7 @@ async def redactar_memoria(
             entrada=entrada,
             crs=crs,
             ars=ars,
+            contexto_kag=contexto_kag,
             motivo_reescritura=motivo_reescritura,
             contenido_anterior=secciones_existentes.get(sid, None),
         )
@@ -143,10 +145,11 @@ async def _generar_seccion(
     entrada: EntradaProyecto,
     crs: list[FichaCR],
     ars: list[ARFiltrado],
+    contexto_kag: str,
     motivo_reescritura: str | None,
     contenido_anterior: SeccionGenerada | None,
 ) -> str:
-    contexto = _construir_contexto(entrada, crs, ars)
+    contexto = _construir_contexto(entrada, crs, ars, contexto_kag)
 
     instruccion = _PROMPTS[sid]
     if motivo_reescritura and contenido_anterior:
@@ -172,6 +175,7 @@ def _construir_contexto(
     entrada: EntradaProyecto,
     crs: list[FichaCR],
     ars: list[ARFiltrado],
+    contexto_kag: str = "",
 ) -> str:
     v = entrada.vehiculo
     ing = entrada.ingeniero
@@ -196,7 +200,7 @@ def _construir_contexto(
         for c in entrada.componentes
     ]) or "  [No se han especificado componentes]"
 
-    return f"""VEHÍCULO:
+    base = f"""VEHÍCULO:
   Marca: {v.marca} | Modelo: {v.modelo}
   Bastidor: {v.bastidor} | Matrícula: {v.matricula}
   Fecha matriculación: {v.fecha_matriculacion} | Categoría: {v.categoria}
@@ -226,6 +230,9 @@ COMPONENTES INSTALADOS:
 
 FECHA DEL PROYECTO: {entrada.fecha_proyecto or '[COMPLETAR]'}
 Nº EXPEDIENTE: {entrada.numero_expediente or '[COMPLETAR]'}"""
+    if contexto_kag:
+        base += f"\n\n{contexto_kag}"
+    return base
 
 
 def _titulo(sid: str) -> str:

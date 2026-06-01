@@ -51,6 +51,7 @@ class EstadoProyecto(TypedDict):
     # ── Generado por el Agente 1 ───────────────
     crs_identificados: list[FichaCR]
     ars_filtrados: list[ARFiltrado]
+    contexto_kag: str  # relaciones estructuradas del grafo para los redactores
 
     # ── Secciones generadas por los agentes ────
     # Clave: id_seccion (ej. "peticionario", "antecedentes", ...)
@@ -75,7 +76,7 @@ async def nodo_identificador_cr(estado: EstadoProyecto) -> dict:
     Reutiliza la ChromaDB existente del módulo RAG.
     """
     try:
-        crs, ars = await identificar_crs(
+        crs, ars, contexto_kag = await identificar_crs(
             descripcion=estado["entrada"].descripcion_reforma,
             crs_indicados=estado["entrada"].crs_indicados,
             categoria=estado["entrada"].vehiculo.categoria,
@@ -84,6 +85,7 @@ async def nodo_identificador_cr(estado: EstadoProyecto) -> dict:
         return {
             "crs_identificados": crs,
             "ars_filtrados": ars,
+            "contexto_kag": contexto_kag,
         }
     except Exception as e:
         return {"error": f"Error en identificación de CRs: {str(e)}"}
@@ -95,6 +97,7 @@ async def nodo_redactor_memoria(estado: EstadoProyecto) -> dict:
             entrada=estado["entrada"],
             crs=estado["crs_identificados"],
             ars=estado["ars_filtrados"],
+            contexto_kag=estado.get("contexto_kag", ""),
             secciones_existentes=estado.get("secciones", {}),
             secciones_a_regenerar=estado.get("secciones_a_regenerar", []),
         )
@@ -112,6 +115,7 @@ async def nodo_redactor_pliego(estado: EstadoProyecto) -> dict:
         secciones_nuevas = await redactar_pliego(
             entrada=estado["entrada"],
             crs=estado["crs_identificados"],
+            contexto_kag=estado.get("contexto_kag", ""),
             secciones_existentes=estado.get("secciones", {}),
             secciones_a_regenerar=estado.get("secciones_a_regenerar", []),
         )
@@ -128,6 +132,7 @@ async def nodo_redactor_conclusiones(estado: EstadoProyecto) -> dict:
             entrada=estado["entrada"],
             crs=estado["crs_identificados"],
             ars=estado["ars_filtrados"],
+            contexto_kag=estado.get("contexto_kag", ""),
             secciones_existentes=estado.get("secciones", {}),
             secciones_a_regenerar=estado.get("secciones_a_regenerar", []),
         )
@@ -337,6 +342,7 @@ def crear_estado_inicial(entrada: EntradaProyecto) -> EstadoProyecto:
         entrada=entrada,
         crs_identificados=[],
         ars_filtrados=[],
+        contexto_kag="",
         secciones={},
         secciones_a_regenerar=[],
         docx_path=None,
