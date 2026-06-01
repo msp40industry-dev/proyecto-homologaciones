@@ -8,6 +8,8 @@ El prompt instruye al modelo para:
   - Usar lenguaje técnico pero claro
 """
 
+import re
+
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langchain_core.documents import Document
@@ -43,6 +45,7 @@ REGLAS:
     - Autobús o minibús (M2/M3)"
     No listes los ARs hasta que el usuario confirme la categoría.
 11. Lista TODOS los ARs del contexto donde el valor para la categoría confirmada sea (1), (2) o (3), sin excepción. Cuenta los ARs antes de responder para asegurarte de no omitir ninguno. Excluye solo los que tengan - o x.
+12. Si el contexto contiene una sección "=== RELACIONES ESTRUCTURADAS (KAG) ===", úsala para responder preguntas sobre qué CRs implica una reforma, qué incorporaciones físicas exige o qué restricciones aplican a ese vehículo. Es información estructurada extraída del Manual, más fiable que el texto libre.
 
 FORMATO DE RESPUESTA:
 - Respuesta directa a la pregunta
@@ -180,6 +183,92 @@ def _extraer_fuentes(docs: dict[str, list]) -> list[dict]:
     return fuentes
 
 
+# ─── KAG: enriquecimiento estructurado para preguntas sobre CRs concretos ─────
+
+_PATRON_CR = re.compile(r"(?:CR\s*)?(\d+\.\d+)", re.IGNORECASE)
+
+
+def _detectar_crs(pregunta: str, historial: list[dict] | None) -> list[str]:
+    """Extrae códigos CR mencionados en la pregunta y en los últimos mensajes del usuario."""
+    textos = [pregunta]
+    if historial:
+        textos.extend(m["content"] for m in historial[-4:] if m["role"] == "user")
+    candidatos = set()
+    for texto in textos:
+        for m in _PATRON_CR.finditer(texto):
+            candidatos.add(m.group(1))
+    return sorted(candidatos)
+
+
+def _contexto_kag_chatbot(crs: list[str], categoria: str | None) -> str:
+    """
+    Lee el grafo directamente para los CRs detectados y devuelve contexto estructurado.
+    No llama al LLM — apropiado para el chatbot donde no hay datos de vehículo completos.
+    """
+    try:
+        from .graph_retriever import _cargar_grafo
+        grafo = _cargar_grafo()
+    except (ImportError, FileNotFoundError):
+        return ""
+
+    # Filtrar solo los CRs que existen en el grafo
+    crs_en_grafo = [cr for cr in crs if f"CR-{cr}" in grafo["nodos"]]
+    if not crs_en_grafo:
+        return ""
+
+    partes: list[str] = []
+
+    for cr in crs_en_grafo:
+        key = f"CR-{cr}"
+        nodo = grafo["nodos"][key]
+        bloque: list[str] = [f"[KAG — CR-{cr}: {nodo.get('descripcion', '')}]"]
+
+        # Categoría bloqueada
+        if categoria and categoria in nodo.get("categorias_bloqueadas", []):
+            bloque.append(f"  REFORMA IMPOSIBLE para categoría {categoria} (marcada con X en el Manual)")
+
+        # ARs filtrados por categoría
+        if categoria:
+            ars = nodo.get("ars_por_categoria", {}).get(categoria, [])
+            if ars:
+                bloque.append(f"  ARs aplicables a {categoria}:")
+                for ar in ars:
+                    bloque.append(f"    · {ar['sistema']} {ar['referencia']}: nivel {ar['nivel']}")
+
+        # Relaciones salientes
+        edges = [e for e in grafo["edges"] if e["cr_origen"] == key]
+
+        implica = [e for e in edges if e["tipo"] == "implica_cr" and e.get("cr_destino")]
+        if implica:
+            bloque.append("  Implica también tramitar:")
+            for e in implica:
+                dest = e["cr_destino"].replace("CR-", "")
+                cond = f" (condición: {e['condicion']})" if e.get("condicion") else ""
+                bloque.append(f"    · CR {dest}{cond}")
+
+        incorporar = [e for e in edges if e["tipo"] == "obliga_incorporar"]
+        if incorporar:
+            bloque.append("  Incorporaciones físicas requeridas (sin tramitar CR adicional):")
+            for e in incorporar:
+                cond = f" (si: {e['condicion']})" if e.get("condicion") else ""
+                bloque.append(f"    · {e.get('fuente_literal', '')[:180]}{cond}")
+
+        restricciones = [e for e in edges if e["tipo"] == "restriccion"]
+        if restricciones:
+            bloque.append("  Restricciones/condiciones:")
+            for e in restricciones:
+                cond = f" — aplica si: {e['condicion']}" if e.get("condicion") else ""
+                bloque.append(f"    · {e.get('fuente_literal', '')[:180]}{cond}")
+
+        if len(bloque) > 1:
+            partes.append("\n".join(bloque))
+
+    if not partes:
+        return ""
+
+    return "=== RELACIONES ESTRUCTURADAS (KAG) ===\n" + "\n\n".join(partes)
+
+
 # ─── LLM ──────────────────────────────────────────────────────────────────────
 
 def _get_llm() -> ChatOpenAI:
@@ -259,6 +348,13 @@ def consultar(
 
     # 2. Construir contexto con categoría efectiva
     contexto = _construir_contexto(docs, categoria=categoria_efectiva)
+
+    # 2b. Enriquecer con KAG si la pregunta menciona CRs concretos
+    crs_detectados = _detectar_crs(pregunta, historial)
+    if crs_detectados:
+        kag = _contexto_kag_chatbot(crs_detectados, categoria_efectiva)
+        if kag:
+            contexto = contexto + "\n\n" + kag
 
     # 3. Construir mensajes con ventana de historial
     #    Orden: system → historial (últimos N turnos) → pregunta actual con contexto
