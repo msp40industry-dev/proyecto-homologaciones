@@ -79,6 +79,7 @@ async def nodo_identificador_cr(estado: EstadoProyecto) -> dict:
             descripcion=estado["entrada"].descripcion_reforma,
             crs_indicados=estado["entrada"].crs_indicados,
             categoria=estado["entrada"].vehiculo.categoria,
+            fecha_matriculacion=estado["entrada"].vehiculo.fecha_matriculacion,
         )
         return {
             "crs_identificados": crs,

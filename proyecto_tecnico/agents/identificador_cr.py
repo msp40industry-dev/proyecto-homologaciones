@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "backend"))   # para encontrar rag/
 
 from rag.retriever import recuperar
+from rag.graph_retriever import enriquecer_con_grafo
 from proyecto_tecnico.models import FichaCR, ARFiltrado
 from proyecto_tecnico.config import MODELO_RAZONAMIENTO, MODELO_EMBEDDING
 
@@ -81,6 +82,7 @@ async def identificar_crs(
     descripcion: str,
     crs_indicados: list[str],
     categoria: str,
+    fecha_matriculacion: str = "",
 ) -> tuple[list[FichaCR], list[ARFiltrado]]:
     """
     Punto de entrada del Agente 1.
@@ -132,11 +134,45 @@ Analiza la descripción y los documentos. Identifica todos los CRs aplicables.""
     for cr in crs_indicados:
         codigos_finales.add(cr)
 
+    # ── 3b. Enriquecer con grafo KAG ──────────────────────────────────────────
+    resultado_grafo = None
+    try:
+        resultado_grafo = await enriquecer_con_grafo(
+            crs=list(codigos_finales),
+            categoria=categoria,
+            descripcion_reforma=descripcion,
+            fecha_matriculacion=fecha_matriculacion,
+        )
+
+        # Categoría bloqueada → la reforma es legalmente imposible para este vehículo
+        if resultado_grafo.categoria_bloqueada:
+            bloqueadas = ", ".join(resultado_grafo.crs_bloqueadas)
+            raise ValueError(
+                f"La reforma es IMPOSIBLE para vehículos de categoría {categoria} "
+                f"según las fichas CR: {bloqueadas}. Consulte el Manual de Reformas DGT."
+            )
+
+        # Añadir CRs implicadas estructuralmente por el grafo
+        for cr_impl in resultado_grafo.crs_implicadas:
+            if cr_impl.codigo not in codigos_finales:
+                codigos_finales.add(cr_impl.codigo)
+                doc = _recuperar_ficha_por_codigo(cr_impl.codigo)
+                if doc:
+                    todos_docs.append(doc)
+
+    except FileNotFoundError:
+        # El grafo aún no está construido — continúa solo con RAG
+        pass
+
     # ── 4. Construir objetos FichaCR a partir de los docs recuperados ──────────
     fichas = _construir_fichas_cr(codigos_finales, todos_docs)
 
-    # ── 5. Filtrar ARs por categoría ──────────────────────────────────────────
-    ars = _filtrar_ars(fichas, categoria)
+    # ── 5. Filtrar ARs: grafo como fuente primaria, text-parsing como fallback ─
+    ars = _filtrar_ars_con_grafo(
+        fichas=fichas,
+        categoria=categoria,
+        ars_grafo=resultado_grafo.ars_por_cr if resultado_grafo else {},
+    )
 
     return fichas, ars
 
@@ -204,6 +240,34 @@ def _construir_fichas_cr(codigos: set[str], docs: list) -> list[FichaCR]:
         fichas.append(ficha)
 
     return fichas
+
+
+def _filtrar_ars_con_grafo(
+    fichas: list[FichaCR],
+    categoria: str,
+    ars_grafo: dict,
+) -> list[ARFiltrado]:
+    """Usa ARs del grafo (structured output) cuando están disponibles; text-parsing como fallback."""
+    resultado: list[ARFiltrado] = []
+    crs_con_grafo: set[str] = set()
+
+    for cr_codigo, ars_modalidad in ars_grafo.items():
+        crs_con_grafo.add(cr_codigo)
+        for ar in ars_modalidad:
+            resultado.append(ARFiltrado(
+                sistema=ar.sistema,
+                referencia=ar.referencia,
+                nivel_exigencia=ar.nivel,
+                descripcion_nivel=ar.descripcion_modalidad,
+                codigo_cr=cr_codigo,
+            ))
+
+    # Fallback por text-parsing para CRs que el grafo no cubre
+    fichas_sin_grafo = [f for f in fichas if f.codigo not in crs_con_grafo]
+    if fichas_sin_grafo:
+        resultado.extend(_filtrar_ars(fichas_sin_grafo, categoria))
+
+    return resultado
 
 
 def _filtrar_ars(fichas: list[FichaCR], categoria: str) -> list[ARFiltrado]:
