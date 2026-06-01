@@ -56,6 +56,16 @@ python scripts_enrich/enriquecimiento.py
 python scripts_index/indexado.py --reset
 ```
 
+### Construir el grafo KAG (una sola vez, o al actualizar el Manual)
+
+```bash
+python scripts_graph/build_graph.py              # procesa las 76 fichas
+python scripts_graph/build_graph.py --cr 2.1 5.1 # solo estas CRs (debug)
+python scripts_graph/build_graph.py --dry-run    # sin llamadas al LLM
+```
+
+`graph.json` **sí va a git** (a diferencia de `chroma_db/`). Cada nodo incluye `revision_fuente` para actualizaciones incrementales cuando salga una nueva versión del Manual.
+
 ---
 
 ## Architecture
@@ -89,6 +99,12 @@ ensamblador
 | `redactor_pliego.py` | `MODELO_REDACCION` | Secciones 3.1, 3.2, 3.3, 3.4. |
 | `redactor_conclusiones.py` | `MODELO_REDACCION` | Sección 8 con declaración de viabilidad, CRs, ARs para ITV y bloque de firma. |
 | `ensamblador.py` | Node.js (`docx` npm) | Genera el `.docx` final. Escribe un script JS en `/tmp` y lo ejecuta con `subprocess`. Añade portada, TOC, tablas de CRs/ARs/ficha técnica, incrusta imágenes, muestra indicadores para PDFs/DWG. |
+
+### Grafo KAG (`scripts_graph/`)
+
+- `build_graph.py`: recorre las 76 fichas CR del JSON, extrae relaciones del campo `informacion_adicional` con LLM + `with_structured_output()`, y serializa a `graph.json`.
+- `graph.json`: grafo completo. Estructura: `nodos` (dict por `CR-X.Y`) + `edges` (lista). Cada nodo incluye `revision_fuente`, `ars_por_categoria` (dict por categoría), `via`, `categorias_aplicables`.
+- Tipos de edges: `implica_cr` | `obliga_incorporar` | `restriccion`. El campo `condicion` es texto libre que el LLM evalúa en tiempo de consulta contra los datos del vehículo.
 
 ### RAG (`backend/rag/`)
 
