@@ -9,7 +9,7 @@ Estrategia de retrieval:
 """
 
 from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from . import config
 
@@ -43,6 +43,39 @@ def _get_coleccion(nombre: str) -> Chroma:
         embedding_function=_get_embeddings(),
         persist_directory=str(config.CHROMA_DIR),
     )
+
+# ─── Expansión de query ───────────────────────────────────────────────────────
+
+_PROMPT_EXPANSION = (
+    "Eres un experto en el Manual de Reformas de Vehículos DGT (España).\n"
+    "Reformula la consulta usando exclusivamente terminología técnica oficial del Manual: "
+    "nombres de sistemas (suspensión, frenado, motor, carrocería, alumbrado...), "
+    "componentes (amortiguadores, actos reglamentarios, elementos elásticos...) "
+    "y denominaciones de grupos de reforma.\n"
+    "Devuelve SOLO los términos técnicos relevantes, sin explicaciones ni puntuación extra.\n\n"
+    "Consulta: {query}"
+)
+
+
+def _expandir_query(query: str) -> str:
+    """
+    Reformula la query del usuario con terminología DGT oficial para cerrar la brecha
+    semántica entre lenguaje coloquial y nombres técnicos del Manual.
+    Concatena la expansión a la query original para preservar ambas señales.
+    Fallback silencioso si el LLM falla.
+    """
+    try:
+        llm = ChatOpenAI(
+            api_key=config.OPENAI_API_KEY,
+            model="gpt-4o-mini",
+            temperature=0,
+            max_tokens=100,
+        )
+        expansion = llm.invoke(_PROMPT_EXPANSION.format(query=query)).content.strip()
+        return f"{query} {expansion}" if expansion else query
+    except Exception:
+        return query
+
 
 # ─── Lógica de retrieval ─────────────────────────────────────────────────────
 
@@ -98,6 +131,9 @@ def recuperar(
         ultimos = [m["content"] for m in historial if m["role"] == "user"]
         if len(ultimos) >= 2:
             query = f"{ultimos[-2]} {query}"
+
+    # Expansión semántica: reformular con terminología DGT antes del embedding
+    query = _expandir_query(query)
 
     resultados = {"fichas": [], "preambulo": [], "reglamento": []}
 
