@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 DIR = Path(__file__).parent.parent  # raíz del proyecto
-PDF_PATH    = DIR / "docs/Manual-seccion1.pdf"
+PDF_PATH    = DIR / "docs/Manual de Reformas de Vehículos Revisión 7.2.pdf"
 OUTPUT_PATH = DIR / "json/preambulo_seccion1.json"
 
 # ─── Patrones de limpieza (mismos que en parser fichas CR) ────────────────────
@@ -216,8 +216,8 @@ def construir_chunk(defn, paginas_texto):
             "apartado":          defn["apartado"],
             "titulo":            defn["titulo"],
             "paginas":           [defn["pag_inicio"], defn["pag_fin"]],
-            "fuente":            "Manual de Reformas de Vehículos — Sección I",
-            "revision_manual":   "7ª",
+            "fuente":            "Manual de Reformas de Vehículos",
+            "revision_manual":   "7ª (Revisión 7.2)",
             # Indica si este chunk debe inyectarse siempre en los chunks de fichas CR
             "inyectar_en_fichas": defn["apartado"] == "interpretacion_ars",
             # Indica si este chunk se añade condicionalmente según la query
@@ -264,10 +264,10 @@ def main():
 
     output = {
         "metadata": {
-            "fuente":          "Manual de Reformas de Vehículos — Sección I",
+            "fuente":          "Manual de Reformas de Vehículos",
             "seccion":         "Preámbulo",
             "paginas":         [3, 12],
-            "revision_manual": "7ª",
+            "revision_manual": "7ª (Revisión 7.2)",
             "total_chunks":    len(chunks),  # incluye glosario_siglas
         },
         # Texto de interpretación de ARs listo para inyectar en fichas CR

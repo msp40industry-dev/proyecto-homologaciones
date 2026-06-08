@@ -135,9 +135,9 @@ def _ars_para_categoria(nodo: dict, categoria: str) -> list[dict]:
     return nodo.get("ars_por_categoria", {}).get(categoria, [])
 
 
-def _edges_de_crs(grafo: dict, crs: list[str]) -> list[dict]:
-    """Devuelve todos los edges que salen de las CRs dadas."""
-    keys = {f"CR-{cr}" for cr in crs}
+def _edges_de_crs(grafo: dict, crs: list[str], seccion: str = "I") -> list[dict]:
+    """Devuelve todos los edges que salen de las CRs dadas (formato CR-{seccion}-{cr})."""
+    keys = {f"CR-{seccion}-{cr}" for cr in crs}
     return [e for e in grafo["edges"] if e["cr_origen"] in keys]
 
 
@@ -198,6 +198,7 @@ async def enriquecer_con_grafo(
     categoria: str,
     descripcion_reforma: str,
     fecha_matriculacion: str = "",
+    seccion: str = "I",
 ) -> ResultadoGrafo:
     """
     Dado un conjunto de CRs identificadas, traversa el grafo KAG y devuelve:
@@ -213,7 +214,7 @@ async def enriquecer_con_grafo(
         fecha_matriculacion: Fecha de primera matriculación, ej. "15/03/2018"
     """
     grafo = _cargar_grafo()
-    edges = _edges_de_crs(grafo, crs)
+    edges = _edges_de_crs(grafo, crs, seccion)
 
     # Separar edges por tipo
     edges_implica      = [e for e in edges if e["tipo"] == "implica_cr"]
@@ -242,13 +243,17 @@ async def enriquecer_con_grafo(
     aplican_restriccion = aplican[n_implica + n_incorporar:]
 
     # Construir resultado
+    def _strip_prefijo(clave: str) -> str:
+        """'CR-I-2.1' → '2.1'"""
+        partes = clave.split("-", 2)
+        return partes[2] if len(partes) == 3 else clave.replace("CR-", "")
+
     crs_implicadas: list[CRImplicada] = []
     for edge, aplica in zip(edges_implica, aplican_implica):
         if aplica and edge.get("cr_destino"):
-            codigo_destino = edge["cr_destino"].replace("CR-", "")
             crs_implicadas.append(CRImplicada(
-                codigo=codigo_destino,
-                cr_origen=edge["cr_origen"].replace("CR-", ""),
+                codigo=_strip_prefijo(edge["cr_destino"]),
+                cr_origen=_strip_prefijo(edge["cr_origen"]),
                 condicion=edge.get("condicion"),
                 fuente_literal=edge.get("fuente_literal", ""),
             ))
@@ -257,7 +262,7 @@ async def enriquecer_con_grafo(
     for edge, aplica in zip(edges_incorporar, aplican_incorporar):
         if aplica:
             incorporaciones.append(Incorporacion(
-                cr_origen=edge["cr_origen"].replace("CR-", ""),
+                cr_origen=_strip_prefijo(edge["cr_origen"]),
                 descripcion=edge.get("fuente_literal", "")[:200],
                 condicion=edge.get("condicion"),
                 sin_tramitar_cr=edge.get("sin_tramitar_cr", True),
@@ -268,7 +273,7 @@ async def enriquecer_con_grafo(
     for edge, aplica in zip(edges_restriccion, aplican_restriccion):
         if aplica:
             restricciones.append(Restriccion(
-                cr_origen=edge["cr_origen"].replace("CR-", ""),
+                cr_origen=_strip_prefijo(edge["cr_origen"]),
                 descripcion=edge.get("fuente_literal", "")[:200],
                 condicion=edge.get("condicion", ""),
                 fuente_literal=edge.get("fuente_literal", ""),
@@ -280,7 +285,7 @@ async def enriquecer_con_grafo(
     crs_bloqueadas: list[str] = []
 
     for cr in crs_todas:
-        nodo = grafo["nodos"].get(f"CR-{cr}")
+        nodo = grafo["nodos"].get(f"CR-{seccion}-{cr}")
         if nodo:
             if categoria in nodo.get("categorias_bloqueadas", []):
                 crs_bloqueadas.append(cr)

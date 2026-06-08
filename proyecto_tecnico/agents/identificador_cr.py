@@ -90,7 +90,7 @@ async def identificar_crs(
     """
 
     # ── 1. Recuperar fichas del RAG ────────────────────────────────────────────
-    resultado = recuperar(query=descripcion, categoria=categoria, historial=None)
+    resultado = recuperar(query=descripcion, categoria=categoria, historial=None, seccion="I")
     docs_por_descripcion = (
         resultado.get("fichas", []) +
         resultado.get("preambulo", []) +
@@ -191,7 +191,10 @@ def _recuperar_ficha_por_codigo(cr: str) -> Document | None:
         embedding_function=OpenAIEmbeddings(model=MODELO_EMBEDDING),
         persist_directory=str(_CHROMA_DIR),
     )
-    resultado = col.get(where={"cr": cr}, include=["documents", "metadatas"])
+    resultado = col.get(
+        where={"$and": [{"cr": cr}, {"seccion": "I"}]},
+        include=["documents", "metadatas"],
+    )
     if resultado["documents"]:
         return Document(
             page_content=resultado["documents"][0],

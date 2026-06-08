@@ -47,14 +47,16 @@ if LANGCHAIN_TRACING == "true" and not LANGCHAIN_API_KEY:
 
 # ─── Chroma ───────────────────────────────────────────────────────────────────
 
-COLECCION_FICHAS     = "fichas_cr"
-COLECCION_PREAMBULO  = "preambulo"
-COLECCION_REGLAMENTO = "reglamento_ue"
+COLECCION_FICHAS      = "fichas_cr"
+COLECCION_PREAMBULO   = "preambulo"
+COLECCION_REGLAMENTO  = "reglamento_ue"
+COLECCION_DIRECTIVAS  = "directivas_ar"
 
 # Número de chunks a recuperar por colección en cada consulta
-N_RESULTS_FICHAS     = 5
-N_RESULTS_PREAMBULO  = 2
-N_RESULTS_REGLAMENTO = 2
+N_RESULTS_FICHAS      = 5
+N_RESULTS_PREAMBULO   = 2
+N_RESULTS_REGLAMENTO  = 2
+N_RESULTS_DIRECTIVAS  = 4
 
 # Si las respuestas parecen incompletas, aumentamos el número.
 # Si el contexto es demasiado largo y el modelo se pierde, bajamos el número.

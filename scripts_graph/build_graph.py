@@ -1,14 +1,17 @@
 """
-build_graph.py — Construye el grafo KAG de relaciones entre CRs (Sección I).
+build_graph.py — Construye el grafo KAG de relaciones entre CRs (todas las secciones).
 
-Lee las 76 fichas CR del JSON parseado, extrae relaciones estructuradas del
+Lee las fichas CR de los JSON parseados, extrae relaciones estructuradas del
 campo `informacion_adicional` usando LLM + with_structured_output(), y guarda
 el resultado en scripts_graph/graph.json.
 
+Claves de nodo: CR-{seccion}-{cr}  ej. CR-I-5.1, CR-II-5.1, CR-III-5.1
+
 Uso:
-    python scripts_graph/build_graph.py                  # procesa todas las fichas
-    python scripts_graph/build_graph.py --cr 2.1 5.1    # reprocesa solo estas CRs y hace merge
-    python scripts_graph/build_graph.py --dry-run        # sin llamar al LLM
+    python scripts_graph/build_graph.py                        # procesa todas las secciones
+    python scripts_graph/build_graph.py --seccion I            # solo una sección
+    python scripts_graph/build_graph.py --cr I:2.1 I:5.1      # reprocesa CRs concretas (merge)
+    python scripts_graph/build_graph.py --dry-run              # sin llamar al LLM
 """
 
 from __future__ import annotations
@@ -17,6 +20,7 @@ import argparse
 import asyncio
 import json
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -31,8 +35,47 @@ load_dotenv(ROOT / ".env")
 
 from langchain_openai import ChatOpenAI
 
-JSON_PATH   = ROOT / "json" / "fichas_cr_seccion1_v3.json"
-OUTPUT_PATH = Path(__file__).resolve().parent / "graph.json"
+JSON_PATH_I      = ROOT / "json" / "fichas_cr_seccion1_v3.json"
+JSON_PATH_EXTRA  = ROOT / "json" / "fichas_cr_secciones_ii_iii_iv.json"
+OUTPUT_PATH      = Path(__file__).resolve().parent / "graph.json"
+NORMATIVAS_PATH  = ROOT / "json" / "normativas_ar.json"
+
+# Detecta directivas/reglamentos EU en texto libre (excluye CEPE/ONU y ECE)
+_PAT_AR_TEXTO = re.compile(
+    r'\b(?:'
+    r'\d{2,4}/\d+/C(?:EE|E)'                                # Directivas: 70/222/CEE, 97/27/CE
+    r'|R(?:eglamento)?\s*\(UE\)\s*(?:N[oº°]\s*)?\d{4}/\d+' # R(UE) 168/2013, Reglamento (UE) 2019/2144
+    r')',
+    re.IGNORECASE,
+)
+
+# Referencias que NO son directivas EU y deben excluirse del inventario
+_PAT_EXCLUIR_REF = re.compile(
+    r'CEPE/ONU|(?:\bECE\b)|^ISO\b',
+    re.IGNORECASE,
+)
+
+# Detecta un anexo al final de la referencia: "2001/85/CE (Anexo VII)"
+_PAT_ANEXO = re.compile(r'\(\s*(Anexo[^)]+)\)\s*$', re.IGNORECASE)
+
+
+def _normalizar_ref(ref: str) -> tuple[str, str | None]:
+    """
+    Devuelve (referencia_normalizada, anexo_o_None).
+
+    - Extrae el anexo si lo hay:  '2001/85/CE (Anexo VII)'  → ('2001/85/CE', 'Anexo VII')
+    - Añade la barra faltante:    '2003/97CE'               → ('2003/97/CE', None)
+    """
+    anexo: str | None = None
+    m = _PAT_ANEXO.search(ref)
+    if m:
+        anexo = m.group(1).strip()
+        ref = ref[:m.start()].strip()
+
+    # Normalizar barra faltante antes de CE/CEE: "97CE" → "97/CE"
+    ref = re.sub(r'(\d)(C(?:EE|E))\b', r'\1/\2', ref, flags=re.IGNORECASE)
+
+    return ref, anexo
 
 MODELO = os.environ.get("MODELO_RAZONAMIENTO", "gpt-4o")
 
@@ -175,6 +218,7 @@ def _nodo_desde_ficha(ficha: dict) -> dict:
     ars, bloqueadas = _ars_por_categoria(ficha.get("actos_reglamentarios", []))
     return {
         "codigo": ficha["cr"],
+        "seccion": ficha.get("seccion", "I"),
         "descripcion": ficha.get("descripcion_cr", ""),
         "via": ficha.get("via_tramitacion", ""),
         "categorias_aplicables": ficha.get("categorias_aplicables", []),
@@ -209,11 +253,13 @@ async def _extraer_relaciones(
             async with semaforo:
                 resultado: RelacionesExtraidas = await llm_con_schema.ainvoke(prompt)
 
+            seccion = ficha.get("seccion", "I")
             edges = []
             for rel in resultado.relaciones:
                 edges.append({
-                    "cr_origen": f"CR-{ficha['cr']}",
-                    "cr_destino": f"CR-{rel.cr_destino}" if rel.cr_destino else None,
+                    "cr_origen": f"CR-{seccion}-{ficha['cr']}",
+                    # Las CRs referenciadas en informacion_adicional pertenecen a la misma sección
+                    "cr_destino": f"CR-{seccion}-{rel.cr_destino}" if rel.cr_destino else None,
                     "tipo": rel.tipo,
                     "condicion": rel.condicion,
                     "sin_tramitar_cr": rel.sin_tramitar_cr,
@@ -266,24 +312,52 @@ def _merge(grafo_base: dict, nodos_nuevos: dict, edges_nuevos: list, crs_reproce
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-async def construir_grafo(crs_filtro: list[str] | None, dry_run: bool) -> None:
-    with open(JSON_PATH, encoding="utf-8") as f:
-        data = json.load(f)
+def _cargar_todas_las_fichas(seccion_filtro: str | None) -> list[dict]:
+    """Carga fichas de todos los JSONs disponibles, opcionalmente filtrando por sección."""
+    fichas: list[dict] = []
 
-    todas_las_fichas = data["fichas"]
+    with open(JSON_PATH_I, encoding="utf-8") as f:
+        data_i = json.load(f)
+    fichas.extend(data_i["fichas"])
+
+    if JSON_PATH_EXTRA.exists():
+        with open(JSON_PATH_EXTRA, encoding="utf-8") as f:
+            data_extra = json.load(f)
+        fichas.extend(data_extra["fichas"])
+
+    if seccion_filtro:
+        fichas = [f for f in fichas if f.get("seccion", "I") == seccion_filtro.upper()]
+
+    return fichas
+
+
+async def construir_grafo(
+    crs_filtro: list[str] | None,
+    seccion_filtro: str | None,
+    dry_run: bool,
+) -> None:
+    todas_las_fichas = _cargar_todas_las_fichas(seccion_filtro)
     fichas = todas_las_fichas
     modo_merge = False
 
+    # crs_filtro formato: "I:2.1" o "II:5.1"
     if crs_filtro:
-        fichas = [f for f in todas_las_fichas if f["cr"] in crs_filtro]
+        claves_filtro = set(crs_filtro)  # ej. {"I:2.1", "II:5.1"}
+        fichas = [
+            f for f in todas_las_fichas
+            if f"{f.get('seccion','I')}:{f['cr']}" in claves_filtro
+        ]
         modo_merge = OUTPUT_PATH.exists()
         print(f"Procesando {len(fichas)} ficha(s): {[f['cr'] for f in fichas]}")
         if modo_merge:
             print("  (modo merge — se actualiza el grafo existente)")
     else:
-        print(f"Procesando {len(fichas)} fichas...")
+        print(f"Procesando {len(fichas)} fichas (sección: {seccion_filtro or 'todas'})...")
 
-    nodos_nuevos = {f"CR-{f['cr']}": _nodo_desde_ficha(f) for f in fichas}
+    def _clave(f: dict) -> str:
+        return f"CR-{f.get('seccion','I')}-{f['cr']}"
+
+    nodos_nuevos = {_clave(f): _nodo_desde_ficha(f) for f in fichas}
     edges_nuevos: list[dict] = []
 
     if dry_run:
@@ -298,26 +372,27 @@ async def construir_grafo(crs_filtro: list[str] | None, dry_run: bool) -> None:
 
         for ficha, resultado in zip(fichas, resultados):
             if isinstance(resultado, Exception):
-                print(f"  [ERROR] CR-{ficha['cr']}: {resultado}")
+                print(f"  [ERROR] {_clave(ficha)}: {resultado}")
             else:
                 edges_nuevos.extend(resultado)
                 n = len(resultado)
                 if n:
-                    print(f"  CR-{ficha['cr']}: {n} relación(es) extraída(s)")
+                    print(f"  {_clave(ficha)}: {n} relación(es) extraída(s)")
 
     # Serializar (merge o grafo completo)
     if modo_merge:
         grafo_base = _cargar_grafo_existente()
-        grafo = _merge(grafo_base, nodos_nuevos, edges_nuevos, crs_filtro)
+        crs_clave = [f"{f.get('seccion','I')}:{f['cr']}" for f in fichas]
+        grafo = _merge(grafo_base, nodos_nuevos, edges_nuevos, crs_clave)
     else:
         grafo = {
-            "version": "1.0",
+            "version": "2.0",
             "generado": datetime.now().isoformat(timespec="seconds"),
             "manual": {
-                "fuente": data["metadata"]["fuente"],
-                "revision": data["metadata"]["revision_manual"],
+                "fuente": "Manual de Reformas de Vehículos — Todas las secciones",
+                "revision": "7ª (Revisión 7.2)",
             },
-            "nodos": {f"CR-{f['cr']}": _nodo_desde_ficha(f) for f in todas_las_fichas},
+            "nodos": {_clave(f): _nodo_desde_ficha(f) for f in todas_las_fichas},
             "edges": edges_nuevos,
         }
 
@@ -328,16 +403,105 @@ async def construir_grafo(crs_filtro: list[str] | None, dry_run: bool) -> None:
     print(f"\nGrafo guardado en {OUTPUT_PATH}")
     print(f"  Nodos : {len(grafo['nodos'])}")
     print(f"  Edges : {len(grafo['edges'])}")
+    # Desglose por sección
+    por_sec: dict[str, int] = {}
+    for k in grafo["nodos"]:
+        sec = k.split("-")[1] if "-" in k else "?"
+        por_sec[sec] = por_sec.get(sec, 0) + 1
+    for sec in sorted(por_sec):
+        print(f"  Sección {sec}: {por_sec[sec]} nodos")
+
+    # Exportar inventario de normativas AR siempre que se construya o actualice el grafo
+    _exportar_normativas(grafo)
+
+
+def _exportar_normativas(grafo: dict) -> None:
+    """
+    Extrae referencias normativas EU únicas del grafo y guarda json/normativas_ar.json.
+
+    Fuente 1 — tablas de ARs (nodos): estructuradas, deterministas.
+    Fuente 2 — informacion_adicional (edges): texto libre; puede contener refs
+               adicionales no presentes en las tablas.
+
+    Se excluyen: CEPE/ONU, ECE, ISO (no son directivas EU consultables en EUR-Lex).
+    Se normalizan: barra faltante ('2003/97CE' → '2003/97/CE').
+    Se separan: anexos ('2001/85/CE (Anexo VII)' → ref + metadato 'anexo').
+    """
+    # referencia_normalizada → {secciones, fuentes, anexos}
+    acumulado: dict[str, dict] = {}
+
+    def _registrar(ref_raw: str, sec: str, fuente: str) -> None:
+        if _PAT_EXCLUIR_REF.search(ref_raw):
+            return
+        ref, anexo = _normalizar_ref(ref_raw)
+        if not ref:
+            return
+        entry = acumulado.setdefault(ref, {"secciones": set(), "fuentes": set(), "anexos": set()})
+        entry["secciones"].add(sec)
+        entry["fuentes"].add(fuente)
+        if anexo:
+            entry["anexos"].add(anexo)
+
+    # 1. Tablas de ARs (nodos)
+    for _, nodo in grafo["nodos"].items():
+        sec = nodo.get("seccion", "I")
+        for ars in nodo.get("ars_por_categoria", {}).values():
+            for ar in ars:
+                ref_raw = ar.get("referencia", "").strip()
+                if ref_raw:
+                    _registrar(ref_raw, sec, "tabla_ar")
+
+    # 2. Texto libre de edges (informacion_adicional)
+    for edge in grafo["edges"]:
+        fuente_txt = edge.get("fuente_literal", "")
+        sec = edge["cr_origen"].split("-")[1] if "-" in edge["cr_origen"] else "I"
+        for m in _PAT_AR_TEXTO.finditer(fuente_txt):
+            _registrar(m.group().strip(), sec, "informacion_adicional")
+
+    todas = sorted(acumulado)
+    solo_texto = [r for r in todas if acumulado[r]["fuentes"] == {"informacion_adicional"}]
+
+    referencias = [
+        {
+            "referencia": ref,
+            "fuentes":    sorted(acumulado[ref]["fuentes"]),
+            "secciones":  sorted(acumulado[ref]["secciones"]),
+            **({"anexos": sorted(acumulado[ref]["anexos"])} if acumulado[ref]["anexos"] else {}),
+        }
+        for ref in todas
+    ]
+
+    output = {
+        "generado":       datetime.now().isoformat(timespec="seconds"),
+        "total":          len(referencias),
+        "desde_tabla_ar": sum(1 for r in todas if "tabla_ar" in acumulado[r]["fuentes"]),
+        "solo_en_texto":  len(solo_texto),
+        "referencias":    referencias,
+    }
+
+    with open(NORMATIVAS_PATH, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+
+    print(f"\nNormativas AR exportadas: {NORMATIVAS_PATH}")
+    print(f"  Total referencias únicas : {len(referencias)}")
+    print(f"  De tablas de ARs         : {output['desde_tabla_ar']}")
+    print(f"  Solo en texto libre      : {len(solo_texto)}")
+    if solo_texto:
+        print(f"  Adicionales (texto)      : {solo_texto}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Construye el grafo KAG de relaciones entre CRs")
-    parser.add_argument("--cr", nargs="+", metavar="CR", help="Reprocesar solo estas CRs y hacer merge con el grafo existente")
+    parser.add_argument("--cr", nargs="+", metavar="SEC:CR",
+                        help="Reprocesar CRs concretas (ej. I:2.1 II:5.1) y hacer merge")
+    parser.add_argument("--seccion", choices=["I", "II", "III", "IV"],
+                        help="Procesar solo una sección")
     parser.add_argument("--dry-run", action="store_true", help="Sin llamadas al LLM")
     args = parser.parse_args()
 
     asyncio.run(construir_grafo(
         crs_filtro=args.cr,
+        seccion_filtro=args.seccion,
         dry_run=args.dry_run,
     ))
 

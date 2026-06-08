@@ -123,20 +123,27 @@ class TestNecesitaReglamento:
 class TestFiltroFichas:
 
     def test_via_a_devuelve_filtro(self):
-        filtro = _filtro_fichas(categoria=None, via="A")
+        filtro = _filtro_fichas(categoria=None, via="A", seccion=None)
         assert filtro == {"via_tramitacion": "A"}
 
     def test_via_minuscula_se_convierte_a_mayuscula(self):
-        filtro = _filtro_fichas(categoria=None, via="b")
+        filtro = _filtro_fichas(categoria=None, via="b", seccion=None)
         assert filtro == {"via_tramitacion": "B"}
 
     def test_sin_via_devuelve_none(self):
-        assert _filtro_fichas(categoria=None, via=None) is None
+        assert _filtro_fichas(categoria=None, via=None, seccion=None) is None
 
     def test_solo_categoria_devuelve_none(self):
-        # La categoría no aplica como filtro de metadatos en fichas
-        assert _filtro_fichas(categoria="M1", via=None) is None
+        assert _filtro_fichas(categoria="M1", via=None, seccion=None) is None
 
     def test_categoria_y_via_usa_via(self):
-        filtro = _filtro_fichas(categoria="M1", via="C")
+        filtro = _filtro_fichas(categoria="M1", via="C", seccion=None)
         assert filtro == {"via_tramitacion": "C"}
+
+    def test_seccion_devuelve_filtro(self):
+        filtro = _filtro_fichas(categoria=None, via=None, seccion="I")
+        assert filtro == {"seccion": "I"}
+
+    def test_via_y_seccion_devuelve_and(self):
+        filtro = _filtro_fichas(categoria=None, via="A", seccion="I")
+        assert filtro == {"$and": [{"via_tramitacion": "A"}, {"seccion": "I"}]}

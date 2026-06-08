@@ -1,7 +1,7 @@
 # Sistema RAG — Reformas de Vehículos + Generador de Proyectos Técnicos
 
-> Sección I del Manual de Reformas DGT · Reglamento (UE) 2018/858
-> RAG de consulta + Generación automática de proyectos técnicos Vía A
+> Manual de Reformas DGT (Revisión 7.2 — Secciones I, II, III y IV) · Reglamento (UE) 2018/858
+> RAG de consulta (220 fichas CR) + Generación automática de proyectos técnicos Vía A
 
 ---
 
@@ -29,7 +29,12 @@ El sistema tiene dos módulos principales:
 
 ### 1.1 Chatbot RAG de consulta (`/frontend`, `/backend`)
 
-Responde preguntas sobre el Manual de Reformas DGT: qué documentación exige una reforma, qué categorías de vehículo aplican, qué Actos Reglamentarios hay que cumplir, qué vía de tramitación corresponde, etc.
+Responde preguntas sobre el Manual de Reformas DGT (las cuatro secciones): qué documentación exige una reforma, qué categorías de vehículo aplican, qué Actos Reglamentarios hay que cumplir, qué vía de tramitación corresponde, etc.
+
+- **Sección I** — Vehículos M, N, O (turismos, furgonetas, camiones, remolques) — 76 fichas
+- **Sección II** — Vehículos L, Quads y UTV (motos, ciclomotores, triciclos) — 54 fichas
+- **Sección III** — Vehículos agrícolas (tractores, maquinaria automotriz) — 45 fichas
+- **Sección IV** — Vehículos de obras y/o servicios — 45 fichas
 
 ### 1.2 Generador de Proyectos Técnicos Vía A (`/proyecto_tecnico`)
 
@@ -64,10 +69,11 @@ Genera automáticamente el proyecto técnico completo para una reforma de vehíc
 │                              │                           │
 │                          .docx                           │
 └──────────────────────────┬──────────────────────────────┘
-                           │
+                           │ filtro seccion=I
 ┌──────────────────────────▼──────────────────────────────┐
 │              ChromaDB (scripts_index/chroma_db/)         │
-│  Colección fichas_cr · 76 fichas CR Sección I            │
+│  fichas_cr · 220 fichas (Sec. I: 76 · II: 54 · III+IV: 90)│
+│  + graph.json · Grafo KAG · 220 nodos · 362 edges       │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -91,34 +97,41 @@ Genera automáticamente el proyecto técnico completo para una reforma de vehíc
 
 | Documento | Fuente | Output JSON | Chunks / Fichas |
 |---|---|---|---|
-| Fichas CR (Sección I) | Manual de Reformas DGT | `fichas_cr_seccion1.json` | 76 fichas |
-| Preámbulo (Sección I) | Manual de Reformas DGT | `preambulo_seccion1.json` | 9 chunks |
+| Fichas CR — Sección I (M, N, O) | Manual Rev. 7.2 págs. 18–212 | `fichas_cr_seccion1_v3.json` | 76 fichas |
+| Fichas CR — Secciones II, III, IV | Manual Rev. 7.2 págs. 218–828 | `fichas_cr_secciones_ii_iii_iv.json` | 144 fichas |
+| Preámbulo | Manual Rev. 7.2 págs. 3–12 | `preambulo_seccion1.json` | 9 chunks |
 | Reglamento (UE) 2018/858 | DOUE L 151, 14.6.2018 | `reglamento_ue_2018_858.json` | 8 chunks |
 
 ### 3.2 Parsers
 
-- **`scripts_parser/parser_cr_seccion1.py`** — Extrae las 76 fichas CR con `pdfplumber`. Arquitectura híbrida: `extract_tables()` para tablas de campo de aplicación y ARs, `extract_text()` para campos de texto libre.
-- **`scripts_parser/parser_preambulo.py`** — 9 chunks semánticos. El chunk `interpretacion_ars` se inyecta en el texto de embedding de cada ficha CR.
+- **`scripts_parser/parser_cr_seccion1.py`** — Extrae las 76 fichas de Sección I (M, N, O) con `pdfplumber`. Arquitectura híbrida: `extract_tables()` para tablas de campo de aplicación y ARs (12 columnas), `extract_text()` para campos de texto libre.
+- **`scripts_parser/parser_cr_secciones_ii_iii_iv.py`** — Extrae las 144 fichas de Secciones II (11 cols: Quad/L1e–L7e), III y IV (15 cols: T1–MAR). Reutiliza la misma lógica de texto; la extracción de tablas de ARs es flexible por número de columnas.
+- **`scripts_parser/parser_preambulo_updated.py`** — 9 chunks semánticos del nuevo PDF. El chunk `interpretacion_ars` se inyecta en el texto de embedding de cada ficha CR.
 - **`scripts_parser/parser_reglamento_ue.py`** — Artículos 3 y 4 + Anexo I del Reglamento (UE) 2018/858. Normaliza subíndices (M₁→M1) extraídos en líneas separadas.
 
 ### 3.3 Vías de tramitación
 
-| Vía | Condición | Documentación exigible | Fichas |
-|---|---|---|---|
-| **A** | Proyecto Técnico = SI | PT + CFO + IC + CT | 39 |
-| **B** | PT = NO, IC = SI | IC + CT | 34 |
-| **C** | Solo CT | Certificado de Taller | 2 |
-| **D** | Solo doc. adicional | Documentación específica | 1 |
+| Vía | Condición | Documentación exigible |
+|---|---|---|
+| **A** | Proyecto Técnico = SI | PT + CFO + IC + CT |
+| **B** | PT = NO, IC = SI | IC + CT |
+| **C** | Solo CT | Certificado de Taller |
+| **D** | Solo doc. adicional | Documentación específica |
 
 ### 3.4 Indexación — ChromaDB
 
 **Embeddings:** `text-embedding-3-small` (OpenAI). Mismo modelo en indexación y consulta.
 
-| Colección | Documentos | Metadatos de filtrado |
-|---|---|---|
-| `fichas_cr` | 76 | `via_tramitacion`, `categorias`, `grupo_numero`, `requiere_proyecto`, `cr` |
-| `preambulo` | 9 | `tipo`, `apartado`, `retrieval_condicional` |
-| `reglamento_ue` | 8 | `tipo`, `articulo`, `parte`, `categorias` |
+| Colección | Docs / Chunks | Cuándo se consulta | Metadatos clave |
+|---|---|---|---|
+| `fichas_cr` | 220 fichas | Siempre | `via_tramitacion`, `seccion`, `cr`, `categorias` |
+| `preambulo` | 9 chunks | Si menciona documentación / tramitación | `apartado`, `retrieval_condicional` |
+| `reglamento_ue` | 8 chunks | Si menciona categorías de vehículo | `articulo`, `categorias` |
+| `directivas_ar` | 3 442 chunks (103 normativas) | Si la query contiene una referencia AR (`71/320/CEE`, `R(UE)...`) o palabras como "directiva", "qué establece", "derogada" | `referencia`, `celex`, `derogada`, `secciones` |
+
+IDs de fichas_cr: `cr_{seccion}_{cr}` (ej. `cr_I_5_1`) para evitar colisiones entre secciones. El generador siempre filtra `seccion="I"`.
+
+Las directivas derogadas se recuperan normalmente pero el LLM está instruido para advertirlo de forma explícita antes de dar cualquier información.
 
 El texto de embedding de cada ficha CR incluye: descripción, categorías, vía, documentación, keywords del cliente e **interpretación de ARs inyectada**.
 
@@ -391,16 +404,27 @@ Los modelos tienen defaults seguros y **no es necesario definirlos** para que el
 La ChromaDB debe indexarse antes de arrancar el sistema, independientemente de si se usa Docker o entorno local.
 
 ```bash
-# Parsear los documentos fuente
-python scripts_parser/parser_cr_seccion1.py
-python scripts_parser/parser_preambulo.py
-python scripts_parser/parser_reglamento_ue.py
+# 1. Parsear fichas CR de todas las secciones
+python scripts_parser/parser_cr_seccion1.py              # Sección I — 76 fichas
+python scripts_parser/parser_cr_secciones_ii_iii_iv.py  # Secciones II, III y IV — 144 fichas
+python scripts_parser/parser_preambulo_updated.py        # Preámbulo (Rev. 7.2)
+python scripts_parser/parser_reglamento_ue.py            # Reglamento (UE) 2018/858
 
-# Enriquecer con keywords del cliente (opcional)
+# 2. Enriquecer con keywords del cliente (opcional)
 python scripts_enrich/enriquecimiento.py
+python scripts_enrich/enriquecimiento.py \
+  --fichas json/fichas_cr_secciones_ii_iii_iv.json \
+  --output json/fichas_cr_secciones_ii_iii_iv.json
 
-# Indexar en ChromaDB (crea scripts_index/chroma_db/)
+# 3. Indexar en ChromaDB — 220 fichas en total
 python scripts_index/indexado.py --reset
+
+# 4. Construir el grafo KAG — genera graph.json y json/normativas_ar.json
+python scripts_graph/build_graph.py
+
+# 5. Descargar normativas AR desde EUR-Lex e indexarlas (opcional pero recomendado)
+python scripts_parser/parser_directivas_ar.py        # descarga 103 normativas (~6 min)
+python scripts_index/indexado.py --solo directivas   # indexa 3 442 chunks en ChromaDB
 ```
 
 Verificación:
@@ -471,8 +495,11 @@ streamlit run frontend/app.py --server.port 8501
 ### 9.4 Actualización de keywords (recurrente)
 
 ```bash
-# Añadir filas en scripts_enrich/keywords_reformas.csv
+# Añadir filas en scripts_enrich/keywords_reformas.csv, luego:
 python scripts_enrich/enriquecimiento.py
+python scripts_enrich/enriquecimiento.py \
+  --fichas json/fichas_cr_secciones_ii_iii_iv.json \
+  --output json/fichas_cr_secciones_ii_iii_iv.json
 python scripts_index/indexado.py --reset
 ```
 
@@ -543,7 +570,7 @@ python -m pytest tests/test_rag_chain.py -v
 | `test_api.py` | Endpoints FastAPI con `TestClient` y mocks | 18 |
 | `test_enriquecimiento.py` | `cargar_csv` y `enriquecer` con ficheros temporales (`tmp_path`) | 16 |
 
-**Total: 126 tests · 0 llamadas reales a APIs externas**
+**Total: 128 tests · 0 llamadas reales a APIs externas**
 
 ---
 
@@ -556,31 +583,43 @@ Proyecto_homologaciones/
 ├── requirements.txt
 ├── package.json                  # Dependencia Node.js: docx
 │
-├── scripts_parser/               # Parsers de PDFs
-│   ├── parser_cr_seccion1.py
-│   ├── parser_preambulo.py
-│   └── parser_reglamento_ue.py
+├── scripts_parser/               # Parsers de PDFs y descarga de normativa EU
+│   ├── parser_cr_seccion1.py              # Sección I (M, N, O) — 76 fichas
+│   ├── parser_cr_secciones_ii_iii_iv.py   # Secciones II, III, IV — 144 fichas
+│   ├── parser_preambulo_updated.py        # Preámbulo (Rev. 7.2)
+│   ├── parser_reglamento_ue.py
+│   └── parser_directivas_ar.py            # Descarga 103 normativas desde EUR-Lex CELLAR
 │
 ├── scripts_enrich/               # Enriquecimiento de keywords
 │   ├── enriquecimiento.py
 │   └── keywords_reformas.csv
 │
 ├── scripts_index/                # Indexación ChromaDB
-│   ├── indexado.py
+│   ├── indexado.py               # Indexa fichas de todas las secciones (220 docs)
 │   ├── inspect_chroma.py
 │   └── chroma_db/                # Base vectorial (no subir a git)
 │
+├── scripts_graph/                # Grafo KAG
+│   ├── build_graph.py            # Construye graph.json (220 nodos, 4 secciones)
+│   ├── graph.json                # Grafo serializado — sí va a git
+│   ├── inspect_graph.py          # Inspección CLI: --cr [SEC:]X.Y --seccion
+│   └── visualize_graph.py        # Visualización HTML interactiva
+│
 ├── json/                         # JSONs parseados
-│   ├── fichas_cr_seccion1_v3.json
+│   ├── fichas_cr_seccion1_v3.json          # Sección I — 76 fichas
+│   ├── fichas_cr_secciones_ii_iii_iv.json  # Secciones II, III, IV — 144 fichas
 │   ├── preambulo_seccion1.json
-│   └── reglamento_ue_2018_858.json
+│   ├── reglamento_ue_2018_858.json
+│   ├── normativas_ar.json                  # 134 referencias normativas únicas del grafo
+│   └── directivas_ar.json                  # 103 normativas descargadas de EUR-Lex
 │
 ├── backend/                      # FastAPI + RAG chain
 │   ├── main.py
 │   └── rag/
 │       ├── config.py             # Variables de entorno y paths (modelos configurables)
-│       ├── chain.py              # Pipeline RAG completo
-│       └── retriever.py          # Retrieval condicional en ChromaDB
+│       ├── chain.py              # Pipeline RAG completo + KAG + directivas AR
+│       ├── retriever.py          # Retrieval condicional: fichas, preámbulo, reglamento, directivas
+│       └── graph_retriever.py    # Traversal del grafo KAG (param seccion)
 │
 ├── frontend/                     # Hub Streamlit (menú central)
 │   └── app.py
@@ -623,15 +662,31 @@ Proyecto_homologaciones/
 
 ## 13. Pendiente / Roadmap
 
+### Normativa AR
+
+- [ ] **Verificar cobertura completa de normativas**: comprobar que las 103 directivas/reglamentos descargados de EUR-Lex son accesibles y que no faltan referencias (algunas normativas antiguas pueden no estar disponibles en CELLAR en formato HTML/XHTML)
+- [ ] **Resolver normativas derogadas**: para las 8 normativas marcadas como derogadas, identificar y descargar automáticamente la normativa vigente que las sustituye (disponible en el campo `sustituida_por` de CELLAR SPARQL). Actualizar el índice con la versión vigente y mantener la derogada como referencia histórica
+
+### Generador de Proyectos Técnicos
+
 - [ ] Incrustación de PDFs en el Word (requiere conversión a imagen o adjunto como objeto OLE)
 - [ ] Soporte para reformas Vía B (Informe de Conformidad) y Vía C (Certificado de Taller)
-- [ ] Secciones II, III y IV del Manual de Reformas
 - [ ] Cálculo automático de sección 1.3.2 y 1.3.3 (características antes/después)
-- [x] Dockerización: `docker-compose` con backend y frontend
 - [ ] Exportación a PDF además de Word
-- [ ] Normativa externa completa (RD 866/2010, directivas referenciadas en ARs)
-- [x] Tests automatizados: 126 tests unitarios sin dependencias externas
-- [x] Configuración dinámica de modelos vía variables de entorno
-- [x] Tool calling (structured outputs) en el Identificador CR
+
+### Plataforma
+
 - [ ] Evaluación automática con RAGAS (faithfulness, answer relevancy, context precision)
 - [ ] Modelos locales con Ollama (eliminar dependencia de la API de OpenAI)
+- [ ] Multitenancy: namespacing por cliente en ChromaDB o migración a Qdrant
+- [ ] Autenticación y billing (Supabase o Clerk)
+
+### Completado
+
+- [x] Secciones II, III y IV del Manual de Reformas (144 fichas indexadas en ChromaDB + grafo KAG)
+- [x] Normativa AR indexada: 103 directivas/reglamentos EU descargados de EUR-Lex CELLAR (3 442 chunks)
+- [x] Grafo KAG con relaciones entre CRs: 220 nodos, 362 edges, 4 secciones
+- [x] Dockerización: `docker-compose` con backend y frontend
+- [x] Tests automatizados: 128 tests unitarios sin dependencias externas
+- [x] Configuración dinámica de modelos vía variables de entorno
+- [x] Tool calling (structured outputs) en el Identificador CR

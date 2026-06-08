@@ -1,15 +1,15 @@
 {
   "metadata": {
-    "fuente": "Manual de Reformas de Vehículos — Sección I",
+    "fuente": "Manual de Reformas de Vehículos",
     "seccion": "Preámbulo",
     "paginas": [
       3,
       12
     ],
-    "revision_manual": "7ª",
+    "revision_manual": "7ª (Revisión 7.2)",
     "total_chunks": 9
   },
-  "interpretacion_ars_texto": "4. Actos reglamentarios (en lo sucesivo AR).\nEn este apartado se incluye una tabla de los AR aplicables para cada CR, teniendo en cuenta\nsu campo de aplicación y la categoría del vehículo al que se realiza la transformación.\nLos AR se aplicarán según columna 3 o requisitos alternativos de la columna 4 del Anexo I del\nReal Decreto 2028/1986, de 6 de junio, teniendo en cuenta los siguientes criterios de\naplicación:\n(1) El AR se aplica en su última actualización en vigor, a fecha de tramitación de la reforma.\n(2) El AR se aplica en la actualización en vigor en la fecha de la primera matriculación del\nvehículo, si la homologación del mismo exige el AR incluido en la tabla. En caso que el AR\nno fuera exigido para la homologación del vehículo en la fecha de su primera matriculación,\nse deberá aplicar al menos el AR en la primera versión incluida en el Real Decreto\n2028/1986, de 6 de junio, como obligatoria (A).\n(3) El AR se aplica en la actualización previa a la entrada en vigor de los Reglamentos\nDelegados y de Ejecución que desarrollan los Reglamentos (UE) Nº 167/2013 o 168/2013.\n(-) El AR no es aplicable a la categoría del vehículo.\n(X) No es posible realizar la reforma al vehículo, coincidiendo en este caso con un NO en el\ncampo de aplicación para esa categoría.\nEn el caso de que la reforma implique cambio de categoría, los AR no afectados por la/las\nreforma/s, se aplicaran en la actualización en vigor en la fecha de la primera matriculación del\nvehículo para la nueva categoría. El IC deberá incluir justificación de los mismos, según alguna\nde las alternativas permitidas en el apartado 5.3.\nEl emisor del informe analizará únicamente los puntos del AR que se vean afectados por la\nreforma.\nEn el caso de que la transformación afecte al cumplimiento de varios CR, se aplicará siempre\nel nivel más restrictivo de los AR implicados en la misma.",
+  "interpretacion_ars_texto": "4. Actos reglamentarios (en lo sucesivo AR).\nEn este apartado se incluye una tabla de los AR aplicables para cada CR, teniendo en cuenta\nsu campo de aplicación y la categoría del vehículo al que se realiza la transformación.\nLos AR se aplicarán según columna 3 o requisitos alternativos de la columna 4 del Anexo I del\nReal Decreto 2028/1986, de 6 de junio, teniendo en cuenta los siguientes criterios de\naplicación:\n(1) El AR se aplica en su última actualización en vigor, a fecha de tramitación de la reforma.\n(2) El AR se aplica en la actualización en vigor en la fecha de la primera matriculación del\nvehículo, si la homologación del mismo exige el AR incluido en la tabla. En caso que el AR\nno fuera exigido para la homologación del vehículo en la fecha de su primera matriculación,\nse deberá aplicar al menos el AR en la primera versión incluida en el Real Decreto\n2028/1986, de 6 de junio, como obligatoria (A).\n(3) El AR se aplica en la actualización previa a la entrada en vigor de los Reglamentos\nDelegados y de Ejecución que desarrollan los Reglamentos (UE) Nº 167/2013 o 168/2013.\n(-) El AR no es aplicable a la categoría del vehículo.\n(X) No es posible realizar la reforma al vehículo, coincidiendo en este caso con un NO en el\ncampo de aplicación para esa categoría.\nEn el caso de que la reforma implique cambio de categoría, los AR no afectados por la/las\nreforma/s, se aplicaran en la actualización en vigor en la fecha de la primera matriculación del\nvehículo para la nueva categoría. El IC deberá incluir justificación de los mismos, según alguna\nde las alternativas permitidas en el apartado 5.3.\nEl emisor del informe analizará únicamente los puntos del AR que se vean afectados por la\nreforma.",
   "chunks": [
     {
       "apartado": "marco_legal",
@@ -27,8 +27,8 @@
           3,
           3
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": false,
         "keywords_activacion": []
@@ -41,7 +41,7 @@
         4,
         4
       ],
-      "texto": "ESTRUCTURA DEL MANUAL\nEste manual establece los criterios, procedimientos y requisitos que se deben cumplir para la\ntramitación de las reformas de vehículos. Para este propósito se ha dividido en cuatro\nsecciones:\nI. VEHÍCULOS DE LAS CATEGORÍAS M, N y O.\nII. VEHÍCULOS DE CATEGORÍAS L, QUADS Y UTV.\nIII. VEHÍCULOS AGRÍCOLAS.\nIV. VEHÍCULOS DE OBRAS Y/O SERVICIOS.\nDe conformidad con el anexo I del Real Decreto 866/2010, de 2 de julio, de tipificación de las\nreformas de vehículos, cada una de estas secciones está dividida en las siguientes funciones o\ngrupos:\n1. Identificación\n2. Unidad motriz\n3. Transmisión\n4. Ejes\n5. Suspensión\n6. Dirección\n7. Frenos\n8. Carrocería\n9. Dispositivos de alumbrado y señalización\n10. Uniones entre vehículos tractores y sus remolques o semirremolques\n11. Modificaciones de los datos que aparecen en la tarjeta de ITV\nCada una de estas funciones o grupos están divididos en códigos de reformas (en adelante\nCR) que identifican las modificaciones realizadas sobre un vehículo.\nPara la restitución, el nivel de cumplimiento de los actos reglamentarios que le sean de\naplicación, serán los correspondientes en la fecha de la matriculación del vehículo. Además, se\ntramitará por el/los código/s de reforma/s que se vieran implicados en la instalación, salvo\ncasos específicos, que se desarrollaran en los códigos de reformas correspondientes.\nLa variación de color de los vehículos no tendrá consideración de reforma. En el caso de\nvehículos de categoría M1, cuando se detecte en la inspección técnica periódica obligatoria, se\ndiligenciará en la tarjeta ITV si el dato ya estaba reflejado en ella, y existe una variación.\nNo todos los códigos de reformas aparecerán en las cuatro secciones puesto que no todas las\nreformas son viables en las distintas categorías de vehículos.",
+      "texto": "ESTRUCTURA DEL MANUAL\nEste manual establece los criterios, procedimientos y requisitos que se deben cumplir para la\ntramitación de las reformas de vehículos. Para este propósito se ha dividido en cuatro\nsecciones:\nI. VEHÍCULOS DE LAS CATEGORÍAS M, N y O.\nII. VEHÍCULOS DE CATEGORÍAS L, QUADS Y UTV.\nIII. VEHÍCULOS AGRÍCOLAS.\nIV. VEHÍCULOS DE OBRAS Y/O SERVICIOS.\nDe conformidad con el anexo I del Real Decreto 866/2010, de 2 de julio, de tipificación de las\nreformas de vehículos, cada una de estas secciones está dividida en las siguientes funciones o\ngrupos:\n1. Identificación\n2. Unidad motriz\n3. Transmisión\n4. Ejes\n5. Suspensión\n6. Dirección\n7. Frenos\n8. Carrocería\n9. Dispositivos de alumbrado y señalización\n10. Uniones entre vehículos tractores y sus remolques o semirremolques\n11. Modificaciones de los datos que aparecen en la tarjeta de ITV\nCada una de estas funciones o grupos están divididos en códigos de reformas (en adelante\nCR) que identifican las modificaciones realizadas sobre un vehículo.\nPara la restitución, el nivel de cumplimiento de los actos reglamentarios que le sean de\naplicación, serán los correspondientes en la fecha de la matriculación del vehículo. Además, se\ntramitará por el/los código/s de reforma/s que se vieran implicados en la instalación, salvo\ncasos específicos, que se desarrollaran en los códigos de reformas correspondientes.\nLa variación de color de los vehículos no tendrá consideración de reforma. En el caso de\nvehículos de categoría M1, cuando se detecte en la inspección técnica periódica obligatoria, se\ndiligenciará en la tarjeta ITV si el dato ya estaba reflejado en ella, y existe una variación.",
       "metadata": {
         "tipo": "preambulo",
         "apartado": "estructura_manual",
@@ -50,8 +50,8 @@
           4,
           4
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": false,
         "keywords_activacion": []
@@ -73,8 +73,8 @@
           5,
           5
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": false,
         "keywords_activacion": []
@@ -87,7 +87,7 @@
         5,
         5
       ],
-      "texto": "4. Actos reglamentarios (en lo sucesivo AR).\nEn este apartado se incluye una tabla de los AR aplicables para cada CR, teniendo en cuenta\nsu campo de aplicación y la categoría del vehículo al que se realiza la transformación.\nLos AR se aplicarán según columna 3 o requisitos alternativos de la columna 4 del Anexo I del\nReal Decreto 2028/1986, de 6 de junio, teniendo en cuenta los siguientes criterios de\naplicación:\n(1) El AR se aplica en su última actualización en vigor, a fecha de tramitación de la reforma.\n(2) El AR se aplica en la actualización en vigor en la fecha de la primera matriculación del\nvehículo, si la homologación del mismo exige el AR incluido en la tabla. En caso que el AR\nno fuera exigido para la homologación del vehículo en la fecha de su primera matriculación,\nse deberá aplicar al menos el AR en la primera versión incluida en el Real Decreto\n2028/1986, de 6 de junio, como obligatoria (A).\n(3) El AR se aplica en la actualización previa a la entrada en vigor de los Reglamentos\nDelegados y de Ejecución que desarrollan los Reglamentos (UE) Nº 167/2013 o 168/2013.\n(-) El AR no es aplicable a la categoría del vehículo.\n(X) No es posible realizar la reforma al vehículo, coincidiendo en este caso con un NO en el\ncampo de aplicación para esa categoría.\nEn el caso de que la reforma implique cambio de categoría, los AR no afectados por la/las\nreforma/s, se aplicaran en la actualización en vigor en la fecha de la primera matriculación del\nvehículo para la nueva categoría. El IC deberá incluir justificación de los mismos, según alguna\nde las alternativas permitidas en el apartado 5.3.\nEl emisor del informe analizará únicamente los puntos del AR que se vean afectados por la\nreforma.\nEn el caso de que la transformación afecte al cumplimiento de varios CR, se aplicará siempre\nel nivel más restrictivo de los AR implicados en la misma.",
+      "texto": "4. Actos reglamentarios (en lo sucesivo AR).\nEn este apartado se incluye una tabla de los AR aplicables para cada CR, teniendo en cuenta\nsu campo de aplicación y la categoría del vehículo al que se realiza la transformación.\nLos AR se aplicarán según columna 3 o requisitos alternativos de la columna 4 del Anexo I del\nReal Decreto 2028/1986, de 6 de junio, teniendo en cuenta los siguientes criterios de\naplicación:\n(1) El AR se aplica en su última actualización en vigor, a fecha de tramitación de la reforma.\n(2) El AR se aplica en la actualización en vigor en la fecha de la primera matriculación del\nvehículo, si la homologación del mismo exige el AR incluido en la tabla. En caso que el AR\nno fuera exigido para la homologación del vehículo en la fecha de su primera matriculación,\nse deberá aplicar al menos el AR en la primera versión incluida en el Real Decreto\n2028/1986, de 6 de junio, como obligatoria (A).\n(3) El AR se aplica en la actualización previa a la entrada en vigor de los Reglamentos\nDelegados y de Ejecución que desarrollan los Reglamentos (UE) Nº 167/2013 o 168/2013.\n(-) El AR no es aplicable a la categoría del vehículo.\n(X) No es posible realizar la reforma al vehículo, coincidiendo en este caso con un NO en el\ncampo de aplicación para esa categoría.\nEn el caso de que la reforma implique cambio de categoría, los AR no afectados por la/las\nreforma/s, se aplicaran en la actualización en vigor en la fecha de la primera matriculación del\nvehículo para la nueva categoría. El IC deberá incluir justificación de los mismos, según alguna\nde las alternativas permitidas en el apartado 5.3.\nEl emisor del informe analizará únicamente los puntos del AR que se vean afectados por la\nreforma.",
       "metadata": {
         "tipo": "preambulo",
         "apartado": "interpretacion_ars",
@@ -96,8 +96,8 @@
           5,
           5
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": true,
         "retrieval_condicional": false,
         "keywords_activacion": []
@@ -119,8 +119,8 @@
           6,
           8
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": true,
         "keywords_activacion": [
@@ -147,8 +147,8 @@
           8,
           10
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": true,
         "keywords_activacion": [
@@ -174,8 +174,8 @@
           10,
           11
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": true,
         "keywords_activacion": [
@@ -200,8 +200,8 @@
           11,
           12
         ],
-        "fuente": "Manual de Reformas de Vehículos — Sección I",
-        "revision_manual": "7ª",
+        "fuente": "Manual de Reformas de Vehículos",
+        "revision_manual": "7ª (Revisión 7.2)",
         "inyectar_en_fichas": false,
         "retrieval_condicional": false,
         "keywords_activacion": []

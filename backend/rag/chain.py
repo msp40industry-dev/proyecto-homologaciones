@@ -20,7 +20,8 @@ from .retriever import recuperar
 # ─── Prompt de sistema ────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = """Eres un asistente técnico especializado en reformas de vehículos en España.
-Respondes preguntas sobre el Manual de Reformas de la DGT (Sección I) y el Reglamento (UE) 2018/858.
+Respondes preguntas sobre el Manual de Reformas de la DGT (Secciones I, II, III y IV) y el Reglamento (UE) 2018/858.
+La Sección I cubre vehículos M, N y O. La Sección II cubre vehículos L (motos, quads, UTVs). Las Secciones III y IV cubren vehículos agrícolas y de obras/servicios respectivamente.
 
 REGLAS:
 1. ANTES DE RESPONDER, revisa siempre el campo "Información adicional" de cada ficha CR recuperada. Si contiene casos donde la reforma NO aplica a lo que describe el usuario, indícalo como primer punto de la respuesta y no continúes con documentación ni ARs. Ejemplos de exclusiones típicas:
@@ -36,16 +37,35 @@ REGLAS:
 7. No añadas información que no esté en el contexto, aunque la conozcas.
 8. Si el usuario describe una reforma sin mencionar el CR, identifica cuál o cuáles son los CRs más probables basándote en el contexto recuperado y explica brevemente por qué.
 9. Tienes memoria de los últimos mensajes de la conversación. Si el usuario hace referencia a algo mencionado antes (ej. "¿y si es un N1?", "¿qué pasa con esa reforma?"), usa el historial para entender a qué se refiere.
-10. Antes de listar los ARs, SIEMPRE pregunta al usuario la categoría de su vehículo si no la has confirmado aún en la conversación. Presenta las opciones en lenguaje natural:
-    "¿Qué tipo de vehículo tienes?
-    - Turismo o vehículo de hasta 8 plazas (M1)
-    - Furgoneta o vehículo de carga hasta 3,5t (N1)
-    - Camión entre 3,5t y 12t (N2)
-    - Camión de más de 12t (N3)
-    - Autobús o minibús (M2/M3)"
+10. Antes de listar los ARs, SIEMPRE pregunta al usuario la categoría exacta de su vehículo si no la has confirmado aún en la conversación. Infiere primero el tipo de vehículo del contexto y presenta las opciones correspondientes:
+    - Si el contexto sugiere un turismo, furgoneta, camión o remolque (Sección I — M, N, O):
+      "¿Cuál es la categoría de tu vehículo?
+       · M1 — Turismo o monovolumen (hasta 8 plazas)
+       · M2/M3 — Minibús o autobús
+       · N1 — Furgoneta o pick-up (hasta 3,5t)
+       · N2/N3 — Camión (entre 3,5t y 12t / más de 12t)
+       · O1–O4 — Remolque o semirremolque"
+    - Si el contexto sugiere una moto, quad, ciclomotor o UTV (Sección II — L):
+      "¿Cuál es la categoría de tu vehículo?
+       · L1e — Ciclomotor de dos ruedas
+       · L2e — Ciclomotor de tres ruedas
+       · L3e — Motocicleta de dos ruedas
+       · L4e — Motocicleta con sidecar
+       · L5e — Triciclo a motor
+       · L6e/L7e — Cuadriciclo ligero/pesado
+       · Quad / UTV"
+    - Si el contexto sugiere un tractor o maquinaria agrícola (Sección III) o de obras (Sección IV):
+      "¿Cuál es la categoría de tu vehículo?
+       · T1–T4 — Tractor agrícola (por potencia y anchura)
+       · T5.1/T5.2 — Tractor forestal
+       · MTC / MAA / MA2 / TCA — Maquinaria agrícola automotriz
+       · RA / MAR — Remolques agrícolas"
+    Si no puedes inferir el tipo de vehículo del contexto, pregunta primero: "¿Es un turismo/camión, una moto/quad, o un vehículo agrícola/de obras?" antes de mostrar las categorías.
     No listes los ARs hasta que el usuario confirme la categoría.
 11. Lista TODOS los ARs del contexto donde el valor para la categoría confirmada sea (1), (2) o (3), sin excepción. Cuenta los ARs antes de responder para asegurarte de no omitir ninguno. Excluye solo los que tengan - o x.
 12. Si el contexto contiene una sección "=== RELACIONES ESTRUCTURADAS (KAG) ===", úsala para responder preguntas sobre qué CRs implica una reforma, qué incorporaciones físicas exige o qué restricciones aplican a ese vehículo. Es información estructurada extraída del Manual, más fiable que el texto libre.
+13. Si el contexto contiene una sección "=== NORMATIVA AR (CONTENIDO LEGISLATIVO) ===", úsala para explicar el contenido de una directiva o reglamento específico: qué sistema del vehículo regula, qué requisitos técnicos establece, qué pruebas exige, etc.
+14. Cuando una normativa esté marcada como "⚠ NORMATIVA DEROGADA", indícalo siempre de forma explícita al inicio de la respuesta: "Esta directiva/reglamento ha sido derogado y ya no está en vigor. La información que sigue es histórica." Nunca cites normativa derogada sin advertir al usuario.
 
 FORMATO DE RESPUESTA:
 - Respuesta directa a la pregunta
@@ -145,6 +165,15 @@ def _construir_contexto(docs: dict[str, list], categoria: str | None = None) -> 
         for doc in docs["reglamento"]:
             partes.append(_formatear_chunk(doc, "reglamento"))
 
+    if docs.get("directivas"):
+        partes.append("=== NORMATIVA AR (CONTENIDO LEGISLATIVO) ===")
+        for doc in docs["directivas"]:
+            md = doc.metadata
+            ref    = md.get("referencia", "?")
+            titulo = md.get("titulo", "")
+            aviso  = " ⚠ NORMATIVA DEROGADA" if md.get("derogada") else ""
+            partes.append(f"[{ref}{aviso}]\n{titulo}\n{doc.page_content}")
+
     if not partes:
         return "No se han encontrado documentos relevantes."
 
@@ -200,9 +229,12 @@ def _detectar_crs(pregunta: str, historial: list[dict] | None) -> list[str]:
     return sorted(candidatos)
 
 
+_SECCIONES_GRAFO = ("I", "II", "III", "IV")
+
 def _contexto_kag_chatbot(crs: list[str], categoria: str | None) -> str:
     """
     Lee el grafo directamente para los CRs detectados y devuelve contexto estructurado.
+    Busca en todas las secciones (I, II, III, IV) — una CR puede existir en varias.
     No llama al LLM — apropiado para el chatbot donde no hay datos de vehículo completos.
     """
     try:
@@ -211,57 +243,63 @@ def _contexto_kag_chatbot(crs: list[str], categoria: str | None) -> str:
     except (ImportError, FileNotFoundError):
         return ""
 
-    # Filtrar solo los CRs que existen en el grafo
-    crs_en_grafo = [cr for cr in crs if f"CR-{cr}" in grafo["nodos"]]
-    if not crs_en_grafo:
-        return ""
+    def _strip_prefijo(clave: str) -> str:
+        partes = clave.split("-", 2)
+        return partes[2] if len(partes) == 3 else clave.replace("CR-", "")
 
     partes: list[str] = []
 
-    for cr in crs_en_grafo:
-        key = f"CR-{cr}"
-        nodo = grafo["nodos"][key]
-        bloque: list[str] = [f"[KAG — CR-{cr}: {nodo.get('descripcion', '')}]"]
+    for cr in crs:
+        # Buscar este CR en todas las secciones del grafo
+        nodos_encontrados = []
+        for sec in _SECCIONES_GRAFO:
+            key = f"CR-{sec}-{cr}"
+            if key in grafo["nodos"]:
+                nodos_encontrados.append((sec, key, grafo["nodos"][key]))
 
-        # Categoría bloqueada
-        if categoria and categoria in nodo.get("categorias_bloqueadas", []):
-            bloque.append(f"  REFORMA IMPOSIBLE para categoría {categoria} (marcada con X en el Manual)")
+        for sec, key, nodo in nodos_encontrados:
+            label = f"CR-{cr} (Sección {sec}: {nodo.get('descripcion', '')})"
+            bloque: list[str] = [f"[KAG — {label}]"]
 
-        # ARs filtrados por categoría
-        if categoria:
-            ars = nodo.get("ars_por_categoria", {}).get(categoria, [])
-            if ars:
-                bloque.append(f"  ARs aplicables a {categoria}:")
-                for ar in ars:
-                    bloque.append(f"    · {ar['sistema']} {ar['referencia']}: nivel {ar['nivel']}")
+            # Categoría bloqueada
+            if categoria and categoria in nodo.get("categorias_bloqueadas", []):
+                bloque.append(f"  REFORMA IMPOSIBLE para categoría {categoria} (marcada con X en el Manual)")
 
-        # Relaciones salientes
-        edges = [e for e in grafo["edges"] if e["cr_origen"] == key]
+            # ARs filtrados por categoría
+            if categoria:
+                ars = nodo.get("ars_por_categoria", {}).get(categoria, [])
+                if ars:
+                    bloque.append(f"  ARs aplicables a {categoria}:")
+                    for ar in ars:
+                        bloque.append(f"    · {ar['sistema']} {ar['referencia']}: nivel {ar['nivel']}")
 
-        implica = [e for e in edges if e["tipo"] == "implica_cr" and e.get("cr_destino")]
-        if implica:
-            bloque.append("  Implica también tramitar:")
-            for e in implica:
-                dest = e["cr_destino"].replace("CR-", "")
-                cond = f" (condición: {e['condicion']})" if e.get("condicion") else ""
-                bloque.append(f"    · CR {dest}{cond}")
+            # Relaciones salientes (usando clave con sección)
+            edges = [e for e in grafo["edges"] if e["cr_origen"] == key]
 
-        incorporar = [e for e in edges if e["tipo"] == "obliga_incorporar"]
-        if incorporar:
-            bloque.append("  Incorporaciones físicas requeridas (sin tramitar CR adicional):")
-            for e in incorporar:
-                cond = f" (si: {e['condicion']})" if e.get("condicion") else ""
-                bloque.append(f"    · {e.get('fuente_literal', '')[:180]}{cond}")
+            implica = [e for e in edges if e["tipo"] == "implica_cr" and e.get("cr_destino")]
+            if implica:
+                bloque.append("  Implica también tramitar:")
+                for e in implica:
+                    dest = _strip_prefijo(e["cr_destino"])
+                    cond = f" (condición: {e['condicion']})" if e.get("condicion") else ""
+                    bloque.append(f"    · CR {dest}{cond}")
 
-        restricciones = [e for e in edges if e["tipo"] == "restriccion"]
-        if restricciones:
-            bloque.append("  Restricciones/condiciones:")
-            for e in restricciones:
-                cond = f" — aplica si: {e['condicion']}" if e.get("condicion") else ""
-                bloque.append(f"    · {e.get('fuente_literal', '')[:180]}{cond}")
+            incorporar = [e for e in edges if e["tipo"] == "obliga_incorporar"]
+            if incorporar:
+                bloque.append("  Incorporaciones físicas requeridas (sin tramitar CR adicional):")
+                for e in incorporar:
+                    cond = f" (si: {e['condicion']})" if e.get("condicion") else ""
+                    bloque.append(f"    · {e.get('fuente_literal', '')[:180]}{cond}")
 
-        if len(bloque) > 1:
-            partes.append("\n".join(bloque))
+            restricciones = [e for e in edges if e["tipo"] == "restriccion"]
+            if restricciones:
+                bloque.append("  Restricciones/condiciones:")
+                for e in restricciones:
+                    cond = f" — aplica si: {e['condicion']}" if e.get("condicion") else ""
+                    bloque.append(f"    · {e.get('fuente_literal', '')[:180]}{cond}")
+
+            if len(bloque) > 1:
+                partes.append("\n".join(bloque))
 
     if not partes:
         return ""

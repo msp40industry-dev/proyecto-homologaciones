@@ -8,8 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Sistema de dos módulos para la tramitación de reformas de vehículos en España:
 
-1. **Chatbot RAG** (`/backend`, `/frontend`): responde preguntas sobre el Manual de Reformas DGT (Sección I) y el Reglamento (UE) 2018/858, usando ChromaDB como base vectorial.
-2. **Generador de Proyectos Técnicos Vía A** (`/proyecto_tecnico`): genera el proyecto técnico completo para una reforma a partir de los datos del ingeniero, con revisión humana por secciones y exportación a `.docx`.
+1. **Chatbot RAG** (`/backend`, `/frontend`): responde preguntas sobre el Manual de Reformas DGT (Secciones I–IV) y el Reglamento (UE) 2018/858, usando ChromaDB como base vectorial con 220 fichas CR.
+2. **Generador de Proyectos Técnicos Vía A** (`/proyecto_tecnico`): genera el proyecto técnico completo para una reforma a partir de los datos del ingeniero, con revisión humana por secciones y exportación a `.docx`. Solo opera con fichas de Sección I (vehículos M, N, O).
 
 ---
 
@@ -38,10 +38,21 @@ docker compose up --build
 ### Preparación inicial de la base vectorial (una sola vez)
 
 ```bash
+# Parsear fichas CR — Sección I (M, N, O) — 76 fichas
 python scripts_parser/parser_cr_seccion1.py
-python scripts_parser/parser_preambulo.py
+# Parsear fichas CR — Secciones II, III y IV (L, Agrícola, Obras) — 144 fichas
+python scripts_parser/parser_cr_secciones_ii_iii_iv.py
+# Parsear preámbulo (nuevo PDF Rev. 7.2) y reglamento UE
+python scripts_parser/parser_preambulo_updated.py
 python scripts_parser/parser_reglamento_ue.py
-python scripts_enrich/enriquecimiento.py   # opcional
+
+# Enriquecer con keywords del cliente (aplicar a ambos JSON)
+python scripts_enrich/enriquecimiento.py
+python scripts_enrich/enriquecimiento.py \
+  --fichas json/fichas_cr_secciones_ii_iii_iv.json \
+  --output json/fichas_cr_secciones_ii_iii_iv.json
+
+# Indexar en ChromaDB — 220 fichas en total
 python scripts_index/indexado.py --reset   # crea scripts_index/chroma_db/
 
 # Verificar
@@ -53,15 +64,19 @@ python scripts_index/inspect_chroma.py
 ```bash
 # Editar scripts_enrich/keywords_reformas.csv, luego:
 python scripts_enrich/enriquecimiento.py
+python scripts_enrich/enriquecimiento.py \
+  --fichas json/fichas_cr_secciones_ii_iii_iv.json \
+  --output json/fichas_cr_secciones_ii_iii_iv.json
 python scripts_index/indexado.py --reset
 ```
 
 ### Construir el grafo KAG (una sola vez, o al actualizar el Manual)
 
 ```bash
-python scripts_graph/build_graph.py              # procesa las 76 fichas
-python scripts_graph/build_graph.py --cr 2.1 5.1 # solo estas CRs (debug)
-python scripts_graph/build_graph.py --dry-run    # sin llamadas al LLM
+python scripts_graph/build_graph.py                    # procesa las 220 fichas (4 secciones)
+python scripts_graph/build_graph.py --seccion I        # solo sección I
+python scripts_graph/build_graph.py --cr I:2.1 II:5.1 # solo estas CRs (merge)
+python scripts_graph/build_graph.py --dry-run          # sin llamadas al LLM
 ```
 
 `graph.json` **sí va a git** (a diferencia de `chroma_db/`). Cada nodo incluye `revision_fuente` para actualizaciones incrementales cuando salga una nueva versión del Manual.
@@ -94,7 +109,7 @@ ensamblador
 
 | Agente | Modelo | Responsabilidad |
 |---|---|---|
-| `identificador_cr.py` | `MODELO_RAZONAMIENTO` | Recupera fichas CR de ChromaDB (exacto por metadato si el ingeniero indica CRs, semántico si no). Usa `with_structured_output()` sobre el esquema `_RespuestaCRs` (Pydantic). Filtra ARs por categoría del vehículo. |
+| `identificador_cr.py` | `MODELO_RAZONAMIENTO` | Recupera fichas CR de ChromaDB **filtrando siempre `seccion=I`** (exacto por metadato si el ingeniero indica CRs, semántico si no). Usa `with_structured_output()` sobre `_RespuestaCRs` (Pydantic). Filtra ARs por categoría del vehículo. |
 | `redactor_memoria.py` | `MODELO_REDACCION` | Secciones 0, 1.1, 1.2, 1.3.1, 1.4. Importante: 1.2 solo texto introductorio (las tablas de CRs/ARs las añade el ensamblador). 1.3.1 solo 1-2 frases (la ficha técnica la añade el ensamblador). |
 | `redactor_pliego.py` | `MODELO_REDACCION` | Secciones 3.1, 3.2, 3.3, 3.4. |
 | `redactor_conclusiones.py` | `MODELO_REDACCION` | Sección 8 con declaración de viabilidad, CRs, ARs para ITV y bloque de firma. |
@@ -102,15 +117,18 @@ ensamblador
 
 ### Grafo KAG (`scripts_graph/`)
 
-- `build_graph.py`: recorre las 76 fichas CR del JSON, extrae relaciones del campo `informacion_adicional` con LLM + `with_structured_output()`, y serializa a `graph.json`.
-- `graph.json`: grafo completo. Estructura: `nodos` (dict por `CR-X.Y`) + `edges` (lista). Cada nodo incluye `revision_fuente`, `ars_por_categoria` (dict por categoría), `via`, `categorias_aplicables`.
-- Tipos de edges: `implica_cr` | `obliga_incorporar` | `restriccion`. El campo `condicion` es texto libre que el LLM evalúa en tiempo de consulta contra los datos del vehículo.
+- `build_graph.py`: procesa las 220 fichas CR de todas las secciones, extrae relaciones del campo `informacion_adicional` con LLM + `with_structured_output()`, y serializa a `graph.json`.
+- `graph.json`: grafo completo. Estructura: `nodos` (dict con clave `CR-{seccion}-{cr}`, ej. `CR-I-5.1`) + `edges` (lista). Cada nodo incluye `seccion`, `revision_fuente`, `ars_por_categoria`, `via`, `categorias_aplicables`.
+- Tipos de edges: `implica_cr` | `obliga_incorporar` | `restriccion`. El campo `condicion` es texto libre evaluado por LLM en tiempo de consulta.
+- `graph_retriever.py`: usa `enriquecer_con_grafo(crs, categoria, ..., seccion="I")`. El parámetro `seccion` determina qué nodos se consultan.
+- Scripts de utilidad: `inspect_graph.py --cr [SEC:]X.Y`, `visualize_graph.py --seccion II`.
 
 ### RAG (`backend/rag/`)
 
-- `chain.py`: pipeline RAG completo. Temperatura 0.0 (dominio técnico-legal).
-- `retriever.py`: recuperación condicional en ChromaDB. Decide si incluir chunks del preámbulo o del reglamento UE según la pregunta.
-- ChromaDB en `scripts_index/chroma_db/`. Tres colecciones: `fichas_cr` (76 docs), `preambulo` (9 docs), `reglamento_ue` (8 docs).
+- `chain.py`: pipeline RAG completo. Temperatura 0.0 (dominio técnico-legal). Inyecta contexto KAG del grafo cuando detecta CRs en la pregunta (busca en todas las secciones).
+- `retriever.py`: recuperación condicional en ChromaDB. Parámetro `seccion` para filtrar por sección (el chatbot no lo usa; el generador pasa `seccion="I"`).
+- ChromaDB en `scripts_index/chroma_db/`. Tres colecciones: `fichas_cr` (220 docs — 76 Sec. I + 54 Sec. II + 45 Sec. III + 45 Sec. IV), `preambulo` (9 docs), `reglamento_ue` (8 docs).
+- Los IDs de ChromaDB tienen formato `cr_{seccion}_{cr}` (ej. `cr_I_5_1`, `cr_II_5_1`) para evitar colisiones entre secciones.
 
 ### Modelos Pydantic (`proyecto_tecnico/models.py`)
 
@@ -135,7 +153,7 @@ Toda la configuración de modelos vive en variables de entorno (`.env`), sin toc
 
 ## Tests
 
-126 tests unitarios en `tests/`. **Ninguno hace llamadas reales a OpenAI ni ChromaDB** — todo está mockeado.
+128 tests unitarios en `tests/`. **Ninguno hace llamadas reales a OpenAI ni ChromaDB** — todo está mockeado.
 
 `conftest.py` inyecta `OPENAI_API_KEY=sk-test-placeholder` para que `config.py` no lance `EnvironmentError` al importarse.
 
@@ -143,7 +161,7 @@ Toda la configuración de modelos vive en variables de entorno (`.env`), sin toc
 |---|---|
 | `test_models.py` | Validación Pydantic de todos los modelos |
 | `test_rag_chain.py` | Helpers de la cadena RAG |
-| `test_rag_retriever.py` | Lógica del retriever condicional |
+| `test_rag_retriever.py` | Lógica del retriever condicional (incluye tests de filtro `seccion`) |
 | `test_identificador_cr.py` | Helpers del identificador: deduplicación, extracción de campos |
 | `test_ensamblador.py` | `_construir_payload`: estructura del JSON al script Node.js |
 | `test_api.py` | Endpoints FastAPI con `TestClient` |
@@ -154,6 +172,8 @@ Toda la configuración de modelos vive en variables de entorno (`.env`), sin toc
 ## Key constraints
 
 - El frontend del generador (`proyecto_tecnico_app.py`) llama al grafo **directamente** (sin HTTP), no a través del backend FastAPI. El backend FastAPI existe para integraciones externas.
+- El **generador solo opera con Sección I** (M, N, O). `identificador_cr.py` filtra `seccion="I"` tanto en búsqueda semántica como en recuperación exacta. No modificar este filtro.
 - La ChromaDB **no se incluye en git** (`scripts_index/chroma_db/`). Hay que indexar antes de arrancar.
 - El ensamblador requiere **Node.js 20 LTS** instalado en el sistema (`npm install` instala `docx`).
 - Las secciones 1.3.2, 1.3.3, 2, 4, 5, 6 y 7 las completa el ingeniero manualmente o subiendo ficheros; el sistema inserta `[COMPLETAR POR EL INGENIERO]` en rojo si quedan vacías.
+- El PDF fuente es `docs/Manual de Reformas de Vehículos Revisión 7.2.pdf` (828 páginas, todas las secciones).

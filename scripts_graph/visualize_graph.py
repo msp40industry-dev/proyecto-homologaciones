@@ -2,9 +2,11 @@
 visualize_graph.py — Genera un HTML interactivo del grafo KAG.
 
 Uso:
-    python scripts_graph/visualize_graph.py                  # grafo completo
-    python scripts_graph/visualize_graph.py --cr 5.1 2.1    # solo estas CRs y sus vecinos
+    python scripts_graph/visualize_graph.py                    # grafo completo
+    python scripts_graph/visualize_graph.py --cr I:5.1 I:2.1  # CRs concretas y sus vecinos
+    python scripts_graph/visualize_graph.py --cr 5.1          # CR 5.1 en todas las secciones
     python scripts_graph/visualize_graph.py --tipo implica_cr  # filtrar por tipo de edge
+    python scripts_graph/visualize_graph.py --seccion II       # solo sección II
 
 El HTML resultante se abre automáticamente en el navegador.
 
@@ -53,7 +55,28 @@ def cargar() -> dict:
         return json.load(f)
 
 
-def tooltip(codigo: str, nodo: dict) -> str:
+SECCIONES = ("I", "II", "III", "IV")
+
+
+def _resolver_keys_filtro(crs_arg: list[str], nodos: dict) -> set[str]:
+    """Acepta 'I:2.1' o '2.1' (todas las secciones) y devuelve keys del grafo."""
+    keys: set[str] = set()
+    for cr in crs_arg:
+        if ":" in cr:
+            sec, codigo = cr.split(":", 1)
+            k = f"CR-{sec.upper()}-{codigo}"
+            if k in nodos:
+                keys.add(k)
+        else:
+            for sec in SECCIONES:
+                k = f"CR-{sec}-{cr}"
+                if k in nodos:
+                    keys.add(k)
+    return keys
+
+
+def tooltip(key: str, nodo: dict) -> str:
+    sec   = nodo.get("seccion", "?")
     via   = nodo.get("via", "?")
     cats  = ", ".join(nodo.get("categorias_aplicables", []))
     desc  = nodo.get("descripcion", "")
@@ -61,7 +84,8 @@ def tooltip(codigo: str, nodo: dict) -> str:
     n_ars = sum(len(v) for v in nodo.get("ars_por_categoria", {}).values())
     pt    = "SÍ" if nodo.get("requiere_proyecto") else "NO"
     return (
-        f"<b>CR-{codigo}</b><br>"
+        f"<b>{key}</b><br>"
+        f"Sección: {sec}<br>"
         f"Vía: {via}<br>"
         f"Proyecto técnico: {pt}<br>"
         f"Categorías: {cats}<br>"
@@ -71,18 +95,28 @@ def tooltip(codigo: str, nodo: dict) -> str:
     )
 
 
-def construir_red(grafo: dict, crs_filtro: list[str] | None, tipo_filtro: str | None) -> nx.DiGraph:
+def construir_red(
+    grafo: dict,
+    crs_filtro: list[str] | None,
+    tipo_filtro: str | None,
+    seccion_filtro: str | None,
+) -> nx.DiGraph:
     G = nx.DiGraph()
 
-    # Añadir todos los nodos (o solo los del filtro + sus vecinos)
     nodos = grafo["nodos"]
     edges = grafo["edges"]
+
+    # Filtrar por sección
+    if seccion_filtro:
+        sec = seccion_filtro.upper()
+        nodos = {k: v for k, v in nodos.items() if k.startswith(f"CR-{sec}-")}
+        edges = [e for e in edges if e["cr_origen"].startswith(f"CR-{sec}-")]
 
     if tipo_filtro:
         edges = [e for e in edges if e["tipo"] == tipo_filtro]
 
     if crs_filtro:
-        keys = {f"CR-{cr}" for cr in crs_filtro}
+        keys = _resolver_keys_filtro(crs_filtro, nodos)
         # Incluir vecinos directos
         for e in edges:
             if e["cr_origen"] in keys or (e.get("cr_destino") and e["cr_destino"] in keys):
@@ -97,11 +131,12 @@ def construir_red(grafo: dict, crs_filtro: list[str] | None, tipo_filtro: str | 
 
     for key, nodo in nodos.items():
         codigo = nodo["codigo"]
+        sec    = nodo.get("seccion", "?")
         via    = nodo.get("via", "?")
         G.add_node(
             key,
-            label=f"CR-{codigo}",
-            title=tooltip(codigo, nodo),
+            label=f"CR-{sec}-{codigo}",
+            title=tooltip(key, nodo),
             color=COLOR_VIA.get(via, "#bdc3c7"),
             size=20,
         )
@@ -182,12 +217,13 @@ def generar_html(G: nx.DiGraph) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Visualización interactiva del grafo KAG")
-    parser.add_argument("--cr",   nargs="+", metavar="X.Y", help="Mostrar solo estas CRs y sus vecinos")
-    parser.add_argument("--tipo", metavar="TIPO",           help="Filtrar edges: implica_cr | obliga_incorporar | restriccion")
+    parser.add_argument("--cr",      nargs="+", metavar="[SEC:]X.Y", help="CRs a mostrar (ej. I:5.1 o 5.1 para todas las secciones)")
+    parser.add_argument("--tipo",    metavar="TIPO",  help="Filtrar edges: implica_cr | obliga_incorporar | restriccion")
+    parser.add_argument("--seccion", metavar="SEC",   help="Mostrar solo una sección (I|II|III|IV)")
     args = parser.parse_args()
 
     grafo = cargar()
-    G = construir_red(grafo, args.cr, args.tipo)
+    G = construir_red(grafo, args.cr, args.tipo, args.seccion)
 
     print(f"Nodos en la visualización : {G.number_of_nodes()}")
     print(f"Edges en la visualización : {G.number_of_edges()}")

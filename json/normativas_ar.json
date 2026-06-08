@@ -1,0 +1,1323 @@
+{
+  "generado": "2026-06-05T11:00:32",
+  "total": 134,
+  "desde_tabla_ar": 129,
+  "solo_en_texto": 5,
+  "referencias": [
+    {
+      "referencia": "2000/25/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "2000/40/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "2000/7/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "2001/56/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "2001/85/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ],
+      "anexos": [
+        "Anexo VII"
+      ]
+    },
+    {
+      "referencia": "2002/24/CE",
+      "fuentes": [
+        "informacion_adicional"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "2003/102/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "2003/97/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "2005/30/CE",
+      "fuentes": [
+        "informacion_adicional"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "2005/66/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "2005/67/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "2007/46/CE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "2010/52/UE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "2822/1998",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ],
+      "anexos": [
+        "Anexo VI"
+      ]
+    },
+    {
+      "referencia": "70/157/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/220/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/221/CEE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/221/CEE (I)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/221/CEE(I)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/222/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "70/222/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/311/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "70/387/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "71/320/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "72/245/CEE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "72/306/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "74/151/CEE (I)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/151/CEE (II)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/151/CEE (III)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/151/CEE II",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/297/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "74/346/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/347/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/408/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "74/483/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "74/60/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "74/61/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "75/321/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "75/322/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "75/443/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "76/114/CEE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "76/115/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "76/432/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "76/756/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "76/757/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "76/758/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "76/759/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "76/760/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "76/761/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "76/762/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "76/763/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/311/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/389/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "77/536/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/536/CEE; 79/622/CEE (*)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/538/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/539/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/540/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/541/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "77/649/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "78/316/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "78/317/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "78/318/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "78/549/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "78/764/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "78/932/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "78/933/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "79/532/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "79/622/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "80/1269/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "80/1269/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "80/720/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "86/415/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "87/402/CEE; 86/298/CEE (**)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "88/77/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE (II)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE (III)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE (IV)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE (IV) 94/20/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE (V)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE (VI)",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE III",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/173/CEE IV",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "IV"
+      ]
+    },
+    {
+      "referencia": "89/297 CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "89/297/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "91/226/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "92/114/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "92/21/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "92/22/CEE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "92/23/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "92/24/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "92/6/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "92/61/CEE",
+      "fuentes": [
+        "informacion_adicional"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/14/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/29/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/30/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/31/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/32/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/33/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/34/CEE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/92/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/93/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "93/94/CEE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "94/20/CE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "95/1/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "95/28/CE",
+      "fuentes": [
+        "informacion_adicional",
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "96/20/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "96/27/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "96/79/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "97/24/CE",
+      "fuentes": [
+        "informacion_adicional"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capitulo 1",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capitulo 10",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 10",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 11",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 12",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 3",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 4",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 5",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 6",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 7",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 8",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/24/CE Capítulo 9",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "97/27/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I",
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "97/68/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "98/77/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "98/91/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "Anexo VII 94/20/CE",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "R(UE) 1322/2014",
+      "fuentes": [
+        "informacion_adicional"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "R(UE) 1322/2014 Anexo XIX",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "III",
+        "IV"
+      ]
+    },
+    {
+      "referencia": "R(UE) 3/2014 Anexo IV",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "II"
+      ]
+    },
+    {
+      "referencia": "Reglamento (CE) Nº 595/2009",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "Reglamento (CE) Nº 715/2007",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    },
+    {
+      "referencia": "Reglamento (CE) Nº 79/2009",
+      "fuentes": [
+        "tabla_ar"
+      ],
+      "secciones": [
+        "I"
+      ]
+    }
+  ]
+}

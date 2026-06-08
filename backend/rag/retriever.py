@@ -8,6 +8,8 @@ Estrategia de retrieval:
   4. Aplica filtros de metadatos opcionales (categoría, vía)
 """
 
+import re
+
 from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
@@ -27,7 +29,20 @@ KEYWORDS_REGLAMENTO = [
     "camión", "remolque", "todoterreno", "4x4"
 ]
 
-# Añadir palabras aquí si vemos que las preguntas no recuperan el preámbulo o el reglamento.
+KEYWORDS_DIRECTIVAS = [
+    "directiva", "qué establece", "qué dice", "qué regula",
+    "contenido del ar", "normativa de", "/cee", "/ce ",
+    "reglamento ce ", "reglamento ue ", "texto del reglamento",
+    "cumplimiento de", "requisitos del", "está en vigor", "derogad",
+]
+
+# Detecta referencias normativas EU en el texto de la query
+_PAT_REF_AR = re.compile(
+    r'\b\d{2,4}/\d+/C(?:EE|E)\b'
+    r'|R\s*\(UE\)\s*\d+/\d{4}'
+    r'|Reglamento\s+\(C[EE]\)\s+N[oº°]?\s*\d+/\d{4}',
+    re.IGNORECASE,
+)
 
 # ─── Inicialización de colecciones ───────────────────────────────────────────
 
@@ -97,9 +112,29 @@ def _necesita_reglamento(query: str) -> bool:
     return any(kw in query_lower for kw in KEYWORDS_REGLAMENTO)
 
 
-def _filtro_fichas(categoria: str | None, via: str | None) -> dict | None:
+def _necesita_directivas(query: str) -> bool:
+    """Activa retrieval en directivas_ar si la query menciona normativa específica."""
+    if _PAT_REF_AR.search(query):
+        return True
+    q = query.lower()
+    return any(kw in q for kw in KEYWORDS_DIRECTIVAS)
+
+
+def _refs_ar_en_query(query: str) -> list[str]:
+    """Extrae referencias normativas EU detectadas en el texto de la query."""
+    return [m.group().strip() for m in _PAT_REF_AR.finditer(query)]
+
+
+def _filtro_fichas(categoria: str | None, via: str | None, seccion: str | None) -> dict | None:
+    condiciones = []
     if via:
-        return {"via_tramitacion": via.upper()}
+        condiciones.append({"via_tramitacion": via.upper()})
+    if seccion:
+        condiciones.append({"seccion": seccion.upper()})
+    if len(condiciones) == 1:
+        return condiciones[0]
+    if len(condiciones) > 1:
+        return {"$and": condiciones}
     return None
 
 
@@ -108,6 +143,7 @@ def recuperar(
     categoria: str | None = None,
     via: str | None = None,
     historial: list[dict] | None = None,
+    seccion: str | None = None,
 ) -> dict[str, list]:
     """
     Punto de entrada principal del retriever.
@@ -135,11 +171,11 @@ def recuperar(
     # Expansión semántica: reformular con terminología DGT antes del embedding
     query = _expandir_query(query)
 
-    resultados = {"fichas": [], "preambulo": [], "reglamento": []}
+    resultados = {"fichas": [], "preambulo": [], "reglamento": [], "directivas": []}
 
     # 1. Fichas CR — siempre
     col_fichas = _get_coleccion(config.COLECCION_FICHAS)
-    filtro = _filtro_fichas(categoria, via)
+    filtro = _filtro_fichas(categoria, via, seccion)
 
     kwargs = {"k": config.N_RESULTS_FICHAS}
     if filtro:
@@ -166,5 +202,25 @@ def recuperar(
             query,
             k=config.N_RESULTS_REGLAMENTO,
         )
+
+    # 4. Directivas AR — cuando la query menciona una normativa específica
+    if _necesita_directivas(query):
+        col_dir = _get_coleccion(config.COLECCION_DIRECTIVAS)
+        refs = _refs_ar_en_query(query)
+        if refs:
+            # Búsqueda semántica filtrada por la referencia detectada (primera)
+            docs = col_dir.similarity_search(
+                query,
+                k=config.N_RESULTS_DIRECTIVAS,
+                filter={"referencia": refs[0]},
+            )
+            # Fallback semántico sin filtro si la referencia exacta no da resultados
+            if not docs:
+                docs = col_dir.similarity_search(query, k=config.N_RESULTS_DIRECTIVAS)
+            resultados["directivas"] = docs
+        else:
+            resultados["directivas"] = col_dir.similarity_search(
+                query, k=config.N_RESULTS_DIRECTIVAS
+            )
 
     return resultados

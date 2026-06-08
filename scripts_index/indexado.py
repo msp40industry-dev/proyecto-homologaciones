@@ -1,30 +1,23 @@
 """
-Indexado en Chroma de los tres documentos de la POC de reformas de vehículos.
+Indexado en Chroma de los documentos de reformas de vehículos.
 
 Documentos indexados:
-    - fichas_cr_seccion1.json     → colección 'fichas_cr'
-    - preambulo_seccion1.json     → colección 'preambulo'
-    - reglamento_ue_2018_858.json → colección 'reglamento_ue'
-
-Requisitos:
-    pip install chromadb openai python-dotenv
-
-    Crear fichero .env en el mismo directorio:
-        OPENAI_API_KEY=sk-...
+    - fichas_cr_seccion1_v3.json          → colección 'fichas_cr' (Sección I)
+    - fichas_cr_secciones_ii_iii_iv.json  → colección 'fichas_cr' (Secciones II, III, IV)
+    - preambulo_seccion1.json             → colección 'preambulo'
+    - reglamento_ue_2018_858.json         → colección 'reglamento_ue'
+    - directivas_ar.json                  → colección 'directivas_ar' (103 normativas EU)
 
 Uso:
-    python indexado.py                  # indexa todo desde cero
-    python indexado.py --reset          # borra colecciones y reindexea
-    python indexado.py --solo fichas    # solo una colección (fichas|preambulo|reglamento)
-    python indexado.py --test           # verifica con queries de prueba tras indexar
-
-Embeddings:
-    Modelo: text-embedding-3-small (OpenAI)
-    Dimensiones: 1536
-    Coste estimado indexado inicial (~93 docs): < 0.01 USD
+    python indexado.py                    # indexa todo desde cero
+    python indexado.py --reset            # borra colecciones y reindexea
+    python indexado.py --solo fichas      # solo una colección
+    python indexado.py --solo directivas  # solo directivas AR
+    python indexado.py --test             # verifica con queries de prueba tras indexar
 """
 
 import json
+import re
 import argparse
 from pathlib import Path
 
@@ -40,14 +33,27 @@ load_dotenv()
 DIR         = Path(__file__).parent.parent  # raíz del proyecto
 SCRIPTS_DIR = Path(__file__).parent        # scripts_index/
 
-FICHAS_PATH     = DIR / "json/fichas_cr_seccion1_v3.json"
-PREAMBULO_PATH  = DIR / "json/preambulo_seccion1.json"
-REGLAMENTO_PATH = DIR / "json/reglamento_ue_2018_858.json"
-CHROMA_DIR      = SCRIPTS_DIR / "chroma_db"
+FICHAS_PATH       = DIR / "json/fichas_cr_seccion1_v3.json"
+FICHAS_EXTRA_PATH = DIR / "json/fichas_cr_secciones_ii_iii_iv.json"
+PREAMBULO_PATH    = DIR / "json/preambulo_seccion1.json"
+REGLAMENTO_PATH   = DIR / "json/reglamento_ue_2018_858.json"
+DIRECTIVAS_PATH   = DIR / "json/directivas_ar.json"
+CHROMA_DIR        = SCRIPTS_DIR / "chroma_db"
 
-COLECCION_FICHAS     = "fichas_cr"
-COLECCION_PREAMBULO  = "preambulo"
-COLECCION_REGLAMENTO = "reglamento_ue"
+COLECCION_FICHAS      = "fichas_cr"
+COLECCION_PREAMBULO   = "preambulo"
+COLECCION_REGLAMENTO  = "reglamento_ue"
+COLECCION_DIRECTIVAS  = "directivas_ar"
+
+# Tamaño máximo de chunk en caracteres antes de partir el documento
+CHUNK_MAX_CHARS  = 2000
+CHUNK_OVERLAP    = 150
+
+# Patrón para detectar inicio de artículo en el texto legal
+_PAT_ARTICULO = re.compile(
+    r'\n((?:Art[íi]culo|ARTÍCULO|Article|ARTICLE)\s+\d+\b)',
+    re.IGNORECASE,
+)
 
 BATCH_SIZE = 50
 
@@ -131,16 +137,18 @@ def metadatos_ficha(ficha):
     Metadatos de una ficha CR para filtrado en Chroma.
     Solo tipos primitivos: str, int, float, bool.
     """
+    seccion = ficha.get("seccion", "I")
     return {
         "tipo":               "ficha_cr",
         "cr":                 ficha["cr"],
+        "seccion":            seccion,
         "grupo_numero":       ficha["grupo_numero"],
-        "categorias":         ",".join(ficha["categorias_aplicables"]),  # str para Chroma
+        "categorias":         ",".join(ficha["categorias_aplicables"]),
         "via_tramitacion":    ficha["via_tramitacion"],
         "requiere_proyecto":  ficha["via_tramitacion"] == "A",
         "pagina_inicio":      ficha["paginas"][0],
-        "fuente":             "Manual de Reformas — Sección I",
-        "revision_manual":    ficha["revision"],
+        "fuente":             f"Manual de Reformas — Sección {seccion}",
+        "revision_manual":    ficha.get("revision") or "",
     }
 
 
@@ -149,13 +157,25 @@ def metadatos_ficha(ficha):
 def indexar_fichas(client, reset=False):
     print("\n── Fichas CR ──────────────────────────────────────────")
 
-    with open(FICHAS_PATH, encoding="utf-8") as f:
-        data = json.load(f)
-
     # Texto de interpretación de ARs para inyectar en cada ficha
     with open(PREAMBULO_PATH, encoding="utf-8") as f:
         preamb = json.load(f)
     texto_ars = preamb["interpretacion_ars_texto"]
+
+    # Cargar fichas de Sección I
+    with open(FICHAS_PATH, encoding="utf-8") as f:
+        data_i = json.load(f)
+    fichas = data_i["fichas"]
+
+    # Cargar fichas de Secciones II, III, IV (si el fichero existe)
+    if FICHAS_EXTRA_PATH.exists():
+        with open(FICHAS_EXTRA_PATH, encoding="utf-8") as f:
+            data_extra = json.load(f)
+        fichas = fichas + data_extra["fichas"]
+        print(f"  Sección I: {len(data_i['fichas'])} fichas | "
+              f"Secciones II-IV: {len(data_extra['fichas'])} fichas")
+    else:
+        print(f"  Sección I: {len(fichas)} fichas (secciones II-IV no disponibles)")
 
     if reset:
         try:
@@ -170,14 +190,17 @@ def indexar_fichas(client, reset=False):
         metadata={"hnsw:space": "cosine"},
     )
 
-    fichas = data["fichas"]
-    total  = len(fichas)
+    total    = len(fichas)
     añadidos = 0
 
     for i in range(0, total, BATCH_SIZE):
         lote = fichas[i:i + BATCH_SIZE]
 
-        ids       = [f"cr_{f['cr'].replace('.', '_')}" for f in lote]
+        # IDs únicos por sección para evitar colisiones (CR 1.1 existe en las 4 secciones)
+        ids = [
+            f"cr_{f.get('seccion','I')}_{f['cr'].replace('.', '_')}"
+            for f in lote
+        ]
         textos    = [texto_ficha(f, texto_ars) for f in lote]
         metadatas = [metadatos_ficha(f) for f in lote]
 
@@ -300,13 +323,159 @@ def test_queries(client):
             print(f"       {doc[:120].replace(chr(10), ' ')}...")
 
 
+# ─── Indexado de directivas AR ───────────────────────────────────────────────
+
+def _split_por_tamano(texto: str, titulo: str) -> list[str]:
+    """Parte un texto por tamaño fijo con solapamiento. Usado como fallback."""
+    chunks = []
+    inicio = 0
+    while inicio < len(texto):
+        fin = min(inicio + CHUNK_MAX_CHARS, len(texto))
+        chunks.append(f"{titulo}\n\n{texto[inicio:fin]}")
+        if fin == len(texto):
+            break
+        inicio = fin - CHUNK_OVERLAP
+    return chunks
+
+
+def _chunkar_texto(texto: str, titulo: str) -> list[str]:
+    """
+    Parte el texto de una directiva en chunks para ChromaDB.
+
+    Estrategia:
+    1. Si el texto es corto (<= CHUNK_MAX_CHARS): un solo chunk.
+    2. Si contiene artículos: partir por artículo, agrupando los pequeños.
+    3. Si no tiene artículos: tamaño fijo con solapamiento.
+
+    Paso final: cualquier chunk que siga superando CHUNK_MAX_CHARS se subdivide
+    por tamaño (un artículo largo puede superar el límite de tokens del embedding).
+    """
+    if len(texto) <= CHUNK_MAX_CHARS:
+        return [f"{titulo}\n\n{texto}"]
+
+    candidatos: list[str] = []
+
+    # Intentar split por artículos
+    partes = _PAT_ARTICULO.split(texto)
+    # split() con grupo capturador: [preámbulo, 'Artículo 1', cuerpo1, 'Artículo 2', ...]
+    if len(partes) > 3:
+        buffer = partes[0].strip()
+
+        i = 1
+        while i < len(partes) - 1:
+            header  = partes[i].strip()
+            content = partes[i + 1].strip()
+            bloque  = f"{header}\n{content}"
+
+            if len(buffer) + len(bloque) <= CHUNK_MAX_CHARS:
+                buffer = f"{buffer}\n\n{bloque}" if buffer else bloque
+            else:
+                if buffer:
+                    candidatos.append(buffer)
+                buffer = bloque
+            i += 2
+
+        if buffer:
+            candidatos.append(buffer)
+    else:
+        # Sin artículos: dividir directamente por tamaño
+        return _split_por_tamano(texto, titulo)
+
+    # Segundo paso: subdividir cualquier candidato que siga siendo demasiado largo
+    chunks: list[str] = []
+    for c in candidatos:
+        if len(c) <= CHUNK_MAX_CHARS:
+            chunks.append(f"{titulo}\n\n{c}")
+        else:
+            chunks.extend(_split_por_tamano(c, titulo))
+
+    return chunks if chunks else [f"{titulo}\n\n{texto}"]
+
+
+def indexar_directivas(client, reset=False):
+    print("\n── Directivas AR ──────────────────────────────────────")
+
+    if not DIRECTIVAS_PATH.exists():
+        print(f"  ⚠ {DIRECTIVAS_PATH} no encontrado — omitiendo.")
+        print("  Ejecuta: python scripts_parser/parser_directivas_ar.py")
+        return
+
+    with open(DIRECTIVAS_PATH, encoding="utf-8") as f:
+        data = json.load(f)
+
+    if reset:
+        try:
+            client.delete_collection(COLECCION_DIRECTIVAS)
+            print(f"  Colección '{COLECCION_DIRECTIVAS}' eliminada")
+        except Exception:
+            pass
+
+    col = client.get_or_create_collection(
+        name=COLECCION_DIRECTIVAS,
+        embedding_function=EF,
+        metadata={"hnsw:space": "cosine"},
+    )
+
+    directivas = data["directivas"]
+    total_chunks = 0
+
+    ids_lote: list[str]  = []
+    textos_lote: list[str] = []
+    metas_lote: list[dict] = []
+
+    def _flush():
+        nonlocal total_chunks
+        if ids_lote:
+            col.upsert(ids=ids_lote, documents=textos_lote, metadatas=metas_lote)
+            total_chunks += len(ids_lote)
+            ids_lote.clear(); textos_lote.clear(); metas_lote.clear()
+
+    for doc in directivas:
+        celex    = doc["celex"]
+        titulo   = doc.get("titulo") or doc["referencia"]
+        texto    = doc.get("texto", "")
+        derogada = doc.get("derogada", False)
+
+        chunks = _chunkar_texto(texto, titulo)
+        n_chunks = len(chunks)
+
+        metadato_base = {
+            "tipo":            "directiva_ar",
+            "referencia":      doc["referencia"],
+            "celex":           celex,
+            "titulo":          titulo[:200],
+            "derogada":        derogada,
+            "secciones":       ",".join(doc.get("secciones", [])),
+            "fuentes":         ",".join(doc.get("fuentes", [])),
+            "total_chunks":    n_chunks,
+            "sustituida_por":  doc.get("sustituida_por") or "",
+        }
+
+        for i, chunk in enumerate(chunks):
+            ids_lote.append(f"directiva_{celex}_{i:04d}")
+            textos_lote.append(chunk)
+            metas_lote.append({**metadato_base, "chunk_num": i})
+
+            if len(ids_lote) >= BATCH_SIZE:
+                _flush()
+
+        aviso = " ⚠DEROGADA" if derogada else ""
+        print(f"  {doc['referencia']:30s} {celex} | {n_chunks} chunk(s){aviso}")
+
+    _flush()
+
+    print(f"\n  Directivas indexadas : {len(directivas)}")
+    print(f"  Total chunks         : {total_chunks}")
+    print(f"  Total en colección   : {col.count()}")
+
+
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(description="Indexa documentos de reformas en Chroma")
     parser.add_argument("--reset", action="store_true",
                         help="Borra y recrea las colecciones")
-    parser.add_argument("--solo", choices=["fichas", "preambulo", "reglamento"],
+    parser.add_argument("--solo", choices=["fichas", "preambulo", "reglamento", "directivas"],
                         help="Indexa solo una colección")
     parser.add_argument("--test", action="store_true",
                         help="Lanza queries de prueba tras indexar")
@@ -325,6 +494,9 @@ def main():
 
     if args.solo == "reglamento" or args.solo is None:
         indexar_reglamento(client, reset=args.reset)
+
+    if args.solo == "directivas" or args.solo is None:
+        indexar_directivas(client, reset=args.reset)
 
     if args.test:
         test_queries(client)
