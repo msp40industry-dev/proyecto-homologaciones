@@ -24,11 +24,14 @@ Respondes preguntas sobre el Manual de Reformas de la DGT (Secciones I, II, III 
 La Sección I cubre vehículos M, N y O. La Sección II cubre vehículos L (motos, quads, UTVs). Las Secciones III y IV cubren vehículos agrícolas y de obras/servicios respectivamente.
 
 REGLAS:
-1. ANTES DE RESPONDER, revisa siempre el campo "Información adicional" de cada ficha CR recuperada. Si contiene casos donde la reforma NO aplica a lo que describe el usuario, indícalo como primer punto de la respuesta y no continúes con documentación ni ARs. Ejemplos de exclusiones típicas:
-   - "No se considera reforma cuando..."
-   - "Esta reforma no aplica a..."
-   - Instalaciones que están expresamente excluidas del CR
-   Si hay duda sobre si la exclusión aplica al caso del usuario, pregúntale antes de continuar.
+1. ANTES DE RESPONDER, revisa siempre el campo "Información adicional" de cada ficha CR recuperada:
+   a. Menciona primero la ficha CR más relevante para la pregunta del usuario (ej. "La reforma que podría aplicar es CR 2.1...") aunque el caso concreto del usuario quizás no sea reforma.
+   b. Si la exclusión es ABSOLUTA (aplica sin condición a lo que describe el usuario, ej. "No se considera reforma la simple sustitución de bujías con las mismas especificaciones"), explícala a continuación y no continúes con documentación ni ARs.
+   c. Si la exclusión es CONDICIONAL (solo aplica si no hay cambio de características, potencia, homologación, etc.), expón ambos escenarios:
+      - Caso 1 (sin modificación de características): no se considera reforma → no hay trámite.
+      - Caso 2 (con modificación de características): sí es reforma. Para este caso, revisa TODOS los documentos del contexto y cita EXPLÍCITAMENTE los CRs concretos que aplican a ese escenario (no uses expresiones vagas como "podría aplicar un CR" o "sería una reforma"). Por ejemplo, si el cambio implica aumento de potencia máxima, cita CR 2.9; si implica modificación del sistema de admisión, cita CR 2.1; si implica ambas cosas, cita ambas. Indica también la vía de tramitación y los requisitos mínimos de cada CR citado.
+      Al final, formula una pregunta concreta al usuario para que confirme qué escenario describe su situación. La pregunta debe referenciar explícitamente los casos que has descrito (ej. "¿Sustituyes por bujías de las mismas especificaciones, o buscas unas que aumenten la potencia del motor?"), no dejarla abierta.
+   Si hay duda sobre si la exclusión aplica al caso del usuario, pregúntale siempre antes de continuar.
 2. Responde ÚNICAMENTE en base a los documentos de contexto proporcionados.
 3. Si la información no está en el contexto, responde exactamente: "No tengo información suficiente en los documentos disponibles para responder esta pregunta."
 4. Cita siempre la fuente: indica el CR (ej. "según CR 2.1") o el apartado (ej. "según el apartado 5.1 del preámbulo").
@@ -64,16 +67,23 @@ REGLAS:
     No listes los ARs hasta que el usuario confirme la categoría.
 11. Lista TODOS los ARs del contexto donde el valor para la categoría confirmada sea (1), (2) o (3), sin excepción. Cuenta los ARs antes de responder para asegurarte de no omitir ninguno. Excluye solo los que tengan - o x.
 12. Si el contexto contiene una sección "=== RELACIONES ESTRUCTURADAS (KAG) ===", úsala para responder preguntas sobre qué CRs implica una reforma, qué incorporaciones físicas exige o qué restricciones aplican a ese vehículo. Es información estructurada extraída del Manual, más fiable que el texto libre.
-13. Si el contexto contiene una sección "=== NORMATIVA AR (CONTENIDO LEGISLATIVO) ===", úsala para explicar el contenido de una directiva o reglamento específico: qué sistema del vehículo regula, qué requisitos técnicos establece, qué pruebas exige, etc.
+13. Si el contexto contiene una sección "=== NORMATIVA AR (CONTENIDO LEGISLATIVO) ===", DEBES usarla para responder cualquier pregunta sobre qué regulan, en qué consisten o para qué sirven los Actos Reglamentarios. Tanto si el usuario pregunta por uno solo como por varios, proporciona para CADA directiva presente en esa sección una descripción detallada con la misma estructura:
+    - **Referencia y título** de la directiva
+    - **Objetivo**: qué sistemas o aspectos del vehículo regula
+    - **Requisitos principales**: prescripciones técnicas, límites, condiciones de instalación, pruebas exigidas, etc., extraídas directamente del articulado y los anexos del contexto
+    Responde una directiva tras otra, sin comprimir en tabla. No apliques la regla 3 cuando esta sección esté presente: aunque el contenido disponible sea parcial, úsalo para describir lo que regula.
 14. Cuando una normativa esté marcada como "⚠ NORMATIVA DEROGADA", indícalo siempre de forma explícita al inicio de la respuesta: "Esta directiva/reglamento ha sido derogado y ya no está en vigor. La información que sigue es histórica." Nunca cites normativa derogada sin advertir al usuario.
 
 FORMATO DE RESPUESTA:
-- Respuesta directa a la pregunta
-- CRs aplicables (si la pregunta describe una reforma)
+- CR(s) más relevante(s) para la pregunta (siempre al inicio, incluso si el caso concreto quizás no sea reforma)
+- Respuesta directa a la pregunta (puede incluir escenarios condicionales según la regla 1c)
+- Documentación exigible y requisitos (solo si el caso es definitivamente una reforma)
 - Documentación exigible (si aplica)
 - Categoría utilizada para filtrar ARs: [indicar explícitamente, ej. "M1"]
-- Lista de Actos Reglamentarios aplicables a [categoría] según CR [X]:
-  · Sistema (Referencia): nivel de exigencia
+- Lista de Actos Reglamentarios aplicables a [categoría] según CR [X], en formato tabla markdown:
+  | Sistema | Referencia | Nivel de exigencia |
+  |---------|------------|-------------------|
+  | ...     | ...        | ...               |
 - Fuente(s) consultada(s)"""
 
 
@@ -318,6 +328,63 @@ def _get_llm() -> ChatOpenAI:
     )
 
 
+# ─── Descripciones por directiva ──────────────────────────────────────────────
+
+_PROMPT_DIRECTIVA = (
+    "Eres un experto técnico en normativa de homologación de vehículos de la UE.\n"
+    "Basándote ÚNICAMENTE en el texto de la directiva que aparece a continuación, describe:\n"
+    "- **Objetivo**: qué sistemas o aspectos del vehículo regula\n"
+    "- **Requisitos principales**: prescripciones técnicas concretas (medidas, condiciones de "
+    "instalación, pruebas, límites numéricos) tal como aparecen en el texto\n"
+    "Si la directiva está marcada como DEROGADA, indícalo al inicio.\n"
+    "No inventes nada que no esté en el texto proporcionado.\n\n"
+    "TEXTO:\n{contexto}"
+)
+
+
+def _describir_directiva(ref: str, llm: ChatOpenAI) -> str:
+    """
+    Recupera los chunks más ricos de una directiva y genera una descripción detallada
+    con una llamada independiente al LLM — misma calidad que preguntar individualmente.
+    """
+    try:
+        from langchain_chroma import Chroma
+        from langchain_openai import OpenAIEmbeddings
+
+        col = Chroma(
+            collection_name=config.COLECCION_DIRECTIVAS,
+            embedding_function=OpenAIEmbeddings(
+                api_key=config.OPENAI_API_KEY,
+                model=config.EMBEDDING_MODEL,
+            ),
+            persist_directory=str(config.CHROMA_DIR),
+        )
+
+        query_tecnica = f"prescripciones técnicas requisitos instalación {ref}"
+
+        # Primero: chunks con articulado (chunk_num > 0)
+        docs = col.similarity_search(
+            query_tecnica, k=4,
+            filter={"$and": [{"referencia": ref}, {"chunk_num": {"$gt": 0}}]},
+        )
+        # Fallback: cualquier chunk de esa referencia
+        if not docs:
+            docs = col.similarity_search(query_tecnica, k=4, filter={"referencia": ref})
+        if not docs:
+            return f"### {ref}\nNo se encontró información en la base de datos."
+
+        titulo   = docs[0].metadata.get("titulo", ref)
+        derogada = docs[0].metadata.get("derogada", False)
+        aviso    = " ⚠ NORMATIVA DEROGADA" if derogada else ""
+        contexto = f"[{ref}{aviso}]\n{titulo}\n\n" + "\n\n".join(d.page_content for d in docs)
+
+        respuesta = llm.invoke([HumanMessage(content=_PROMPT_DIRECTIVA.format(contexto=contexto))])
+        return f"### {ref}{aviso} — {titulo[:120]}\n\n{respuesta.content}"
+
+    except Exception as e:
+        return f"### {ref}\nError al recuperar la directiva: {e}"
+
+
 # ─── Punto de entrada ─────────────────────────────────────────────────────────
 
 # Número de turnos del historial a incluir (1 turno = 1 pregunta + 1 respuesta)
@@ -347,6 +414,29 @@ def consultar(
             "n_docs":    int,
         }
     """
+    # Atajo: si la pregunta es sobre las directivas AR del historial, describir cada una
+    # con una llamada independiente al LLM (misma calidad que preguntar individualmente).
+    from .retriever import _pregunta_sobre_ars_del_historial, _refs_ar_en_historial
+    if _pregunta_sobre_ars_del_historial(pregunta, historial):
+        refs = _refs_ar_en_historial(historial)
+        if refs:
+            llm = _get_llm()
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+            resultados: dict[str, str] = {}
+            with ThreadPoolExecutor(max_workers=6) as pool:
+                futuros = {pool.submit(_describir_directiva, ref, llm): ref for ref in refs}
+                for fut in as_completed(futuros):
+                    resultados[futuros[fut]] = fut.result()
+            # Mantener el orden original de las refs
+            partes = [resultados[ref] for ref in refs]
+            return {
+                "respuesta": "\n\n---\n\n".join(partes),
+                "fuentes":   [{"tipo": "directiva_ar", "cr": None, "via": None,
+                                "apartado": None, "titulo": ref, "paginas": None}
+                              for ref in refs],
+                "n_docs":    len(refs),
+            }
+
     # 1. Retrieval
     docs = recuperar(pregunta, categoria=categoria, via=via, historial=historial)
     n_docs = sum(len(v) for v in docs.values())

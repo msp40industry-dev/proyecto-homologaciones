@@ -27,6 +27,9 @@ st.set_page_config(
 if "modo" not in st.session_state:
     st.session_state.modo = None
 
+if "confirmar_salir" not in st.session_state:
+    st.session_state.confirmar_salir = False
+
 # ─── Menú central ─────────────────────────────────────────────────────────────
 
 if st.session_state.modo is None:
@@ -63,9 +66,28 @@ if st.session_state.modo is None:
 # ─── Botón de volver en sidebar ───────────────────────────────────────────────
 
 with st.sidebar:
-    if st.button("← Volver al menú principal"):
-        st.session_state.modo = None
-        st.rerun()
+    if not st.session_state.confirmar_salir:
+        if st.button("← Volver al menú principal"):
+            hay_historial = bool(st.session_state.get("mensajes"))
+            if st.session_state.modo == "chatbot" and hay_historial:
+                st.session_state.confirmar_salir = True
+                st.rerun()
+            else:
+                st.session_state.modo = None
+                st.rerun()
+    else:
+        st.warning("¿Seguro que quieres salir? Se borrará el historial de la conversación.")
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Sí, salir", type="primary", use_container_width=True):
+                st.session_state.mensajes = []
+                st.session_state.confirmar_salir = False
+                st.session_state.modo = None
+                st.rerun()
+        with col2:
+            if st.button("No, quedarme", use_container_width=True):
+                st.session_state.confirmar_salir = False
+                st.rerun()
     st.divider()
 
 # ─── Modo: Asistente RAG ──────────────────────────────────────────────────────
@@ -100,7 +122,7 @@ if st.session_state.modo == "chatbot":
             payload["categoria"] = categoria
         if via:
             payload["via"] = via
-        r = requests.post(f"{BACKEND_URL}/consulta", json=payload, timeout=60)
+        r = requests.post(f"{BACKEND_URL}/consulta", json=payload, timeout=120)
         r.raise_for_status()
         return r.json()
 

@@ -63,5 +63,5 @@ N_RESULTS_DIRECTIVAS  = 4
 
 # ─── RAG ──────────────────────────────────────────────────────────────────────
 
-MAX_TOKENS_RESPUESTA = 1024
+MAX_TOKENS_RESPUESTA = 4096
 TEMPERATURE          = 0.0   # respuestas deterministas para dominio técnico-legal

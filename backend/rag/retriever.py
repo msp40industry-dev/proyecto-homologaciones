@@ -36,6 +36,14 @@ KEYWORDS_DIRECTIVAS = [
     "cumplimiento de", "requisitos del", "está en vigor", "derogad",
 ]
 
+# Palabras que indican que el usuario pregunta sobre ARs ya listados en el historial
+KEYWORDS_REFERENCIAL_AR = [
+    "en qué consisten", "qué consiste", "qué son", "para qué sirven",
+    "explícame", "cuéntame", "describe", "detalla",
+    "cada una", "cada uno", "esas", "esos", "los ar", "las ar",
+    "qué regulan", "qué cubren", "qué implican",
+]
+
 # Detecta referencias normativas EU en el texto de la query
 _PAT_REF_AR = re.compile(
     r'\b\d{2,4}/\d+/C(?:EE|E)\b'
@@ -125,7 +133,49 @@ def _refs_ar_en_query(query: str) -> list[str]:
     return [m.group().strip() for m in _PAT_REF_AR.finditer(query)]
 
 
-def _filtro_fichas(categoria: str | None, via: str | None, seccion: str | None) -> dict | None:
+def _refs_ar_en_historial(historial: list[dict] | None) -> list[str]:
+    """
+    Busca el mensaje del asistente más reciente que contenga una tabla de ARs (≥ 3 refs).
+    Eso corresponde a la respuesta de una ficha CR con su lista de ARs.
+    Si no hay ninguno con ≥ 3, devuelve las refs del último mensaje del asistente con alguna.
+    """
+    if not historial:
+        return []
+
+    def _extraer_unicas(texto: str) -> list[str]:
+        vistas: set[str] = set()
+        resultado: list[str] = []
+        for m in _PAT_REF_AR.finditer(texto):
+            r = m.group().strip()
+            if r not in vistas:
+                vistas.add(r)
+                resultado.append(r)
+        return resultado
+
+    fallback: list[str] = []
+    for msg in reversed(historial):
+        if msg["role"] != "assistant":
+            continue
+        refs = _extraer_unicas(msg["content"])
+        if len(refs) >= 3:
+            return refs          # tabla CR encontrada
+        if refs and not fallback:
+            fallback = refs      # guardar por si no hay tabla
+    return fallback
+
+
+def _pregunta_sobre_ars_del_historial(query: str, historial: list[dict] | None) -> bool:
+    """True si el usuario pregunta sobre los ARs ya listados en el turno anterior."""
+    if not historial:
+        return False
+    q = query.lower()
+    return (
+        any(kw in q for kw in KEYWORDS_REFERENCIAL_AR)
+        and bool(_refs_ar_en_historial(historial))
+    )
+
+
+def _filtro_fichas(via: str | None, seccion: str | None) -> dict | None:
     condiciones = []
     if via:
         condiciones.append({"via_tramitacion": via.upper()})
@@ -162,6 +212,9 @@ def recuperar(
         }
     """
 
+    # Guardar query original para checks referenciales (antes de cualquier transformación)
+    query_original = query
+
     # Si query corta, enriquecer con el último mensaje del usuario
     if len(query.split()) < 6 and historial:
         ultimos = [m["content"] for m in historial if m["role"] == "user"]
@@ -173,11 +226,16 @@ def recuperar(
 
     resultados = {"fichas": [], "preambulo": [], "reglamento": [], "directivas": []}
 
+    # Si la pregunta es sobre las directivas AR del historial, reducimos fichas para no
+    # ahogar el contexto — las fichas no son el foco en ese caso.
+    _foco_directivas = _pregunta_sobre_ars_del_historial(query_original, historial)
+
     # 1. Fichas CR — siempre
     col_fichas = _get_coleccion(config.COLECCION_FICHAS)
-    filtro = _filtro_fichas(categoria, via, seccion)
+    filtro = _filtro_fichas(via, seccion)
 
-    kwargs = {"k": config.N_RESULTS_FICHAS}
+    k_fichas = 1 if _foco_directivas else config.N_RESULTS_FICHAS
+    kwargs = {"k": k_fichas}
     if filtro:
         kwargs["filter"] = filtro
 
@@ -208,13 +266,11 @@ def recuperar(
         col_dir = _get_coleccion(config.COLECCION_DIRECTIVAS)
         refs = _refs_ar_en_query(query)
         if refs:
-            # Búsqueda semántica filtrada por la referencia detectada (primera)
             docs = col_dir.similarity_search(
                 query,
                 k=config.N_RESULTS_DIRECTIVAS,
                 filter={"referencia": refs[0]},
             )
-            # Fallback semántico sin filtro si la referencia exacta no da resultados
             if not docs:
                 docs = col_dir.similarity_search(query, k=config.N_RESULTS_DIRECTIVAS)
             resultados["directivas"] = docs
@@ -222,5 +278,31 @@ def recuperar(
             resultados["directivas"] = col_dir.similarity_search(
                 query, k=config.N_RESULTS_DIRECTIVAS
             )
+
+    # 4b. Fallback: el usuario pregunta sobre los ARs listados en la respuesta anterior
+    #     ("en qué consisten esas ARs", "explícame cada una", etc.) sin citar referencias.
+    #     Se usa query_original para no perder las palabras clave tras la expansión semántica.
+    if not resultados["directivas"] and _pregunta_sobre_ars_del_historial(query_original, historial):
+        col_dir = _get_coleccion(config.COLECCION_DIRECTIVAS)
+        refs_hist = _refs_ar_en_historial(historial)
+        docs: list = []
+        seen: set = set()
+        for ref in refs_hist[:12]:
+            if ref in seen:
+                continue
+            seen.add(ref)
+            # Query orientada al articulado técnico para evitar recuperar la cabecera EUR-Lex.
+            # chunk_num > 0 descarta el chunk de título/cabecera.
+            query_tecnica = f"prescripciones técnicas requisitos instalación {ref}"
+            encontrados = col_dir.similarity_search(
+                query_tecnica, k=3,
+                filter={"$and": [{"referencia": ref}, {"chunk_num": {"$gt": 0}}]},
+            )
+            if not encontrados:
+                encontrados = col_dir.similarity_search(
+                    query_tecnica, k=3, filter={"referencia": ref}
+                )
+            docs.extend(encontrados)
+        resultados["directivas"] = docs
 
     return resultados

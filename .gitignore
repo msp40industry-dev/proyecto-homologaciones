@@ -13,3 +13,5 @@ outputs/
 *.docx
 chroma_db/
 node_modules/
+lib/
+docs/*.pdf

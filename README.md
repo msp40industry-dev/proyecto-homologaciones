@@ -665,10 +665,12 @@ Proyecto_homologaciones/
 ### Normativa AR
 
 - [ ] **Verificar cobertura completa de normativas**: comprobar que las 103 directivas/reglamentos descargados de EUR-Lex son accesibles y que no faltan referencias (algunas normativas antiguas pueden no estar disponibles en CELLAR en formato HTML/XHTML)
-- [ ] **Resolver normativas derogadas**: para las 8 normativas marcadas como derogadas, identificar y descargar automáticamente la normativa vigente que las sustituye (disponible en el campo `sustituida_por` de CELLAR SPARQL). Actualizar el índice con la versión vigente y mantener la derogada como referencia histórica
+- [ ] **Resolver normativas derogadas y no encontradas**: para las normativas marcadas como derogadas, identificar y descargar la vigente que las sustituye (campo `sustituida_por` de CELLAR SPARQL); para las no encontradas, buscar fuentes alternativas (EUR-Lex web, UNECE) e indexarlas
 
 ### Generador de Proyectos Técnicos
 
+- [ ] **Corregir formatos de salida**: revisar y ajustar el maquetado del `.docx` generado (estilos de párrafo, márgenes, cabeceras, numeración de secciones) para que se ajuste al formato exigido por los colegios de ingenieros
+- [ ] **Plantillas propias del cliente**: permitir que cada cliente aporte su propia plantilla Word (`.dotx`) con logo, fuentes y estilos corporativos; el ensamblador la usaría como base en lugar de la plantilla genérica
 - [ ] Incrustación de PDFs en el Word (requiere conversión a imagen o adjunto como objeto OLE)
 - [ ] Soporte para reformas Vía B (Informe de Conformidad) y Vía C (Certificado de Taller)
 - [ ] Cálculo automático de sección 1.3.2 y 1.3.3 (características antes/después)
@@ -676,6 +678,12 @@ Proyecto_homologaciones/
 
 ### Plataforma
 
+- [ ] **Estudiar modelo de negocio**: definir la propuesta de valor, segmentos de cliente (ingeniero autónomo, taller, ITV, gestoría), precios y forma de monetización (suscripción, créditos por documento, licencia corporativa)
+- [ ] **Estudiar formas de implementación**: evaluar despliegue en nube (AWS/GCP/Azure), en local (Docker on-premise), como SaaS web o como aplicación de escritorio; considerar costes, privacidad de datos y requisitos del cliente
+- [ ] **Cambiar/evaluar modelos LLM**: comparar GPT-4o vs Claude vs Gemini en calidad de proyectos técnicos generados y coste por documento; evaluar modelos open-source (Llama, Mistral) con Ollama para eliminar dependencia de APIs externas
+- [ ] **Testear vulnerabilidades**: auditoría de seguridad de la API FastAPI (inyección de prompts, autenticación de endpoints, exposición de datos sensibles, validación de ficheros subidos)
+- [ ] **Volver a enlazar con LangSmith**: reconfigurar `LANGCHAIN_TRACING_V2=true` y revisar trazas de los agentes para detectar latencias, tokens consumidos y respuestas incorrectas
+- [ ] **Pedir revisión a un experto en reformas de vehículos**: validar con un ingeniero o técnico de ITV que las fichas CR, ARs y el contenido de los proyectos técnicos generados son correctos y cumplen la normativa vigente
 - [ ] Evaluación automática con RAGAS (faithfulness, answer relevancy, context precision)
 - [ ] Modelos locales con Ollama (eliminar dependencia de la API de OpenAI)
 - [ ] Multitenancy: namespacing por cliente en ChromaDB o migración a Qdrant
