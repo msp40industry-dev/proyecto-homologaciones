@@ -69,18 +69,33 @@ with st.sidebar:
     if not st.session_state.confirmar_salir:
         if st.button("← Volver al menú principal"):
             hay_historial = bool(st.session_state.get("mensajes"))
-            if st.session_state.modo == "chatbot" and hay_historial:
+            hay_progreso_generador = st.session_state.get("paso", 1) > 1
+            if (st.session_state.modo == "chatbot" and hay_historial) or (
+                st.session_state.modo == "generador" and hay_progreso_generador
+            ):
                 st.session_state.confirmar_salir = True
                 st.rerun()
             else:
                 st.session_state.modo = None
                 st.rerun()
     else:
-        st.warning("¿Seguro que quieres salir? Se borrará el historial de la conversación.")
+        if st.session_state.modo == "generador":
+            st.warning("¿Seguro que quieres salir? Se perderá todo el progreso del proyecto técnico.")
+        else:
+            st.warning("¿Seguro que quieres salir? Se borrará el historial de la conversación.")
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Sí, salir", type="primary", use_container_width=True):
-                st.session_state.mensajes = []
+                if st.session_state.modo == "generador":
+                    for k in [
+                        "paso", "estado_grafo", "config_grafo", "secciones", "revisiones",
+                        "textos_manuales", "docx_path", "error", "num_componentes",
+                        "validacion_resultado", "validacion_confirmada", "entrada", "adjuntos",
+                    ]:
+                        if k in st.session_state:
+                            del st.session_state[k]
+                else:
+                    st.session_state.mensajes = []
                 st.session_state.confirmar_salir = False
                 st.session_state.modo = None
                 st.rerun()
