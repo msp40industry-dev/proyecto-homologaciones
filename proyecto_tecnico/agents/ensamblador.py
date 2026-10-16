@@ -277,7 +277,7 @@ function parseBold(text) {
 
 // Renderiza contenido generado por el LLM con soporte de:
 //   ## Título nivel 2      → heading2
-//   ### Título nivel 3     → negrita azul, tamaño 22
+//   ### a ###### Subtítulo → negrita azul, tamaño 22, sin entrada en el índice
 //   - item / * item / • item → lista con viñetas
 //   1. item                → párrafo con sangría y número
 //   **texto**              → negrita inline
@@ -297,10 +297,10 @@ function renderContenido(text) {
     if (t.startsWith('## ')) {
       bloques.push(heading2(t.slice(3).trim()));
     }
-    // ### Subtítulo (bold azul, sin outline)
-    else if (t.startsWith('### ')) {
+    // Subtítulos Markdown de niveles 3 a 6 (sin outline)
+    else if (/^#{3,6}\s+/.test(t)) {
       bloques.push(new Paragraph({
-        children: [new TextRun({ text: t.slice(4).trim(), bold: true, size: 22, font: "Arial", color: AZUL_MED })],
+        children: [new TextRun({ text: t.replace(/^#{3,6}\s+/, '').trim(), bold: true, size: 22, font: "Arial", color: AZUL_MED })],
         spacing: { before: 160, after: 80 },
       }));
     }
@@ -584,10 +584,28 @@ function construirPortada(data) {
 
 // ── Secciones del documento ───────────────────────────────
 
+// El título principal ya se inserta desde sec.titulo. Quitar solo su repetición inicial.
+function sinTituloInicialDuplicado(contenido, titulo) {
+  const normalizar = texto => texto.trim()
+    .replace(/^#{1,6}\s+/, '')
+    .replace(/\*\*/g, '')
+    .replace(/\s+#+\s*$/, '')
+    .replace(/:\s*$/, '')
+    .replace(/\s+/g, ' ')
+    .trim().toLocaleLowerCase('es');
+  const lineas = contenido.split('\n');
+  const primero = lineas.findIndex(linea => linea.trim() !== '');
+  if (primero !== -1 && normalizar(lineas[primero]) === normalizar(titulo)) {
+    return lineas.slice(primero + 1).join('\n').replace(/^\s*\n/, '');
+  }
+  return contenido;
+}
+
 function construirSecciones(data) {
   const bloques = [];
 
   for (const sec of data.secciones) {
+    const contenido = sinTituloInicialDuplicado(sec.contenido, sec.titulo);
     // Determinar nivel de heading
     if (/^\d+\./.test(sec.titulo) && !sec.titulo.match(/^\d+\.\d+/)) {
       bloques.push(heading1(sec.titulo));
@@ -597,7 +615,7 @@ function construirSecciones(data) {
 
     // Para "antecedentes" insertamos también las tablas de CRs y ARs
     if (sec.id === "antecedentes") {
-      bloques.push(...renderContenido(sec.contenido));
+      bloques.push(...renderContenido(contenido));
       if (data.crs.length > 0) {
         bloques.push(
           new Paragraph({ children: [new TextRun({ text: "Códigos de Reforma aplicables:", bold: true, size: 22, font: "Arial" })], spacing: { before: 200, after: 120 } }),
@@ -610,14 +628,14 @@ function construirSecciones(data) {
       }
     } else if (sec.id === "identificacion_vehiculo") {
       // Texto introductorio + tabla de datos del vehículo
-      bloques.push(...renderContenido(sec.contenido));
+      bloques.push(...renderContenido(contenido));
       bloques.push(
         new Paragraph({ spacing: { after: 120 } }),
         tablaVehiculo(data.metadata),
         new Paragraph({ spacing: { after: 200 } }),
       );
     } else {
-      bloques.push(...renderContenido(sec.contenido));
+      bloques.push(...renderContenido(contenido));
     }
 
     // Indicador de adjunto
