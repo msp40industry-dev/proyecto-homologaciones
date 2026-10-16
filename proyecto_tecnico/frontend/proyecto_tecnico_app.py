@@ -371,6 +371,7 @@ def paso_generacion():
         estado_final = grafo.get_state(config)
         st.session_state.estado_grafo = estado_final.values
         st.session_state.secciones = estado_final.values.get("secciones", {})
+        st.session_state.pop("revision_siguiente_seccion", None)
         st.session_state.paso = 3
 
     asyncio.run(generar())
@@ -437,8 +438,10 @@ def paso_revision():
             icono = ESTADOS_ICONOS.get(rev.get("estado", "pendiente"), "⏳")
             nombres_tabs.append(f"{icono} {cfg['titulo'][:18]}...")
 
-    tabs = st.tabs(nombres_tabs)
-
+    # Seleccionar el destino al construir las pestañas, antes de mostrarlas.
+    siguiente = st.session_state.pop("revision_siguiente_seccion", None)
+    seleccionada = nombres_tabs[ids_orden.index(siguiente)] if siguiente in ids_orden else None
+    tabs = st.tabs(nombres_tabs, default=seleccionada)
     for i, (sid, cfg) in enumerate(SECCIONES_CONFIG.items()):
         with tabs[i]:
             _render_tab_seccion(sid, cfg, secciones, revisiones)
@@ -476,6 +479,7 @@ def paso_revision():
 
     with colc:
         if st.button("↩️ Volver al paso 1"):
+            st.session_state.pop("revision_siguiente_seccion", None)
             for k in ["paso", "estado_grafo", "config_grafo", "secciones", "revisiones", "docx_path", "error"]:
                 st.session_state[k] = [1, None, None, {}, {}, None, None][
                     ["paso", "estado_grafo", "config_grafo", "secciones", "revisiones", "docx_path", "error"].index(k)
@@ -577,6 +581,9 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
     with bc1:
         if st.button("✅ Aprobar", key=f"aprobar_{sid}", type="primary" if estado == "pendiente" else "secondary"):
             st.session_state.revisiones[sid] = {"estado": "aprobado"}
+            ids_orden = list(SECCIONES_CONFIG)
+            indice = ids_orden.index(sid)
+            st.session_state.revision_siguiente_seccion = ids_orden[min(indice + 1, len(ids_orden) - 1)]
             st.rerun()
 
     with bc2:
