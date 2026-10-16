@@ -18,7 +18,8 @@ from proyecto_tecnico.models import (
 )
 
 # Directorio donde se guardan los documentos generados
-OUTPUT_DIR = Path(__file__).resolve().parents[3] / "outputs" / "proyectos"
+ROOT = Path(__file__).resolve().parents[2]
+OUTPUT_DIR = ROOT / "outputs" / "proyectos"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -68,19 +69,31 @@ async def ensamblar_documento(
 
     output_path = str(OUTPUT_DIR / f"proyecto_{proyecto_id}.docx")
 
+    script_path = None
     try:
         # Escribir y ejecutar el script JS generador
         script_path = _escribir_script_js()
+        node_env = os.environ.copy()
+        module_paths = [str(ROOT / "node_modules")]
+        if node_env.get("NODE_PATH"):
+            module_paths.append(node_env["NODE_PATH"])
+        node_env["NODE_PATH"] = os.pathsep.join(module_paths)
         result = subprocess.run(
             ["node", script_path, payload_path, output_path],
             capture_output=True,
             text=True,
             timeout=60,
+            env=node_env,
         )
         if result.returncode != 0:
             raise RuntimeError(f"Error en generación docx: {result.stderr}")
     finally:
         os.unlink(payload_path)
+        if script_path:
+            try:
+                os.unlink(script_path)
+            except OSError:
+                pass
         for tmp in temp_adjunto_files:
             try:
                 os.unlink(tmp)
@@ -773,7 +786,10 @@ Packer.toBuffer(doc).then(buffer => {
   process.exit(1);
 });
 """
-    script_path = "/tmp/generar_proyecto_tecnico.js"
-    with open(script_path, "w", encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".js", prefix="generar_proyecto_tecnico_",
+        delete=False, encoding="utf-8",
+    ) as f:
         f.write(script)
+        script_path = f.name
     return script_path
