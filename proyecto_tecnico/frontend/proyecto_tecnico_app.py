@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from proyecto_tecnico.models import (
-    EntradaProyecto, DatosVehiculo, Componente, Taller, Ingeniero
+    EntradaProyecto, DatosVehiculo, Componente, Taller, Ingeniero, EstadoRevision
 )
 from proyecto_tecnico.graph import grafo, crear_estado_inicial
 
@@ -372,6 +372,7 @@ def paso_generacion():
         st.session_state.estado_grafo = estado_final.values
         st.session_state.secciones = estado_final.values.get("secciones", {})
         st.session_state.pop("revision_siguiente_seccion", None)
+        st.session_state.pop("revision_seccion_destino", None)
         st.session_state.paso = 3
 
     asyncio.run(generar())
@@ -413,6 +414,19 @@ ESTADOS_ICONOS = {
 
 def paso_revision():
     st.header("Paso 3 — Revisión del proyecto técnico")
+    for sid, contenido in st.session_state.pop("revision_textos_actualizados", {}).items():
+        st.session_state[f"texto_{sid}"] = contenido
+
+    # Regenerar antes de crear los editores para poder actualizar sus valores.
+    solicitud = st.session_state.pop("revision_regenerar_seccion", None)
+    if solicitud:
+        st.session_state.revision_siguiente_seccion = solicitud
+        try:
+            with st.spinner("Reescribiendo la sección..."):
+                _aplicar_revisiones_y_regenerar([solicitud], reiniciar=False)
+            st.success("Sección reescrita. Revisa el nuevo texto antes de aprobarlo.")
+        except Exception as exc:
+            st.error(f"No se pudo reescribir la sección: {exc}")
 
     secciones = st.session_state.secciones
     revisiones = st.session_state.revisiones
@@ -440,7 +454,10 @@ def paso_revision():
 
     # Seleccionar el destino al construir las pestañas, antes de mostrarlas.
     siguiente = st.session_state.pop("revision_siguiente_seccion", None)
-    seleccionada = nombres_tabs[ids_orden.index(siguiente)] if siguiente in ids_orden else None
+    if siguiente in ids_orden:
+        st.session_state.revision_seccion_destino = siguiente
+    destino = st.session_state.get("revision_seccion_destino")
+    seleccionada = nombres_tabs[ids_orden.index(destino)] if destino in ids_orden else None
     tabs = st.tabs(nombres_tabs, default=seleccionada)
     for i, (sid, cfg) in enumerate(SECCIONES_CONFIG.items()):
         with tabs[i]:
@@ -480,12 +497,21 @@ def paso_revision():
     with colc:
         if st.button("↩️ Volver al paso 1"):
             st.session_state.pop("revision_siguiente_seccion", None)
+            st.session_state.pop("revision_seccion_destino", None)
             for k in ["paso", "estado_grafo", "config_grafo", "secciones", "revisiones", "docx_path", "error"]:
                 st.session_state[k] = [1, None, None, {}, {}, None, None][
                     ["paso", "estado_grafo", "config_grafo", "secciones", "revisiones", "docx_path", "error"].index(k)
                 ]
             st.session_state.paso = 1
             st.rerun()
+
+
+def _aprobar_seccion_y_avanzar(sid: str):
+    """Aplicar la aprobación y su destino antes de reconstruir las pestañas."""
+    st.session_state.revisiones[sid] = {"estado": "aprobado"}
+    ids_orden = list(SECCIONES_CONFIG)
+    indice = ids_orden.index(sid)
+    st.session_state.revision_siguiente_seccion = ids_orden[min(indice + 1, len(ids_orden) - 1)]
 
 
 def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
@@ -563,11 +589,13 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
         st.metric("Estado", ESTADOS_ICONOS.get(estado, "⏳") + " " + estado.capitalize())
 
     # Texto generado (editable)
+    clave_texto = f"texto_{sid}"
+    if clave_texto not in st.session_state:
+        st.session_state[clave_texto] = sec.contenido
     texto_editado = st.text_area(
         "Texto generado (editable)",
-        value=sec.contenido,
         height=350,
-        key=f"texto_{sid}",
+        key=clave_texto,
     )
 
     # Guardar edición manual si el usuario modificó el texto
@@ -579,16 +607,16 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
     bc1, bc2 = st.columns(2)
 
     with bc1:
-        if st.button("✅ Aprobar", key=f"aprobar_{sid}", type="primary" if estado == "pendiente" else "secondary"):
-            st.session_state.revisiones[sid] = {"estado": "aprobado"}
-            ids_orden = list(SECCIONES_CONFIG)
-            indice = ids_orden.index(sid)
-            st.session_state.revision_siguiente_seccion = ids_orden[min(indice + 1, len(ids_orden) - 1)]
-            st.rerun()
+        st.button(
+            "✅ Aprobar", key=f"aprobar_{sid}",
+            type="primary" if estado == "pendiente" else "secondary",
+            on_click=_aprobar_seccion_y_avanzar, args=(sid,),
+        )
 
     with bc2:
         if st.button("✏️ Solicitar reescritura", key=f"reescribir_{sid}"):
             st.session_state[f"mostrar_motivo_{sid}"] = True
+            st.session_state.revision_siguiente_seccion = sid
             st.rerun()
 
     # Campo de motivo de reescritura
@@ -597,14 +625,15 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
             "Indica el motivo o qué debe corregirse:",
             value=rev.get("motivo", ""),
             key=f"motivo_{sid}",
-            placeholder="Ej: El CR indicado no es correcto, en realidad es el CR 2.2...",
+            placeholder="Ej: Simplifica el lenguaje y usa frases más cortas, manteniendo los datos y requisitos técnicos.",
             height=100,
         )
         if st.button("Confirmar reescritura", key=f"confirmar_reescritura_{sid}"):
             if motivo.strip():
-                st.session_state.revisiones[sid] = {"estado": "reescribir", "motivo": motivo}
+                st.session_state.revisiones[sid] = {"estado": "reescribir", "motivo": motivo.strip()}
                 st.session_state[f"mostrar_motivo_{sid}"] = False
-                st.success("Marcado para reescritura. Pulsa 'Regenerar secciones marcadas' cuando termines.")
+                st.session_state.revision_regenerar_seccion = sid
+                st.session_state.revision_siguiente_seccion = sid
                 st.rerun()
             else:
                 st.warning("Indica el motivo antes de confirmar.")
@@ -623,7 +652,7 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
             st.success(f"Fichero adjuntado: {archivo.name}")
 
 
-def _aplicar_revisiones_y_regenerar():
+def _aplicar_revisiones_y_regenerar(ids_secciones=None, reiniciar=True):
     """Aplica las revisiones al estado del grafo y reanuda la ejecución."""
     import asyncio
 
@@ -631,20 +660,21 @@ def _aplicar_revisiones_y_regenerar():
     secciones = st.session_state.secciones
     config = st.session_state.config_grafo
 
-    # Actualizar el estado del grafo con las revisiones del ingeniero
-    revisiones_para_grafo = {}
-    for sid, rev in revisiones.items():
-        revisiones_para_grafo[sid] = {
-            "estado": rev["estado"],
-            "motivo": rev.get("motivo"),
-        }
-
     async def regenerar():
         # Determinar qué secciones necesitan regenerarse
         sids_a_regenerar = [
             sid for sid, rev in revisiones.items()
-            if rev["estado"] == "reescribir"
+            if rev["estado"] == "reescribir" and (ids_secciones is None or sid in ids_secciones)
         ]
+        if not sids_a_regenerar:
+            return
+        versiones = {sid: secciones[sid].revision.iteraciones for sid in sids_a_regenerar}
+        # Los redactores leen el motivo del objeto SeccionGenerada, no del estado de UI.
+        for sid in sids_a_regenerar:
+            secciones[sid].revision = EstadoRevision(
+                estado="reescribir", motivo=revisiones[sid].get("motivo"),
+                iteraciones=versiones[sid],
+            )
 
         # Actualizar estado del grafo: secciones con revisiones + lista de regeneración
         grafo.update_state(
@@ -666,13 +696,24 @@ def _aplicar_revisiones_y_regenerar():
         # Recuperar el nuevo estado
         estado_nuevo = grafo.get_state(config)
         st.session_state.secciones = estado_nuevo.values.get("secciones", {})
-        # Limpiar estados de reescritura procesados
-        for sid in list(revisiones.keys()):
-            if revisiones[sid]["estado"] == "reescribir":
+        fallidas = []
+        for sid in sids_a_regenerar:
+            nueva = st.session_state.secciones.get(sid)
+            if nueva and nueva.revision.iteraciones > versiones[sid]:
+                if reiniciar:
+                    # En el flujo por lotes los widgets ya existen: actualizar en el siguiente rerun.
+                    st.session_state.setdefault("revision_textos_actualizados", {})[sid] = nueva.contenido
+                else:
+                    st.session_state[f"texto_{sid}"] = nueva.contenido
                 st.session_state.revisiones[sid] = {"estado": "pendiente"}
+            else:
+                fallidas.append(sid)
+        if fallidas:
+            raise RuntimeError("No se recibió una nueva versión de: " + ", ".join(fallidas))
 
     asyncio.run(regenerar())
-    st.rerun()
+    if reiniciar:
+        st.rerun()
 
 
 # ─────────────────────────────────────────────

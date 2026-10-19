@@ -161,7 +161,12 @@ Versión anterior para referencia:
 ---
 {contenido_anterior.contenido}
 ---
-Genera una nueva versión corrigiendo el problema indicado."""
+Reescribe la sección siguiendo el motivo indicado por el usuario.
+Conserva los datos, cifras, referencias normativas, CRs, ARs y requisitos técnicos
+de la versión anterior por defecto: se consideran correctos, salvo que el usuario
+solicite expresamente modificarlos. En ese caso, modifica únicamente los elementos
+indicados por el usuario y conserva los demás. No inventes valores ni referencias.
+Puedes adaptar el tono y la claridad sin perder precisión técnica."""
 
     respuesta = await _llm.ainvoke([
         SystemMessage(content=_SYSTEM_BASE),
