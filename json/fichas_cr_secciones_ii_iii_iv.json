@@ -36,9 +36,7 @@
           "D": 0
         }
       }
-    },
-    "ultimo_enriquecimiento": "2026-06-03 17:03",
-    "keywords_csv": "keywords_reformas.csv"
+    }
   },
   "fichas": [
     {
@@ -381,18 +379,7 @@
       "informacion_adicional": "En esta reforma se contemplarán las modificaciones o incorporaciones que afecten al silencioso de admisión (filtro de aire), su alojamiento, los conductos anteriores a éste incluidos los resonadores de existir o los posteriores hasta el carburador o el sistema de control de aire al cilindro que no modifique las prestaciones del vehículo; entendiendo por «Prestaciones del vehículo» la velocidad máxima en el caso de vehículos de las categorías L1e L2e o L6e., o la potencia del motor, en el resto de categorías. Se aplicará el código de reforma 2.9 Modificación de sistemas o de la programación de los mismos que puedan variar la potencia máxima, en los siguientes casos:  La reforma implica aumento o disminución de las prestaciones del vehículo.  La reforma afecta a uno o varios de los siguientes elementos del sistema de admisión:  Carburador o el sistema de control de aire al cilindro.  Paso de admisión: el paso de admisión de aire en el cilindro, la culata o el cárter  Tubo de admisión: la pieza que une el carburador o el sistema de control del aire al cilindro, la culata o el cárter. No se considerará reforma la sustitución de sistemas de admisión que correspondan con una Unidad Técnica Independiente Homologada. Se aportará certificado de homologación que permita verificar que la UTI está homologada para el Tipo, Variante y Versión correspondiente.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "turbo",
-        "turbocompresor",
-        "sobrealimentación",
-        "intercooler",
-        "chiptuning",
-        "reprogramación motor",
-        "más potencia",
-        "aumentar caballos",
-        "kw motor",
-        "cv motor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -515,12 +502,7 @@
       "informacion_adicional": "En esta reforma se contemplarán las modificaciones, sustituciones ó incorporaciones del sistema de la admisión de combustible que, sin modificar las prestaciones del vehículo, afecten a:  Depósito de combustible y sus conductos incluida la bomba de presión de combustible de existir.  Carburador o el sistema de control de combustible el inyector o los inyectores y su sistema de gestión (mecánico o electrónico) de existir. Se aplicará el código de reforma 2.9 Modificación de sistemas o de la programación de los mismos que puedan variar la potencia máxima, en los siguientes casos:  La reforma implica aumento o disminución de las prestaciones del vehículo. Se entienden por «Prestaciones del vehículo» la velocidad máxima en el caso de vehículos de las categorías L1e L2e ó L6e, o la potencia del motor, en el resto de categorías. La Directiva de compatibilidad electromagnética no se aplicará en caso de que solo se efectúe la reprogramación de la centralita",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carburador",
-        "inyección",
-        "sistema de alimentación",
-        "combustible"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -871,13 +853,7 @@
       "informacion_adicional": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "cambio de motor",
-        "motor nuevo",
-        "motor distinto",
-        "swap motor",
-        "sustituir motor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -970,12 +946,7 @@
       "informacion_adicional": "Esta Reforma afecta a la disposición, volumen total, silenciadores, catalizador, tramo de salida. Para sustitución de silenciosos de escape se admiten dispositivos homologados para el vehículo reformado conforme a la directiva 97/24/CE Capitulo 9, en vehículos matriculados con anterioridad a 01/01/2009 ó homologados con la Directiva 2005/30/CE o posteriores para el resto de vehículos sin necesidad de realización de ensayos. En vehículos con homologación por 92/61/CEE ó 2002/24/CE, será obligatorio la incorporación de un silencioso homologado por 2005/30/CE o 97/24/CE Capitulo 9. No se considerará reforma la sustitución de silenciosos por otros que cumplan la Directiva 97/24/CE Capitulo 9 o Reglamento Delegado 134/2014 Anexo IX o sustitución de catalizadores por otros que cumplan la Directiva 2005/30/CE o Reglamento Delegado 134/2014 Anexo IX. Se entiende por tramo de salida, el comprendido entre el último silencioso y la salida.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "caja de cambios",
-        "transmisión automática",
-        "transmisión manual",
-        "cambiar caja"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -1068,9 +1039,7 @@
       "informacion_adicional": "En esta reforma se considerarán los casos en los que se altera la configuración inicial de los depósitos de combustible, por cambio de emplazamiento, sustitución por otro diferente, añadir o eliminar depósitos, adición de depósito(s) auxiliar(es), modificar los periféricos, conexiones o fijaciones al vehículo. En caso de que la modificación ó adición del depósito de combustible afecte al sistema de alimentación de combustible se aplicará el código de reforma 2.2.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "embrague"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -1148,16 +1117,7 @@
       "informacion_adicional": "En esta reforma se comprobará la funcionalidad del mando de aceleración de forma que se pueda realizar el ciclo que determina la directiva de emisiones, además el mando deberá disponer de un retorno automático a la posición de reposo. En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción de PMR” No se considerará reforma la desinstalación de doble mando de PMR, anotándose en la tarjeta mediante diligencia. No se considerará reforma la sustitución de empuñaduras o agarres que mantengan el emplazamiento, dimensiones y funcionalidad originales",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "escape",
-        "tubo de escape",
-        "catalizador",
-        "silenciador",
-        "downpipe",
-        "escape deportivo",
-        "FAP",
-        "filtro de partículas"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -1280,15 +1240,7 @@
       "informacion_adicional": "Esta reforma se aplicará a las modificaciones recogidas en el Real Decreto 818/2009, de mayo, por el que se aprueba el Reglamento General de Conductores en su artículo 4 apartado 2 c) para los permisos tipo A2, si bien se mantienen las disposiciones transitorias marcadas en el Real Decreto con relación a las reformas con el procedimiento marcado en el anterior Manual de reformas. Solo se permitirán las reducciones de potencia partiendo desde la potencia original del vehículo incluida en la homologación del mismo, no permitiéndose reducciones sucesivas. No tendrá consideración de limitación sucesiva la restitución parcial de 25 kW a 35 kW, siempre que la potencia original sea igual o mayor de 35 kW. En la relación potencia máxima/peso recogida en el RD 818/2009 para los vehículos que determina el permiso tipo A2, se entenderá por peso a la masa en orden de marcha (sin conductor). Para vehículos con contraseña de homologación anteriores al R (UE) 168/2013: En el caso de aumento de prestaciones en vehículos de las categorías L1e, L2e, L6e, que sobrepasen los límites establecidos para dichas categorías se tendrá en cuenta otros actos reglamentarios que podrían verse afectados. Esta reforma se aplicará en el caso de modificación, adición o sustitución de cualquier sistema que varíe las prestaciones del vehículo, tales como:  Carburador o el sistema de control de aire al cilindro incluido el recorrido del acelerador.  Paso de admisión: el paso de admisión de aire en el cilindro, la culata o el cárter  Tubo de admisión: la pieza que une el carburador o el sistema de control del aire al cilindro, la culata o el cárter.  Carburador o el sistema de control de combustible el inyector o los inyectores y su sistema de gestión (mecánico o electrónico) de existir.  Reprogramación de la centralita de gestión del sistema de admisión de combustible, comburente, control de encendido  Modificaciones en la unidad motriz. Se entienden por «Prestaciones del vehículo» la velocidad máxima en el caso de vehículos de las categorías L1e L2e ó L6e., o la potencia del motor, en el resto de categorías. Se entiende por variación de prestaciones:  Aumentar la velocidad máxima en más de 5km/h en el caso de vehículos de las categorías L1e, L2e ó L6e  Aumentar o disminuir la potencia máxima más del 10% en todas las categorías de vehículos. Para vehículos homologados conforme a los AR especificados en el R (UE) 168/2013 Si están amparados en un conjunto funcional, deberán disponer de placa identificativa, que incluirá los siguientes datos: Fabricante del conjunto funcional, VIN del vehículo, Potencia máxima, referencia del conjunto funcional y Nivel de Ruido a vehículo parado (dB).",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "climatización",
-        "aire acondicionado",
-        "GLP",
-        "GNC",
-        "gas licuado",
-        "gas natural",
-        "bifuel"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -2359,10 +2311,7 @@
       "informacion_adicional": "No se considerará reforma el desplazamiento del eje trasero por el sistema de tensado de la cadena. Esta holgura vendrá determinada por las especificaciones del basculante y la longitud de la cadena proporcionada por el fabricante.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "ABS",
-        "sistema antibloqueo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -2494,11 +2443,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno de mano",
-        "freno de estacionamiento",
-        "freno de parking"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -3122,26 +3067,7 @@
       "informacion_adicional": "La modificación y/o refuerzo de los puntos de fijación de la suspensión al bastidor con el fin de adecuar el sistema de suspensión, siempre y cuando no afecte a la estructura básica del bastidor, deberá realizarse de modo que los materiales de aportación sean de características y calidad iguales o superiores a los materiales del bastidor original. La sustitución de sistemas de suspensión por otro de recambio o reposición que utilice los anclajes originales, sin modificación de la altura máxima del vehículo, no se considera reforma.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "amortiguadores",
-        "muelles",
-        "muelle",
-        "bajar",
-        "subir altura",
-        "suspensión deportiva",
-        "resortes",
-        "ballesta",
-        "barras estabilizadoras",
-        "coilovers",
-        "altura del vehículo",
-        "altura libre al suelo",
-        "lowering",
-        "suspensión roscada",
-        "kit de suspensión",
-        "rebaje",
-        "elevar",
-        "lift kit"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -3309,11 +3235,7 @@
       "informacion_adicional": "Esta reforma se refiere a la modificación del sistema de dirección: no asistida por asistida, modificaciones en los elementos de asistencia, modificaciones en el sistema mecánico de dirección, excepto en el volante y el manillar, semimanillares y sus soportes/torretas, entre otras. En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción de PMR”",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carrocería",
-        "estructura",
-        "bastidor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -3432,12 +3354,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "techo",
-        "cabrio",
-        "descapotable",
-        "cortar techo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -3494,13 +3411,7 @@
       "informacion_adicional": "No está permitido la incorporación de airbag en un volante, cuando de origen no lo incorpore. No se podrá modificar un volante con airbag por otro diferente, aun cuando incorpore airbag.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "volante",
-        "volante deportivo",
-        "volante pequeño",
-        "cambiar volante",
-        "quick release"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -3787,16 +3698,7 @@
       "informacion_adicional": "Se verificará que la luz de frenado actúa cuando se accione cualquiera de los mandos de frenado. Se considera reforma la modificación de latiguillos de freno que no cumplan con las condiciones de recambio equivalente.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "neumáticos",
-        "llantas",
-        "ruedas",
-        "tamaño neumático",
-        "perfil neumático",
-        "cambiar neumáticos",
-        "cambiar llantas",
-        "anchura rueda"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -3904,10 +3806,7 @@
       "informacion_adicional": "Se verificará que la luz de frenado actúa cuando se accione cualquiera de los mandos de frenado. No se considerará reforma la sustitución de manetas, depósitos de líquido y/o pedales que mantengan la funcionalidad, emplazamiento y dimensiones originales del vehículo, ni la desinstalación de doble mando de PMR, anotándose esta última mediante diligencia En caso de desinstalación, será necesario restituir los elementos de seguridad suprimidos por la reforma en su caso, aportando certificado de taller En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción de PMR”",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno pie",
-        "pedal freno"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -5756,12 +5655,7 @@
       "informacion_adicional": "No se consideran reforma la instalación (ver CR 8.52 para la instalación del soporte):  de sistemas de alumbrado específico.  de la señal V-1 (Vehículo prioritario), la V-2 (vehículo-obstáculo en la vía), ni la V-23 (distintivo de vehículos de transporte de mercancías). Tampoco se considerará reforma la desinstalación de faros adicionales de largo alcance, faros antiniebla opcionales y cualquier otro dispositivo no obligatorio, anotándose mediante diligencia. La modificación o instalación de elementos de alumbrado y señalización no se tramitará por este CR si los AR correspondientes ya han sido analizados en otro CR.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "remolque",
-        "enganche",
-        "bola remolque",
-        "punto remolque"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -5839,10 +5733,7 @@
       "informacion_adicional": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original a excepción de los dispositivos de alumbrado de cruce y carretera. La modificación o instalación de elementos de alumbrado y señalización no se tramitará por este CR si los AR correspondientes ya han sido analizados en otro CR",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "portabicicletas",
-        "porta esquís"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "II",
@@ -6620,18 +6511,7 @@
       "informacion_adicional": "En esta reforma se contemplarán las modificaciones del sistema de la admisión, tales como: instalación de un turbocompresor, refrigerador de aire de admisión (intercooler), toma elevada de admisión (snorkel), entre otras. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "turbo",
-        "turbocompresor",
-        "sobrealimentación",
-        "intercooler",
-        "chiptuning",
-        "reprogramación motor",
-        "más potencia",
-        "aumentar caballos",
-        "kw motor",
-        "cv motor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -6961,12 +6841,7 @@
       "informacion_adicional": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la centralita. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carburador",
-        "inyección",
-        "sistema de alimentación",
-        "combustible"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -7531,12 +7406,7 @@
       "informacion_adicional": "Se entiende por tramo de salida, el comprendido entre el último silencioso y la salida. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "caja de cambios",
-        "transmisión automática",
-        "transmisión manual",
-        "cambiar caja"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -7714,9 +7584,7 @@
       "informacion_adicional": "En esta reforma se considerarán los casos en los que se altera la configuración inicial de los depósitos de combustible, por cambio de emplazamiento, sustitución por otro diferente, añadir o eliminar depósitos, adición de depósito(s) auxiliar(es), modificar los periféricos, conexiones o fijaciones al vehículo. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "embrague"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -7951,15 +7819,7 @@
       "informacion_adicional": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la Unidad Electrónica de Control (ECU). La Directiva Nivel sonoro admisible no será exigible en el caso de disminución de potencia",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "climatización",
-        "aire acondicionado",
-        "GLP",
-        "GNC",
-        "gas licuado",
-        "gas natural",
-        "bifuel"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -8785,14 +8645,7 @@
       "informacion_adicional": "La normativa sobre mecanismos de dirección será aplicada únicamente cuando el eje modificado o sustituido incorpore parcial o en su totalidad el sistema de dirección del vehículo.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "frenos",
-        "pastillas de freno",
-        "discos de freno",
-        "sistema de frenado",
-        "frenos mejorados",
-        "upgrade frenos"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -8952,10 +8805,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "ABS",
-        "sistema antibloqueo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -9191,11 +9041,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno de mano",
-        "freno de estacionamiento",
-        "freno de parking"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -9806,26 +9652,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "amortiguadores",
-        "muelles",
-        "muelle",
-        "bajar",
-        "subir altura",
-        "suspensión deportiva",
-        "resortes",
-        "ballesta",
-        "barras estabilizadoras",
-        "coilovers",
-        "altura del vehículo",
-        "altura libre al suelo",
-        "lowering",
-        "suspensión roscada",
-        "kit de suspensión",
-        "rebaje",
-        "elevar",
-        "lift kit"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -9947,11 +9774,7 @@
       "informacion_adicional": "Esta reforma se refiere a la modificación del sistema de dirección: no asistida por asistida, modificaciones en los elementos de asistencia, instalación de sistemas de autoguiado únicamente cuando se modifique el sistema hidráulico del mecanismo de dirección, modificaciones en el sistema mecánico de dirección, entre otras. La instalación de ayudas para la conducción en el volante, tales como pomos, cazoletas, etc. no afectan al sistema de dirección del vehículo.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carrocería",
-        "estructura",
-        "bastidor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -10225,12 +10048,7 @@
       "informacion_adicional": "La adición del volante se refiere a la dotación de un puesto de conducción diferente al de origen y complementario a éste. No se permitirá la existencia simultánea de dos mandos de dirección (volante) en un mismo habitáculo o compartimento",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "techo",
-        "cabrio",
-        "descapotable",
-        "cortar techo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -10370,13 +10188,7 @@
       "informacion_adicional": "No se considerará reforma cuando se sustituya el volante original del vehículo por otro con el mismo diámetro o que no varíe en un + 10 % siempre que el vehículo no disponga de airbag. El acto reglamentario de mecanismos de dirección se aplicará exclusivamente cuando el diámetro del volante sea menor al del original.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "volante",
-        "volante deportivo",
-        "volante pequeño",
-        "cambiar volante",
-        "quick release"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -10460,16 +10272,7 @@
       "informacion_adicional": "Para los vehículos homologados conforme a los AR antes del R (UE) 167/2013, cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá́ el cumplimiento con el nivel (3) para el Acto Reglamentario de Frenado.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "neumáticos",
-        "llantas",
-        "ruedas",
-        "tamaño neumático",
-        "perfil neumático",
-        "cambiar neumáticos",
-        "cambiar llantas",
-        "anchura rueda"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -10553,15 +10356,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "alumbrado",
-        "luces",
-        "faros",
-        "LED",
-        "xenon",
-        "faros de xenon",
-        "faros LED"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -10664,10 +10459,7 @@
       "informacion_adicional": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 se deberá cumplir con la Directiva de acoplamiento de freno con los remolques, en los casos en que el vehículo esté provisto de frenos con asistencia.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno pie",
-        "pedal freno"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -11895,10 +11687,7 @@
       "informacion_adicional": "El acto reglamentario de mecanismos de dirección sólo se aplicará en los casos en que se incremente el voladizo delantero.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "tracción integral",
-        "4WD"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -13298,12 +13087,7 @@
       "informacion_adicional": "No se consideran reforma la instalación de faros de trabajo, los rotativos o destellantes propios de la señalización luminosa específica para servicios especiales o propios de vehículos prioritarios, vehículos especiales, así como la desinstalación de faros adicionales de largo alcance, faros antiniebla opcionales y cualquier otro dispositivo no obligatorio, anotándose mediante diligencia.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "remolque",
-        "enganche",
-        "bola remolque",
-        "punto remolque"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -13633,10 +13417,7 @@
       "informacion_adicional": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos laterales y traseros de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "portabicicletas",
-        "porta esquís"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "III",
@@ -14805,18 +14586,7 @@
       "informacion_adicional": "En esta reforma se contemplarán las modificaciones del sistema de la admisión, tales como: instalación de un turbocompresor, refrigerador de aire de admisión (intercooler), toma elevada de admisión (snorkel), entre otras. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "turbo",
-        "turbocompresor",
-        "sobrealimentación",
-        "intercooler",
-        "chiptuning",
-        "reprogramación motor",
-        "más potencia",
-        "aumentar caballos",
-        "kw motor",
-        "cv motor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -15146,12 +14916,7 @@
       "informacion_adicional": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la centralita. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carburador",
-        "inyección",
-        "sistema de alimentación",
-        "combustible"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -15716,12 +15481,7 @@
       "informacion_adicional": "Se entiende por tramo de salida, el comprendido entre el último silencioso y la salida. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "caja de cambios",
-        "transmisión automática",
-        "transmisión manual",
-        "cambiar caja"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -15899,9 +15659,7 @@
       "informacion_adicional": "En esta reforma se considerarán los casos en los que se altera la configuración inicial de los depósitos de combustible, por cambio de emplazamiento, sustitución por otro diferente, añadir o eliminar depósitos, adición de depósito(s) auxiliar(es), modificar los periféricos, conexiones o fijaciones al vehículo. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "embrague"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -16136,15 +15894,7 @@
       "informacion_adicional": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la Unidad Electrónica de Control (ECU). La Directiva Nivel sonoro admisible no será exigible en el caso de disminución de potencia.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "climatización",
-        "aire acondicionado",
-        "GLP",
-        "GNC",
-        "gas licuado",
-        "gas natural",
-        "bifuel"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -16970,14 +16720,7 @@
       "informacion_adicional": "La normativa sobre mecanismos de dirección será aplicada únicamente cuando el eje modificado o sustituido incorpore parcial o en su totalidad el sistema de dirección del vehículo.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "frenos",
-        "pastillas de freno",
-        "discos de freno",
-        "sistema de frenado",
-        "frenos mejorados",
-        "upgrade frenos"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -17137,10 +16880,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "ABS",
-        "sistema antibloqueo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -17376,11 +17116,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno de mano",
-        "freno de estacionamiento",
-        "freno de parking"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -17991,26 +17727,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "amortiguadores",
-        "muelles",
-        "muelle",
-        "bajar",
-        "subir altura",
-        "suspensión deportiva",
-        "resortes",
-        "ballesta",
-        "barras estabilizadoras",
-        "coilovers",
-        "altura del vehículo",
-        "altura libre al suelo",
-        "lowering",
-        "suspensión roscada",
-        "kit de suspensión",
-        "rebaje",
-        "elevar",
-        "lift kit"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -18132,11 +17849,7 @@
       "informacion_adicional": "Esta reforma se refiere a la modificación del sistema de dirección: no asistida por asistida, modificaciones en los elementos de asistencia, instalación de sistemas de autoguiado (únicamente cuando se modifique el sistema hidráulico del mecanismo de dirección), modificaciones en el sistema mecánico de dirección, entre otras. La instalación de ayudas para la conducción en el volante, tales como pomos, cazoletas, etc. no afectan al sistema de dirección del vehículo.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carrocería",
-        "estructura",
-        "bastidor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -18410,12 +18123,7 @@
       "informacion_adicional": "La adición del volante se refiere a la dotación de un puesto de conducción diferente al de origen y complementario a éste. No se permitirá la existencia simultánea de dos mandos de dirección (volante) en un mismo habitáculo o compartimento.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "techo",
-        "cabrio",
-        "descapotable",
-        "cortar techo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -18555,13 +18263,7 @@
       "informacion_adicional": "No se considerará reforma cuando se sustituya el volante original del vehículo por otro con el mismo diámetro o que no varíe en un + 10 % siempre que el vehículo no disponga de airbag. El acto reglamentario de mecanismos de dirección se aplicará exclusivamente cuando el diámetro del volante sea menor al del original.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "volante",
-        "volante deportivo",
-        "volante pequeño",
-        "cambiar volante",
-        "quick release"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -18645,16 +18347,7 @@
       "informacion_adicional": "Para los vehículos homologados conforme a los AR antes del R (UE) 167/2013, cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá́ el cumplimiento con el nivel (3) para el Acto Reglamentario de Frenado.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "neumáticos",
-        "llantas",
-        "ruedas",
-        "tamaño neumático",
-        "perfil neumático",
-        "cambiar neumáticos",
-        "cambiar llantas",
-        "anchura rueda"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -18738,15 +18431,7 @@
       "informacion_adicional": null,
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "alumbrado",
-        "luces",
-        "faros",
-        "LED",
-        "xenon",
-        "faros de xenon",
-        "faros LED"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -18849,10 +18534,7 @@
       "informacion_adicional": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 se deberá cumplir con la Directiva de acoplamiento de freno con los remolques, en los casos en que el vehículo esté provisto de frenos con asistencia.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno pie",
-        "pedal freno"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -20061,10 +19743,7 @@
       "informacion_adicional": "El acto reglamentario de mecanismos de dirección sólo se aplicará en los casos en que se incremente el voladizo delantero.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "tracción integral",
-        "4WD"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -21464,12 +21143,7 @@
       "informacion_adicional": "No se consideran reforma la instalación de faros de trabajo, los rotativos o destellantes propios de la señalización luminosa específica para servicios especiales o propios de vehículos prioritarios, vehículos especiales, así como la desinstalación de faros adicionales de largo alcance, faros antiniebla opcionales y cualquier otro dispositivo no obligatorio, anotándose mediante diligencia.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "remolque",
-        "enganche",
-        "bola remolque",
-        "punto remolque"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",
@@ -21799,10 +21473,7 @@
       "informacion_adicional": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos laterales y traseros de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "portabicicletas",
-        "porta esquís"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "IV",

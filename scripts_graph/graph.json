@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generado": "2026-06-05T11:00:32",
+  "generado": "2026-10-20T11:56:43",
   "manual": {
     "fuente": "Manual de Reformas de Vehículos — Todas las secciones",
     "revision": "7ª (Revisión 7.2)"
@@ -10967,7 +10967,7 @@
         "O4"
       ],
       "requiere_proyecto": true,
-      "revision_fuente": "7ª - Junio 2022",
+      "revision_fuente": "7ª - Abril 2023",
       "ars_por_categoria": {
         "M1": [
           {
@@ -15713,7 +15713,7 @@
       ],
       "categorias_bloqueadas": [],
       "requiere_proyecto": false,
-      "revision_fuente": "7ª - Junio 2022",
+      "revision_fuente": "7ª - Abril 2023",
       "ars_por_categoria": {
         "M1": [
           {
@@ -16899,7 +16899,7 @@
       ],
       "categorias_bloqueadas": [],
       "requiere_proyecto": false,
-      "revision_fuente": "7ª - AUDIENCIA",
+      "revision_fuente": "7ª - enero 2026",
       "ars_por_categoria": {
         "M1": [
           {
@@ -43959,7 +43959,7 @@
       "tipo": "restriccion",
       "condicion": "Salvo en el caso de que la pieza sea de nueva fabricación y lleve grabado el nº de bastidor",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Salvo en el caso de que la pieza sea de nueva fabricación y lleve grabado el nº de bastidor, en el resto de los casos deberá siempre grabarse el nº de bastidor original del vehículo seguido de una R u otro símbolo a determinar, previa inutilización del nº de bastidor original en el caso de piezas reutilizadas, bajo el control del órgano competente en materia de ITV de conformidad con el artículo 8 del Reglamento General de Vehículos."
+      "fuente_literal": "Salvo en el caso de que la pieza sea de nueva fabricación y lleve grabado el nº de bastidor, en el resto de los casos deberá siempre grabarse el nº de bastidor original del vehículo seguido de una R u otro símbolo a determinar."
     },
     {
       "cr_origen": "CR-I-1.3",
@@ -43997,7 +43997,7 @@
       "cr_origen": "CR-I-2.2",
       "cr_destino": "CR-I-2.11",
       "tipo": "implica_cr",
-      "condicion": "modificaciones relacionadas con tecnologías de electrificación total del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -44005,7 +44005,7 @@
       "cr_origen": "CR-I-2.2",
       "cr_destino": "CR-I-2.12",
       "tipo": "implica_cr",
-      "condicion": "modificaciones relacionadas con tecnologías de electrificación parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -44019,9 +44019,17 @@
     },
     {
       "cr_origen": "CR-I-2.3",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible."
+    },
+    {
+      "cr_origen": "CR-I-2.3",
       "cr_destino": "CR-I-2.11",
       "tipo": "implica_cr",
-      "condicion": "si las modificaciones están relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -44029,25 +44037,9 @@
       "cr_origen": "CR-I-2.3",
       "cr_destino": "CR-I-2.12",
       "tipo": "implica_cr",
-      "condicion": "si las modificaciones están relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
-    },
-    {
-      "cr_origen": "CR-I-2.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "los vehículos que no incorporaban en su construcción original el ESC podrán ser reformados sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para el sistema de frenado",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Los vehículos que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo."
-    },
-    {
-      "cr_origen": "CR-I-2.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible."
     },
     {
       "cr_origen": "CR-I-2.4",
@@ -44122,34 +44114,34 @@
       "fuente_literal": "Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9."
     },
     {
-      "cr_origen": "CR-I-2.6",
+      "cr_origen": "CR-I-2.7",
+      "cr_destino": "CR-I-2.9",
+      "tipo": "implica_cr",
+      "condicion": "Si esta reforma supone modificación de la potencia máxima",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9."
+    },
+    {
+      "cr_origen": "CR-I-2.7",
       "cr_destino": null,
       "tipo": "restriccion",
       "condicion": null,
       "sin_tramitar_cr": false,
-      "fuente_literal": "Se admitirá el nivel de emisiones a fecha de matriculación del vehículo."
-    },
-    {
-      "cr_origen": "CR-I-2.7",
-      "cr_destino": "CR-I-2.9",
-      "tipo": "implica_cr",
-      "condicion": "si esta reforma supone modificación de la potencia máxima",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9."
+      "fuente_literal": "La Directiva 70/221/CEE será aplicable únicamente en las sustituciones del/los depósito/s de carburante líquido y/o adición de depósito/s auxiliar/es."
     },
     {
       "cr_origen": "CR-I-2.7",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "sustituciones del/los depósito/s de carburante líquido y/o adición de depósito/s auxiliar/es",
+      "condicion": null,
       "sin_tramitar_cr": false,
-      "fuente_literal": "La Directiva 70/221/CEE será aplicable únicamente en las sustituciones del/los depósito/s de carburante líquido y/o adición de depósito/s auxiliar/es."
+      "fuente_literal": "Los componentes instalados que se encuentren homologados por el Reglamento 67 ó 110, deberán cumplir con la Directiva de compatibilidad electromagnética al nivel indicado en dicho Reglamento, no el que marca el Real Decreto 2028/1986."
     },
     {
       "cr_origen": "CR-I-2.8",
-      "cr_destino": "CR-I-2.9",
-      "tipo": "implica_cr",
-      "condicion": "si se instala un sistema de control de velocidad de crucero",
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
+      "condicion": "si se instala sistema de control de velocidad de crucero",
       "sin_tramitar_cr": false,
       "fuente_literal": "En esta reforma se contemplarán modificaciones, tales como: doble mando autoescuela, adaptación para PMR, instalación de sistema de control de velocidad de crucero, entre otras."
     },
@@ -44366,7 +44358,7 @@
       "cr_destino": null,
       "tipo": "obliga_incorporar",
       "condicion": "Garantizar la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores después de la transformación",
-      "sin_tramitar_cr": true,
+      "sin_tramitar_cr": false,
       "fuente_literal": "Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad."
     },
     {
@@ -44405,7 +44397,7 @@
       "cr_origen": "CR-I-3.4",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos que no incorporaban en su construcción original el ESC",
+      "condicion": "Los vehículos que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo.",
       "sin_tramitar_cr": false,
       "fuente_literal": "Los vehículos que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo."
     },
@@ -44413,7 +44405,7 @@
       "cr_origen": "CR-I-3.4",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos de categorías M y N que incorporen ESC de serie",
+      "condicion": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible.",
       "sin_tramitar_cr": false,
       "fuente_literal": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible."
     },
@@ -44445,7 +44437,7 @@
       "cr_origen": "CR-I-3.6",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad",
+      "condicion": "si el vehículo es conducido por PMR y requiere modificación de elementos de seguridad",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
@@ -44493,7 +44485,7 @@
       "cr_origen": "CR-I-4.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986",
+      "condicion": "a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986",
       "sin_tramitar_cr": false,
       "fuente_literal": "Los Actos Reglamentarios relativos a protección delantera contra el empotramiento, protección de los peatones y sistemas de protección delantera no se exigirán a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para estos Actos Reglamentarios."
     },
@@ -44501,7 +44493,7 @@
       "cr_origen": "CR-I-4.2",
       "cr_destino": "CR-I-2.7",
       "tipo": "restriccion",
-      "condicion": "vehículo reformado se corresponda con un tipo homologado",
+      "condicion": "Cuando el vehículo reformado se corresponda con un tipo homologado",
       "sin_tramitar_cr": true,
       "fuente_literal": "Cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá el cumplimiento con el nivel (2) para los Actos Reglamentarios de Depósito de combustible, Mecanismos de Dirección y Frenado, no siendo necesario tramitar los CR 2.7, 6.1 y 7.1."
     },
@@ -44509,7 +44501,7 @@
       "cr_origen": "CR-I-4.2",
       "cr_destino": "CR-I-6.1",
       "tipo": "restriccion",
-      "condicion": "vehículo reformado se corresponda con un tipo homologado",
+      "condicion": "Cuando el vehículo reformado se corresponda con un tipo homologado",
       "sin_tramitar_cr": true,
       "fuente_literal": "Cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá el cumplimiento con el nivel (2) para los Actos Reglamentarios de Depósito de combustible, Mecanismos de Dirección y Frenado, no siendo necesario tramitar los CR 2.7, 6.1 y 7.1."
     },
@@ -44517,7 +44509,7 @@
       "cr_origen": "CR-I-4.2",
       "cr_destino": "CR-I-7.1",
       "tipo": "restriccion",
-      "condicion": "vehículo reformado se corresponda con un tipo homologado",
+      "condicion": "Cuando el vehículo reformado se corresponda con un tipo homologado",
       "sin_tramitar_cr": true,
       "fuente_literal": "Cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá el cumplimiento con el nivel (2) para los Actos Reglamentarios de Depósito de combustible, Mecanismos de Dirección y Frenado, no siendo necesario tramitar los CR 2.7, 6.1 y 7.1."
     },
@@ -44525,7 +44517,7 @@
       "cr_origen": "CR-I-4.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos de categorías M y N que no incorporaban en su construcción original el ESC",
+      "condicion": "los vehículos de categorías M y N que no incorporaban en su construcción original el ESC",
       "sin_tramitar_cr": false,
       "fuente_literal": "Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo."
     },
@@ -44533,7 +44525,7 @@
       "cr_origen": "CR-I-4.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos de categorías M y N que incorporen ESC de serie",
+      "condicion": "los vehículos de categorías M y N que incorporen ESC de serie",
       "sin_tramitar_cr": false,
       "fuente_literal": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible."
     },
@@ -44663,39 +44655,23 @@
       "tipo": "restriccion",
       "condicion": "vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad",
       "sin_tramitar_cr": false,
-      "fuente_literal": "la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el titular declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
+      "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el titular declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
     {
       "cr_origen": "CR-I-6.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "No se permite la sustitución de un volante con airbag por otro que no lo tenga.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se permite la sustitución de un volante con airbag por otro que no lo tenga."
-    },
-    {
-      "cr_origen": "CR-I-6.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación."
-    },
-    {
-      "cr_origen": "CR-I-6.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público."
-    },
-    {
-      "cr_origen": "CR-I-6.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "No se considerará reforma cuando se sustituya el volante original del vehículo por otro con el mismo diámetro o que no varíe en un + 10 % siempre que el vehículo no disponga de airbag.",
+      "condicion": "si el vehículo dispone de airbag",
       "sin_tramitar_cr": false,
       "fuente_literal": "No se considerará reforma cuando se sustituya el volante original del vehículo por otro con el mismo diámetro o que no varíe en un + 10 % siempre que el vehículo no disponga de airbag."
+    },
+    {
+      "cr_origen": "CR-I-6.3",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público."
     },
     {
       "cr_origen": "CR-I-6.4",
@@ -44813,7 +44789,7 @@
       "cr_origen": "CR-I-8.1",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "si las plazas eliminadas formaban parte del dispositivo de retención de carga",
+      "condicion": "si las plazas eliminadas formaban parte del dispositivo de retención de la carga",
       "sin_tramitar_cr": true,
       "fuente_literal": "En vehículos N en los que las plazas de asientos a suprimir formen parte del dispositivo de retención de la carga, la supresión de los mismos solo es posible si hay disponible un dispositivo alternativo de retención de la carga homologado."
     },
@@ -44821,7 +44797,7 @@
       "cr_origen": "CR-I-8.1",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "cuando se elimine solo el cinturón de seguridad",
+      "condicion": "si se elimina solo el cinturón de seguridad",
       "sin_tramitar_cr": true,
       "fuente_literal": "En todos los casos en los que se elimine solo el cinturón de seguridad debe advertirse, de forma clara e inequívoca, que dicha plaza no puede utilizarse con el vehículo en circulación mediante un pictograma o mediante un signo con texto adecuado."
     },
@@ -44845,7 +44821,7 @@
       "cr_origen": "CR-I-8.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Para vehículos de categoría M1 no es de aplicación la fórmula establecida en el Anexo II de la directiva marco 2007/46/CE actualizada por el Reglamento (UE) 678/2011.",
+      "condicion": "Para vehículos de categoría M1",
       "sin_tramitar_cr": false,
       "fuente_literal": "Para vehículos de categoría M1 no es de aplicación la fórmula establecida en el Anexo II de la directiva marco 2007/46/CE actualizada por el Reglamento (UE) 678/2011."
     },
@@ -44853,7 +44829,7 @@
       "cr_origen": "CR-I-8.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Para vehículos de categoría N es obligatorio la aplicación de la fórmula establecida en el Anexo II de la directiva marco 2007/46/CE actualizada por el Reglamento (UE) 678/2011.",
+      "condicion": "Para vehículos de categoría N",
       "sin_tramitar_cr": false,
       "fuente_literal": "Para vehículos de categoría N es obligatorio la aplicación de la fórmula establecida en el Anexo II de la directiva marco 2007/46/CE actualizada por el Reglamento (UE) 678/2011."
     },
@@ -44861,7 +44837,7 @@
       "cr_origen": "CR-I-8.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Cuando el vehículo reformado se corresponda con una de las configuraciones incluidas en su homologación de tipo, no será necesario la aplicación de la fórmula.",
+      "condicion": "Cuando el vehículo reformado se corresponda con una de las configuraciones incluidas en su homologación de tipo",
       "sin_tramitar_cr": false,
       "fuente_literal": "Cuando el vehículo reformado se corresponda con una de las configuraciones incluidas en su homologación de tipo, no será necesario la aplicación de la fórmula."
     },
@@ -44869,7 +44845,7 @@
       "cr_origen": "CR-I-8.4",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Los vehículos de categoría N1 pueden ser objeto de esta reforma si el vehículo transformado responde a las exigencias dispuestas en el Anexo XI de la Directiva 2007/46/CE para la categoría M1.",
+      "condicion": "Los vehículos de categoría N1 pueden ser objeto de esta reforma si el vehículo transformado responde a las exigencias dispuestas en el Anexo XI de la Directiva 2007/46/CE para la categoría M1, debiéndose acreditar explícitamente este cambio de categoría.",
       "sin_tramitar_cr": false,
       "fuente_literal": "Los vehículos de categoría N1 pueden ser objeto de esta reforma si el vehículo transformado responde a las exigencias dispuestas en el Anexo XI de la Directiva 2007/46/CE para la categoría M1, debiéndose acreditar explícitamente este cambio de categoría."
     },
@@ -44901,7 +44877,7 @@
       "cr_origen": "CR-I-8.10",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "en el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad",
+      "condicion": "en vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el titular declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
@@ -44949,33 +44925,25 @@
       "cr_origen": "CR-I-8.21",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "si se instalan mamparas de metacrilato detrás del asiento del conductor para vehículos taxi o policía",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Esta reforma se aplica a transformaciones tales como: instalación de mamparas de metacrilato detrás del asiento del conductor para vehículos taxi o policía."
+      "condicion": "cuando exista certificado médico que acredite la necesidad de instalar mamparas de protección",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "cuando exista certificado médico que acredite la necesidad de instalar mamparas de protección. El titular del vehículo deberá demostrar relación de parentesco de primer o segundo grado y, en el caso de empresas, asociaciones, etc, relación de prestación de servicios de transporte a la persona referida en el certificado."
     },
     {
       "cr_origen": "CR-I-8.21",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si los airbags laterales o de cortinilla son un equipamiento opcional",
+      "condicion": "cuando dichos elementos sean un equipamiento opcional, y por tanto el vehículo sin dichos airbags continúe cumpliendo la reglamentación de seguridad pasiva relativa al choque lateral",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Se permitirá la desinstalación de los airbags laterales o de cortinilla cuando dichos elementos sean un equipamiento opcional, y por tanto el vehículo sin dichos airbags continúe cumpliendo la reglamentación de seguridad pasiva relativa al choque lateral."
+      "fuente_literal": "cuando dichos elementos sean un equipamiento opcional, y por tanto el vehículo sin dichos airbags continúe cumpliendo la reglamentación de seguridad pasiva relativa al choque lateral."
     },
     {
       "cr_origen": "CR-I-8.21",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si el vehículo no continúa cumpliendo la reglamentación de seguridad pasiva relativa al choque lateral",
+      "condicion": "en vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público",
       "sin_tramitar_cr": false,
-      "fuente_literal": "En caso contrario, se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad."
-    },
-    {
-      "cr_origen": "CR-I-8.21",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público."
+      "fuente_literal": "en vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público."
     },
     {
       "cr_origen": "CR-I-8.22",
@@ -45021,15 +44989,7 @@
       "cr_origen": "CR-I-8.30",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "elementos desmontables y temporales para cumplir las medidas de protección adoptadas durante la crisis sanitaria derivada por el COVID-19",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se considerará reforma la instalación de elementos desmontables y temporales para cumplir las medidas de protección adoptadas durante la crisis sanitaria derivada por el COVID-19."
-    },
-    {
-      "cr_origen": "CR-I-8.30",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "panelados interiores que no superen el 5% de la Masa en Orden de Marcha (MOM) del vehículo",
+      "condicion": "si los panelados interiores no superan el 5% de la Masa en Orden de Marcha (MOM) del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "No se considerará reforma los panelados interiores siempre que no superen el 5% de la Masa en Orden de Marcha (MOM) del vehículo."
     },
@@ -45039,7 +44999,7 @@
       "tipo": "restriccion",
       "condicion": "desinstalación de elementos fijos que no afecten a la estructura del espacio de carga",
       "sin_tramitar_cr": false,
-      "fuente_literal": "la desinstalación de elementos fijos que no afecten a la estructura del espacio de carga, que se anotaran mediante diligencia."
+      "fuente_literal": "No se considerará reforma la desinstalación de elementos fijos que no afecten a la estructura del espacio de carga, que se anotaran mediante diligencia."
     },
     {
       "cr_origen": "CR-I-8.31",
@@ -45053,7 +45013,15 @@
       "cr_origen": "CR-I-8.31",
       "cr_destino": "CR-I-8.31",
       "tipo": "restriccion",
-      "condicion": "si la instalación es de aire acondicionado en el interior del vehículo o generador de corriente para los vehículos vivienda",
+      "condicion": "si la instalación es en la zona de pasajeros y afecta a la estructura",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "La instalación o desinstalación de elementos fijos en la zona de pasajeros que afecten a la estructura se tratará dentro de este CR."
+    },
+    {
+      "cr_origen": "CR-I-8.31",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "no se considera reforma la instalación de aire acondicionado en el interior del vehículo y generador de corriente para los vehículos vivienda",
       "sin_tramitar_cr": false,
       "fuente_literal": "No se considera reforma la instalación de aire acondicionado en el interior del vehículo y generador de corriente para los vehículos vivienda."
     },
@@ -45063,7 +45031,7 @@
       "tipo": "implica_cr",
       "condicion": "si los elementos instalados interfieren con los sistemas originales del vehículo",
       "sin_tramitar_cr": false,
-      "fuente_literal": "En cuanto a compatibilidad electromagnética, se comprobará que todos los elementos instalados cumplen con las Directivas que le son de aplicación y que no interfieren con los sistemas originales del vehículo. En caso contrario, se cumplirá con la Directiva 72/245/CEE."
+      "fuente_literal": "En caso contrario, se cumplirá con la Directiva 72/245/CEE."
     },
     {
       "cr_origen": "CR-I-8.50",
@@ -45116,10 +45084,18 @@
     {
       "cr_origen": "CR-I-8.52",
       "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "si los AR correspondientes ya han sido analizados en otro CR",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La modificación o instalación de protecciones laterales, protección trasera o antiproyección no se tramitará por este CR si los AR correspondientes ya han sido analizados en otro CR."
+      "tipo": "obliga_incorporar",
+      "condicion": "si la transformación afecta a la estructura",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "Equipos de aire acondicionado en el exterior si la transformación afecta a la estructura."
+    },
+    {
+      "cr_origen": "CR-I-8.52",
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
+      "condicion": "si no se encuentran anclados sobre los puntos de anclaje previstos por el fabricante del vehículo",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "Soportes (soporte + luz, en el caso de que se encuentren integrados) de señales V-1 (Vehículo prioritario) y V-2 (vehículo- obstáculo en la vía), cuando no vayan anclados sobre los puntos de anclaje previstos por el fabricante del vehículo."
     },
     {
       "cr_origen": "CR-I-8.52",
@@ -45141,7 +45117,7 @@
       "cr_origen": "CR-I-8.56",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "La modificación, incorporación o desinstalación de equipos de servicio de vehículos cisterna destinados al transporte de mercancías peligrosas",
+      "condicion": "modificación, incorporación o desinstalación de equipos de servicio de vehículos cisterna destinados al transporte de mercancías peligrosas",
       "sin_tramitar_cr": true,
       "fuente_literal": "La modificación, incorporación o desinstalación de equipos de servicio de vehículos cisterna destinados al transporte de mercancías peligrosas deberá hacerse en instalaciones autorizadas según el RD 948/2003."
     },
@@ -45149,7 +45125,7 @@
       "cr_origen": "CR-I-8.56",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC",
+      "condicion": "vehículos de categorías M y N que no incorporaban en su construcción original el ESC",
       "sin_tramitar_cr": false,
       "fuente_literal": "Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo."
     },
@@ -45157,7 +45133,7 @@
       "cr_origen": "CR-I-8.56",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie",
+      "condicion": "vehículos de categorías M y N que incorporen ESC de serie",
       "sin_tramitar_cr": false,
       "fuente_literal": "Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC."
     },
@@ -45173,7 +45149,7 @@
       "cr_origen": "CR-I-8.60",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986",
+      "condicion": "vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986",
       "sin_tramitar_cr": false,
       "fuente_literal": "El Acto Reglamentario de resistencia de la cabina, no se exigirá a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para este Acto Reglamentario."
     },
@@ -45205,7 +45181,7 @@
       "cr_origen": "CR-I-8.61",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "para vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986",
+      "condicion": "a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986",
       "sin_tramitar_cr": false,
       "fuente_literal": "El Acto Reglamentario de resistencia de la cabina, no se exigirá a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para este Acto Reglamentario."
     },
@@ -45267,8 +45243,8 @@
     },
     {
       "cr_origen": "CR-I-9.2",
-      "cr_destino": null,
-      "tipo": "restriccion",
+      "cr_destino": "CR-I-2.9",
+      "tipo": "implica_cr",
       "condicion": "si el AR de Instalación de Dispositivos de Alumbrado y Señalización ya ha sido analizado en otro CR con un nivel de cumplimiento igual o superior",
       "sin_tramitar_cr": false,
       "fuente_literal": "La modificación o instalación de elementos de alumbrado y señalización no se tramitará por este CR si el AR de Instalación de Dispositivos de Alumbrado y Señalización ya ha sido analizado en otro CR con un nivel de cumplimiento igual o superior."
@@ -45296,14 +45272,6 @@
       "condicion": "vehículos M1 matriculados después del 1/1/98 y resto de categorías matriculados después del 26/1/01",
       "sin_tramitar_cr": false,
       "fuente_literal": "VEHÍCULOS M1 MATRICULADOS DESPUES DEL 1/1/98 Y RESTO DE CATEGORÍAS MATRICULADOS DESPUES DEL 26/1/01 (Es obligatorio que el dispositivo esté homologado con la 94/20/CE)"
-    },
-    {
-      "cr_origen": "CR-I-10.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "si la desinstalación afecta a otras reformas",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No obstante, si la desinstalación afecta a otras reformas, se deberán tramitar por el código de reforma correspondiente."
     },
     {
       "cr_origen": "CR-I-10.6",
@@ -45381,41 +45349,25 @@
       "cr_origen": "CR-I-11.2",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "El vehículo ha de mantener las condiciones técnicas que le sean de aplicación por normativa por su MMTA ya que ésta no varía (Limitador, etc.)",
+      "condicion": "si la MMA es superior a 750 kg para vehículos de categoría O2",
       "sin_tramitar_cr": true,
-      "fuente_literal": "En cualquier caso, con la reducción de MMA, el vehículo ha de mantener las condiciones técnicas que le sean de aplicación por normativa por su MMTA ya que ésta no varía (Limitador, etc.)"
-    },
-    {
-      "cr_origen": "CR-I-11.2",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "La MMA no podrá superar nunca la MMTA del vehículo.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La MMA no podrá superar nunca la MMTA del vehículo."
-    },
-    {
-      "cr_origen": "CR-I-11.2",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg."
-    },
-    {
-      "cr_origen": "CR-I-11.2",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Para un vehículo de categoría O2 la MMA siempre será superior a 750 kg y por tanto, su matriculación será obligatoria.",
-      "sin_tramitar_cr": false,
       "fuente_literal": "Por ejemplo, para un vehículo de categoría O2 la MMA siempre será superior a 750 kg y por tanto, su matriculación será obligatoria."
     },
     {
       "cr_origen": "CR-I-11.2",
       "cr_destino": null,
       "tipo": "implica_cr",
-      "condicion": "La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras).",
+      "condicion": "si hay disminución de asientos o modificaciones en la MMR",
       "sin_tramitar_cr": false,
       "fuente_literal": "La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras)."
+    },
+    {
+      "cr_origen": "CR-I-11.2",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "hasta 1 de enero de 2027",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Adicionalmente, hasta 1 de enero de 2027, tampoco se considerará reforma la ampliación de los valores de MMA, según los nuevos límites recogidos en la Orden PJC/780/2025, anotándose mediante diligencia en el momento de la inspección periódica completa considerando las nuevas masas."
     },
     {
       "cr_origen": "CR-I-11.3",
@@ -45424,6 +45376,14 @@
       "condicion": "en el caso de disminución de MMR derivada del CR 10.1",
       "sin_tramitar_cr": false,
       "fuente_literal": "en el caso de disminución de MMR derivada del CR 10.1, no será necesario la aplicación de la fórmula."
+    },
+    {
+      "cr_origen": "CR-I-11.3",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "cuando se produzca un cambio de categoría",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Cuando se produzca un cambio de categoría deberán cumplirse los actos reglamentarios aplicables a la nueva categoría."
     },
     {
       "cr_origen": "CR-I-11.3",
@@ -45461,6 +45421,14 @@
       "cr_origen": "CR-II-1.1",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
+      "condicion": "Cuando el nuevo chasis, carrocería o pieza, no tenga grabado el número de identificación",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "Cuando el nuevo chasis, carrocería o pieza, no tenga grabado el número de identificación, se procederá por la Administración competente en materia de ITV, al troquelado del número."
+    },
+    {
+      "cr_origen": "CR-II-1.1",
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
       "condicion": null,
       "sin_tramitar_cr": true,
       "fuente_literal": "Se entenderá, que en todo caso, las piezas o conjuntos a incorporar al vehículo, deben ser de nueva fabricación y de las mismas características que el primitivo."
@@ -45469,7 +45437,7 @@
       "cr_origen": "CR-II-1.1",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "en caso de inexistencia del marcaje original del fabricante del vehículo",
+      "condicion": "En el caso de inexistencia del marcaje original del fabricante del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de inexistencia del marcaje original del fabricante del vehículo, el organismo competente de la Comunidad Autónoma que vaya a retroquelar el número de identificación, deberá realizar el retroquelado siguiendo las prescripciones de la Directiva 93/34/CEE en lo que se refiere, secuencia y tamaño, para los casos de 14 ó 17 caracteres."
     },
@@ -45477,9 +45445,9 @@
       "cr_origen": "CR-II-1.3",
       "cr_destino": "CR-II-8.52",
       "tipo": "implica_cr",
-      "condicion": "cuando los AR incluidos en la misma ya se encuentren contemplados (con un nivel de cumplimiento igual o más restrictivo) en los CR tramitados",
+      "condicion": "Este CR incluye el soporte de la placa de matrícula trasera",
       "sin_tramitar_cr": true,
-      "fuente_literal": "No será necesario tramitar este CR cuando los AR incluidos en la misma ya se encuentren contemplados (con un nivel de cumplimiento igual o más restrictivo) en los CR tramitados. Este CR incluye el soporte de la placa de matrícula trasera, no siendo necesario tramitar el CR 8.52."
+      "fuente_literal": "Este CR incluye el soporte de la placa de matrícula trasera, no siendo necesario tramitar el CR 8.52."
     },
     {
       "cr_origen": "CR-II-2.1",
@@ -45503,7 +45471,7 @@
       "tipo": "implica_cr",
       "condicion": "La reforma implica aumento o disminución de las prestaciones del vehículo",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Se aplicará el código de reforma 2.9 Modificación de sistemas o de la programación de los mismos que puedan variar la potencia máxima, en los siguientes casos:  La reforma implica aumento o disminución de las prestaciones del vehículo."
+      "fuente_literal": "Se aplicará el código de reforma 2.9 Modificación de sistemas o de la programación de los mismos que puedan variar la potencia máxima, en los siguientes casos: La reforma implica aumento o disminución de las prestaciones del vehículo."
     },
     {
       "cr_origen": "CR-II-2.2",
@@ -45511,7 +45479,7 @@
       "tipo": "restriccion",
       "condicion": "solo se efectúe la reprogramación de la centralita",
       "sin_tramitar_cr": false,
-      "fuente_literal": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que solo se efectúe la reprogramación de la centralita"
+      "fuente_literal": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que solo se efectúe la reprogramación de la centralita."
     },
     {
       "cr_origen": "CR-II-2.3",
@@ -45525,7 +45493,7 @@
       "cr_origen": "CR-II-2.3",
       "cr_destino": "CR-II-2.11",
       "tipo": "implica_cr",
-      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -45533,7 +45501,7 @@
       "cr_origen": "CR-II-2.3",
       "cr_destino": "CR-II-2.12",
       "tipo": "implica_cr",
-      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -45541,7 +45509,7 @@
       "cr_origen": "CR-II-2.4",
       "cr_destino": "CR-II-2.11",
       "tipo": "implica_cr",
-      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -45549,7 +45517,7 @@
       "cr_origen": "CR-II-2.4",
       "cr_destino": "CR-II-2.12",
       "tipo": "implica_cr",
-      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión",
+      "condicion": "modificaciones relacionadas con tecnologías de electrificación total o parcial",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12."
     },
@@ -45642,10 +45610,26 @@
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
     {
+      "cr_origen": "CR-II-3.4",
+      "cr_destino": "CR-II-3.5",
+      "tipo": "implica_cr",
+      "condicion": "si se modifica la relación final",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Esta reforma se aplica a transformaciones tales como, modificación o instalación de caja de transferencias, en la relación final."
+    },
+    {
+      "cr_origen": "CR-II-3.4",
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
+      "condicion": "si se sustituye el sistema de cadena por un sistema cardan o viceversa",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "sustitución de sistema de cadena por un sistema cardan o viceversa, entre otras."
+    },
+    {
       "cr_origen": "CR-II-3.6",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad",
+      "condicion": "Para vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción.",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
@@ -45669,7 +45653,7 @@
       "cr_origen": "CR-II-6.1",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Para vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación.",
+      "condicion": "Para vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción.",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
@@ -45677,7 +45661,7 @@
       "cr_origen": "CR-II-6.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si el volante original no incorpora airbag",
+      "condicion": "cuando de origen no lo incorpore",
       "sin_tramitar_cr": false,
       "fuente_literal": "No está permitido la incorporación de airbag en un volante, cuando de origen no lo incorpore."
     },
@@ -45685,7 +45669,7 @@
       "cr_origen": "CR-II-6.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si el volante original incorpora airbag",
+      "condicion": null,
       "sin_tramitar_cr": false,
       "fuente_literal": "No se podrá modificar un volante con airbag por otro diferente, aun cuando incorpore airbag."
     },
@@ -45693,31 +45677,15 @@
       "cr_origen": "CR-II-6.4",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "Para vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad, sin afectar a la seguridad de terceros y con declaración de conformidad.",
+      "condicion": "Para vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad, siempre que no afecte a la seguridad de terceros y el conductor declare su conocimiento y conformidad.",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
-    },
-    {
-      "cr_origen": "CR-II-6.4",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "No se considerará reforma la desinstalación de PMR.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se considerará reforma la desinstalación de PMR, anotándose en la tarjeta mediante diligencia."
-    },
-    {
-      "cr_origen": "CR-II-6.4",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "No se exigirá proyecto técnico ni certificado final de obra en el caso de instalación o desinstalación de dispositivos de ayuda para la conducción por PMR.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se exigirá proyecto técnico ni certificado final de obra en el caso de instalación o desinstalación de dispositivos de ayuda para la conducción por PMR."
     },
     {
       "cr_origen": "CR-II-7.3",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "En caso de desinstalación",
+      "condicion": "En caso de desinstalación, será necesario restituir los elementos de seguridad suprimidos por la reforma",
       "sin_tramitar_cr": true,
       "fuente_literal": "En caso de desinstalación, será necesario restituir los elementos de seguridad suprimidos por la reforma en su caso, aportando certificado de taller"
     },
@@ -45725,7 +45693,7 @@
       "cr_origen": "CR-II-7.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad",
+      "condicion": "Para vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
     },
@@ -45733,9 +45701,33 @@
       "cr_origen": "CR-II-8.1",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "si se anulan asientos y cinturones de seguridad",
-      "sin_tramitar_cr": true,
+      "condicion": "anulación permanente de plazas del pasajero en vehículos de 2 ruedas",
+      "sin_tramitar_cr": false,
       "fuente_literal": "Se considerará reforma la anulación permanente de plazas del pasajero en vehículos de 2 ruedas y la anulación de asientos y del cinturón de seguridad en su caso."
+    },
+    {
+      "cr_origen": "CR-II-8.2",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "No se podrá realizar la reforma sobrepasando el número de plazas indicado para la categoría, subcategoría, sub-subcategoría correspondiente",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "No se podrá realizar la reforma sobrepasando el número de plazas indicado para la categoría, subcategoría, sub-subcategoría correspondiente"
+    },
+    {
+      "cr_origen": "CR-II-8.2",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "El aumento de plazas debe ser adecuadas a su función, desestimándose la que no corresponda a una correcta “posición” de la plaza aumentada",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "El aumento de plazas debe ser adecuadas a su función, desestimándose la que no corresponda a una correcta “posición” de la plaza aumentada"
+    },
+    {
+      "cr_origen": "CR-II-8.2",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "La no interferencia con el conductor, éste debe mantener su posición inicial, sin ninguna limitación a la hora del accionamiento de los mandos, actuadores necesarios para la conducción del vehículo",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "La no interferencia con el conductor, éste debe mantener su posición inicial, sin ninguna limitación a la hora del accionamiento de los mandos, actuadores necesarios para la conducción del vehículo"
     },
     {
       "cr_origen": "CR-II-8.4",
@@ -45746,10 +45738,26 @@
       "fuente_literal": "El cambio de plaza de asiento por silla de ruedas irá acompañado de la adecuación de los instrumentos del vehículo para su utilización por un PMR, para el correcto uso de los mismos.  Mandos, testigos e indicadores  Rampa, trampilla de acceso  Fijación de la silla de ruedas"
     },
     {
+      "cr_origen": "CR-II-8.10",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "si no afecta al número de plazas, asidero ni dimensiones máximas del vehículo",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "la modificación del sillín y/o instalación de respaldo en vehículos de categoría L1e, L3e y Quads no se considerará reforma si no afecta al número de plazas, asidero ni dimensiones máximas del vehículo"
+    },
+    {
+      "cr_origen": "CR-II-8.10",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "si no se modifican/varían los puntos de anclaje del asiento y de los cinturones",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "No se exigirá proyecto técnico si no se modifican/varían los puntos de anclaje del asiento y de los cinturones."
+    },
+    {
       "cr_origen": "CR-II-8.40",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "si se instalan sistemas asistidos",
+      "condicion": "sólo en el caso de instalación de sistemas asistidos",
       "sin_tramitar_cr": false,
       "fuente_literal": "El proyecto técnico será exigible sólo en el caso de instalación de sistemas asistidos."
     },
@@ -45759,27 +45767,19 @@
       "tipo": "restriccion",
       "condicion": "si los elementos instalados no cumplen con las Directivas aplicables o no llevan marcado CE",
       "sin_tramitar_cr": false,
-      "fuente_literal": "En cuanto a compatibilidad electromagnética, se comprobará que todos los elementos instalados cumplen con las Directivas que le son de aplicación o llevan marcado CE y que no interfieren con los sistemas originales del vehículo. En caso contrario, se cumplirá con la Directiva 97/24/CE Capitulo 8."
+      "fuente_literal": "En caso contrario, se cumplirá con la Directiva 97/24/CE Capitulo 8."
     },
     {
       "cr_origen": "CR-II-8.51",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "cúpulas cuya instalación no supere el valor máximo de la altura recogida en la homologación de tipo del vehículo o que se puedan desmontar, sin necesidad de ninguna herramienta",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No obstante, las cúpulas cuya instalación no supere el valor máximo de la altura recogida en la homologación de tipo del vehículo o que se puedan desmontar, sin necesidad de ninguna herramienta, no se considerarán reforma."
-    },
-    {
-      "cr_origen": "CR-II-8.51",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "apertura de ventanillas o techos solares no afecten a la estructura",
+      "condicion": "cuando la apertura de ventanillas o techos solares no afecten a la estructura",
       "sin_tramitar_cr": false,
       "fuente_literal": "Cuando la apertura de ventanillas o techos solares no afecten a la estructura, esta reforma se tramitará sin necesidad de aportar el proyecto técnico, ni certificado de ejecución de obra."
     },
     {
       "cr_origen": "CR-II-8.52",
-      "cr_destino": "CR-II-8.52",
+      "cr_destino": null,
       "tipo": "obliga_incorporar",
       "condicion": "si se instalan espejos exteriores en anclajes o ubicación distintos a los habilitados por el fabricante",
       "sin_tramitar_cr": false,
@@ -45787,15 +45787,15 @@
     },
     {
       "cr_origen": "CR-II-8.52",
-      "cr_destino": "CR-II-8.52",
+      "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "si se instalan soportes de rótulos o carteles publicitarios, así como soportes para la instalación de sistemas de alumbrado específico",
+      "condicion": "si se instalan estribos que modifiquen el emplazamiento o funcionalidad originales",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Soportes de rótulos o carteles publicitarios, así como soportes para la instalación de sistemas de alumbrado específico."
+      "fuente_literal": "estribos que modifiquen el emplazamiento o funcionalidad originales."
     },
     {
       "cr_origen": "CR-II-8.52",
-      "cr_destino": "CR-II-8.52",
+      "cr_destino": null,
       "tipo": "restriccion",
       "condicion": "para vehículos que vayan a ser conducidos por PMR y necesiten la retirada o modificación de algún elemento de seguridad",
       "sin_tramitar_cr": false,
@@ -45803,7 +45803,7 @@
     },
     {
       "cr_origen": "CR-II-8.52",
-      "cr_destino": "CR-II-8.52",
+      "cr_destino": null,
       "tipo": "restriccion",
       "condicion": "para la incorporación de estructuras de protección contra el vuelco (ROPS) en vehículos de categoría L7eB2",
       "sin_tramitar_cr": false,
@@ -45821,9 +45821,9 @@
       "cr_origen": "CR-II-8.90",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "al haber un cambio sustancial en las masas del vehículo y los requerimientos para cada categoría",
-      "sin_tramitar_cr": true,
-      "fuente_literal": "En el acto reglamentario de frenado, al haber un cambio sustancial en las masas del vehículo y los requerimientos para cada categoría, es necesario realizar los ensayos o disponer del AR."
+      "condicion": "El acoplamiento de un sidecar a una motocicleta",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "La incorporación del sidecar no deberá alterar las condiciones del bastidor original"
     },
     {
       "cr_origen": "CR-II-8.91",
@@ -45832,6 +45832,14 @@
       "condicion": "Para vehículos conducidos por PMR que necesiten la retirada o modificación de algún elemento de seguridad, siempre que no afecte a la seguridad de terceros y el conductor declare su conocimiento y conformidad.",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción."
+    },
+    {
+      "cr_origen": "CR-II-8.94",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "cuando el antirrobo no anule o sustituya el dispositivo original del vehículo",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "La adición de un antirrobo, no se considerará reforma, cuando éste no anule o sustituya el dispositivo original del vehículo."
     },
     {
       "cr_origen": "CR-II-9.1",
@@ -45861,9 +45869,9 @@
       "cr_origen": "CR-II-9.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original a excepción de los dispositivos de alumbrado de cruce y carretera.",
+      "condicion": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original a excepción de los dispositivos de alumbrado de cruce y carretera",
       "sin_tramitar_cr": false,
-      "fuente_literal": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original a excepción de los dispositivos de alumbrado de cruce y carretera."
+      "fuente_literal": "No se considerará reforma la instalación de repuestos o recambios ni la sustitución de grupos ópticos de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original a excepción de los dispositivos de alumbrado de cruce y carretera"
     },
     {
       "cr_origen": "CR-II-9.2",
@@ -45875,25 +45883,17 @@
     },
     {
       "cr_origen": "CR-II-10.3",
-      "cr_destino": "CR-II-10",
-      "tipo": "implica_cr",
-      "condicion": "si el dispositivo de acoplamiento se instala en vehículos de dos ruedas, tres ruedas, y cuadriciclos y quads",
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
+      "condicion": "Para vehículos con contraseña de homologación anteriores al R (UE) 168/2013",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Los dispositivos de acoplamiento que se vayan a instalar en vehículos de dos ruedas, tres ruedas, y cuadriciclos y quads deben estar debidamente homologados para instalación por el Capítulo 10 de la Directiva 97/24."
+      "fuente_literal": "Los dispositivos de acoplamiento que se vayan a instalar en vehículos de dos ruedas, tres ruedas, y cuadriciclos y quads deben estar debidamente homologados para instalación por el Capítulo 10 de la Directiva 97/24 marcado según Directiva 94/20/CE. Este requisito es obligatorio para vehículos con contraseña europea, anteriores al R(UE) 168/2013."
     },
     {
       "cr_origen": "CR-II-10.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "para vehículos con contraseña europea, anteriores al R(UE) 168/2013",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Este requisito es obligatorio para vehículos con contraseña europea, anteriores al R(UE) 168/2013."
-    },
-    {
-      "cr_origen": "CR-II-10.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "en vehículos con contraseña nacional",
+      "condicion": "En vehículos con contraseña nacional no está permitido disponer de dispositivo de acoplamiento.",
       "sin_tramitar_cr": false,
       "fuente_literal": "En vehículos con contraseña nacional no está permitido disponer de dispositivo de acoplamiento."
     },
@@ -45901,9 +45901,25 @@
       "cr_origen": "CR-II-10.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "para motocicletas, vehículos de tres ruedas, ciclomotores",
+      "condicion": "Para las categorías QUAD/UTV, el enganche de remolque podrá estar homologado a la directiva 97/24 ó 89/173",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Para las categorías QUAD/UTV, el enganche de remolque podrá estar homologado a la directiva 97/24 ó 89/173."
+    },
+    {
+      "cr_origen": "CR-II-10.3",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "Las motocicletas, los vehículos de tres ruedas, los ciclomotores podrán arrastrar un remolque o semirremolque, siempre que no superen el 50 por ciento de la masa en vacío del vehículo tractor.",
       "sin_tramitar_cr": false,
       "fuente_literal": "Las motocicletas, los vehículos de tres ruedas, los ciclomotores podrán arrastrar un remolque o semirremolque, siempre que no superen el 50 por ciento de la masa en vacío del vehículo tractor."
+    },
+    {
+      "cr_origen": "CR-II-10.3",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "Para vehículos homologados por el R(UE) 168/2013 podrán utilizarse otros dispositivos distintos a la bola de remolque.",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Para vehículos homologados por el R(UE) 168/2013 podrán utilizarse otros dispositivos distintos a la bola de remolque."
     },
     {
       "cr_origen": "CR-II-11.1",
@@ -45924,8 +45940,8 @@
     {
       "cr_origen": "CR-II-11.3",
       "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "solo podrá aceptarse cuando se produzca como consecuencia o derive de la ejecución de otras reformas o esté amparada por la Homologación de Tipo del vehículo para la nueva MMTA",
+      "tipo": "implica_cr",
+      "condicion": "cuando se produzca como consecuencia o derive de la ejecución de otras reformas",
       "sin_tramitar_cr": false,
       "fuente_literal": "Esta reforma solo podrá aceptarse cuando se produzca como consecuencia o derive de la ejecución de otras reformas o esté amparada por la Homologación de Tipo del vehículo para la nueva MMTA."
     },
@@ -45941,31 +45957,7 @@
       "cr_origen": "CR-III-1.1",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "En las CCAA donde esta función esté delegada a las ITV's",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "En las CCAA donde esta función esté delegada a las ITV's, estas deberán aplicar los procedimientos establecidos por la Comunidad Autónoma correspondiente."
-    },
-    {
-      "cr_origen": "CR-III-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Se autorizará la reforma únicamente en los casos en que, por accidente, deterioro de la pieza, se hubiese inutilizado el autobastidor primitivo, o por indicación del fabricante por defecto de fabricación o garantía.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Se autorizará la reforma únicamente en los casos en que, por accidente, deterioro de la pieza, se hubiese inutilizado el autobastidor primitivo, o por indicación del fabricante por defecto de fabricación o garantía."
-    },
-    {
-      "cr_origen": "CR-III-1.1",
-      "cr_destino": null,
-      "tipo": "obliga_incorporar",
-      "condicion": "Si la nueva pieza careciere de la numeración otorgada por el fabricante",
-      "sin_tramitar_cr": true,
-      "fuente_literal": "Si la nueva pieza careciere de la numeración otorgada por el fabricante, se procederá a troquelar o grabar un nuevo número de identificación, bajo el control del órgano competente en materia de ITV de conformidad con el artículo 8 del Reglamento General de Vehículos."
-    },
-    {
-      "cr_origen": "CR-III-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "En el caso de inexistencia del fabricante del vehículo",
+      "condicion": "En caso de inexistencia del fabricante del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de inexistencia del fabricante del vehículo, el organismo competente de la Comunidad Autónoma que vaya a troquelar el número de identificación deberá realizar el retroquelado siguiendo las prescripciones de la 76/114/CEE en lo que se refiere a caracteres, secuencia y tamaño."
     },
@@ -45973,7 +45965,7 @@
       "cr_origen": "CR-III-1.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si los AR incluidos ya se encuentran contemplados con un nivel de cumplimiento igual o más restrictivo en los CR tramitados",
+      "condicion": "cuando los AR incluidos en la misma ya se encuentren contemplados (con un nivel de cumplimiento igual o más restrictivo) en los CR tramitados",
       "sin_tramitar_cr": false,
       "fuente_literal": "No será necesario tramitar este CR cuando los AR incluidos en la misma ya se encuentren contemplados (con un nivel de cumplimiento igual o más restrictivo) en los CR tramitados."
     },
@@ -46029,7 +46021,7 @@
       "cr_origen": "CR-III-2.9",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si solo se efectúa la reprogramación de la Unidad Electrónica de Control (ECU)",
+      "condicion": "si sólo se efectúa la reprogramación de la Unidad Electrónica de Control (ECU)",
       "sin_tramitar_cr": false,
       "fuente_literal": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la Unidad Electrónica de Control (ECU)."
     },
@@ -46093,24 +46085,24 @@
       "cr_origen": "CR-III-4.5",
       "cr_destino": "CR-III-11.0",
       "tipo": "implica_cr",
-      "condicion": "Para RA y MAR matriculados antes del 01/01/2019 (01/01/2021 para fin de serie) usando la tabla de variación de capacidad de carga en función de la velocidad del Anexo VIII del R 54 CEPE/ONU.",
+      "condicion": "Para RA y MAR matriculados antes del 01/01/2019 (01/01/2021 para fin de serie) usando la tabla de variación de capacidad de carga del Anexo VIII del R 54 CEPE/ONU.",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Alternativamente al supuesto del párrafo anterior, en el caso de RA y MAR matriculados con anterioridad al 01/01/2019 (01/01/2021 para vehículos incluidos en fin de serie) se podrá utilizar la tabla de la variación de la capacidad de carga en función de la velocidad del Anexo VIII del R 54 CEPE/ONU. En tal caso, se tramitará el C.R 11.0."
+      "fuente_literal": "En tal caso, se tramitará el C.R 11.0. Se deberá presentar informe de conformidad justificando la aplicación de la tabla de la variación de la capacidad de carga en función de la velocidad (se permitirá también Anexo VIII del R 54) haciendo constancia de la velocidad máxima a la que puede circular en dichas condiciones."
     },
     {
       "cr_origen": "CR-III-4.5",
       "cr_destino": "CR-III-11.3",
       "tipo": "restriccion",
-      "condicion": "No será necesaria la tramitación cuando los neumáticos instalados no tengan un índice de carga acorde con la MMTA que figura en tarjeta ITV.",
+      "condicion": "No será necesaria la tramitación del CR 11.3 cuando los neumáticos instalados no tengan un índice de carga acorde con la MMTA que figura en tarjeta ITV.",
       "sin_tramitar_cr": false,
       "fuente_literal": "No será necesaria la tramitación del CR 11.3 cuando los neumáticos instalados no tengan un índice de carga acorde con la MMTA que figura en tarjeta ITV."
     },
     {
       "cr_origen": "CR-III-6.1",
-      "cr_destino": "CR-III-6.2",
-      "tipo": "implica_cr",
-      "condicion": "únicamente cuando se modifique el sistema hidráulico del mecanismo de dirección",
-      "sin_tramitar_cr": false,
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
+      "condicion": "cuando se modifique el sistema hidráulico del mecanismo de dirección",
+      "sin_tramitar_cr": true,
       "fuente_literal": "instalación de sistemas de autoguiado únicamente cuando se modifique el sistema hidráulico del mecanismo de dirección"
     },
     {
@@ -46120,14 +46112,6 @@
       "condicion": "No se permitirá la existencia simultánea de dos mandos de dirección (volante) en un mismo habitáculo o compartimento",
       "sin_tramitar_cr": false,
       "fuente_literal": "No se permitirá la existencia simultánea de dos mandos de dirección (volante) en un mismo habitáculo o compartimento"
-    },
-    {
-      "cr_origen": "CR-III-6.3",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "si el vehículo dispone de airbag",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se considerará reforma cuando se sustituya el volante original del vehículo por otro con el mismo diámetro o que no varíe en un + 10 % siempre que el vehículo no disponga de airbag."
     },
     {
       "cr_origen": "CR-III-6.3",
@@ -46156,9 +46140,9 @@
     {
       "cr_origen": "CR-III-7.4",
       "cr_destino": null,
-      "tipo": "obliga_incorporar",
-      "condicion": "vehículo esté provisto de frenos con asistencia",
-      "sin_tramitar_cr": true,
+      "tipo": "restriccion",
+      "condicion": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013",
+      "sin_tramitar_cr": false,
       "fuente_literal": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 se deberá cumplir con la Directiva de acoplamiento de freno con los remolques, en los casos en que el vehículo esté provisto de frenos con asistencia."
     },
     {
@@ -46213,7 +46197,7 @@
       "cr_origen": "CR-III-8.50",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "se incremente el voladizo delantero",
+      "condicion": "solo si se incrementa el voladizo delantero",
       "sin_tramitar_cr": false,
       "fuente_literal": "El acto reglamentario de mecanismos de dirección sólo se aplicará en los casos en que se incremente el voladizo delantero."
     },
@@ -46229,45 +46213,13 @@
       "cr_origen": "CR-III-8.54",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si la estructura de protección antivuelco está incluida en la homologación de tipo del vehículo u homologada por la Orden del 27 de julio de 1979",
-      "sin_tramitar_cr": true,
+      "condicion": "si la estructura de protección antivuelco está incluida en la homologación de tipo del vehículo u homologada para el tipo de vehículo por la Orden del 27 de julio de 1979",
+      "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de que la estructura de protección antivuelco esté incluida en la homologación de tipo del vehículo u homologada para el tipo de vehículo por la Orden del 27 de julio de 1979 (Contraseñas EP ----) sólo se tramitará a través de una diligencia administrativa mediante anotación en la tarjeta ITV del mismo."
     },
     {
       "cr_origen": "CR-III-8.55",
-      "cr_destino": "CR-III-3",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-III-8.55",
-      "cr_destino": "CR-III-4",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-III-8.55",
-      "cr_destino": "CR-III-6",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-III-8.55",
-      "cr_destino": "CR-III-7",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-III-8.55",
-      "cr_destino": "CR-III-8",
+      "cr_destino": "CR-III-10",
       "tipo": "implica_cr",
       "condicion": null,
       "sin_tramitar_cr": false,
@@ -46301,7 +46253,7 @@
       "cr_origen": "CR-III-11.1",
       "cr_destino": "CR-III-11.0",
       "tipo": "implica_cr",
-      "condicion": "Para cambios de clasificación o de uso del resto de categorías si el vehículo está homologado para la nueva clasificación",
+      "condicion": "si el vehículo está homologado para la nueva clasificación",
       "sin_tramitar_cr": false,
       "fuente_literal": "Para cambios de clasificación o de uso del resto de categorías si el vehículo está homologado para la nueva clasificación se tramitará mediante el Código de reforma 11.0."
     },
@@ -46309,7 +46261,7 @@
       "cr_origen": "CR-III-11.1",
       "cr_destino": null,
       "tipo": "obliga_incorporar",
-      "condicion": "Si como consecuencia de este cambio se produce un cambio de categoría",
+      "condicion": "si como consecuencia de este cambio se produce un cambio de categoría",
       "sin_tramitar_cr": true,
       "fuente_literal": "Si como consecuencia de este cambio se produce un cambio de categoría, el vehículo reformado deberá cumplir con todos los actos reglamentarios correspondientes a la nueva categoría."
     },
@@ -46317,7 +46269,7 @@
       "cr_origen": "CR-III-11.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "La MMA no podrá superar nunca la MMTA del vehículo.",
+      "condicion": "La MMA no podrá superar nunca la MMTA del vehículo",
       "sin_tramitar_cr": false,
       "fuente_literal": "La MMA no podrá superar nunca la MMTA del vehículo."
     },
@@ -46325,7 +46277,7 @@
       "cr_origen": "CR-III-11.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg.",
+      "condicion": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg",
       "sin_tramitar_cr": false,
       "fuente_literal": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg."
     },
@@ -46333,25 +46285,25 @@
       "cr_origen": "CR-III-11.2",
       "cr_destino": null,
       "tipo": "implica_cr",
-      "condicion": "La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente.",
+      "condicion": "La modificación de la MMA puede estar asociada a otras reformas",
       "sin_tramitar_cr": false,
       "fuente_literal": "La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras)."
     },
     {
       "cr_origen": "CR-III-11.3",
       "cr_destino": null,
-      "tipo": "obliga_incorporar",
+      "tipo": "restriccion",
       "condicion": "cuando se produzca un cambio de categoría",
-      "sin_tramitar_cr": true,
+      "sin_tramitar_cr": false,
       "fuente_literal": "Cuando se produzca un cambio de categoría deberán cumplirse los actos reglamentarios aplicables a la nueva categoría."
     },
     {
       "cr_origen": "CR-III-11.3",
       "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "cuando derive de la ejecución de otras reformas o esté amparada por la Homologación de Tipo del vehículo para la nueva MMTA",
+      "tipo": "implica_cr",
+      "condicion": "cuando derive de la ejecución de otras reformas",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Esta reforma solo podrá aceptarse cuando se produzca como consecuencia o derive de la ejecución de otras reformas o esté amparada por la Homologación de Tipo del vehículo para la nueva MMTA."
+      "fuente_literal": "Esta reforma solo podrá aceptarse cuando se produzca como consecuencia o derive de la ejecución de otras reformas."
     },
     {
       "cr_origen": "CR-III-11.4",
@@ -46360,6 +46312,30 @@
       "condicion": "Sólo podrá realizarse el aumento de velocidad máxima si el vehículo se corresponde con un tipo homologado a esa velocidad",
       "sin_tramitar_cr": false,
       "fuente_literal": "Sólo podrá realizarse el aumento de velocidad máxima si el vehículo se corresponde con un tipo homologado a esa velocidad"
+    },
+    {
+      "cr_origen": "CR-IV-1.1",
+      "cr_destino": null,
+      "tipo": "obliga_incorporar",
+      "condicion": "las piezas o conjuntos a incorporar al vehículo, deben ser de nueva fabricación y de las mismas características que el primitivo",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "Se entenderá, que, en todo caso, las piezas o conjuntos a incorporar al vehículo, deben ser de nueva fabricación y de las mismas características que el primitivo."
+    },
+    {
+      "cr_origen": "CR-IV-1.1",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "únicamente en los casos en que, por accidente, deterioro de la pieza, se hubiese inutilizado el autobastidor primitivo, o por indicación del fabricante por defecto de fabricación o garantía",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Se autorizará la reforma únicamente en los casos en que, por accidente, deterioro de la pieza, se hubiese inutilizado el autobastidor primitivo, o por indicación del fabricante por defecto de fabricación o garantía."
+    },
+    {
+      "cr_origen": "CR-IV-1.1",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "en el caso de inexistencia del fabricante del vehículo",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "En el caso de inexistencia del fabricante del vehículo, el organismo competente de la Comunidad Autónoma que vaya a troquelar el número de identificación deberá realizar el retroquelado siguiendo las prescripciones de la 76/114/CEE en lo que se refiere a caracteres, secuencia y tamaño."
     },
     {
       "cr_origen": "CR-IV-1.3",
@@ -46413,7 +46389,7 @@
       "cr_origen": "CR-IV-2.9",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si solo se efectúa la reprogramación de la Unidad Electrónica de Control (ECU)",
+      "condicion": "si sólo se efectúa la reprogramación de la Unidad Electrónica de Control (ECU)",
       "sin_tramitar_cr": false,
       "fuente_literal": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la Unidad Electrónica de Control (ECU)."
     },
@@ -46428,18 +46404,10 @@
     {
       "cr_origen": "CR-IV-3.1",
       "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013"
-    },
-    {
-      "cr_origen": "CR-IV-3.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "únicamente cuando no sea efectuada conjuntamente la sustitución del motor y su/s caja/s de cambio",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Proyecto técnico requerido únicamente cuando no sea efectuada conjuntamente la sustitución del motor y su/s caja/s de cambio"
+      "tipo": "obliga_incorporar",
+      "condicion": "cuando no sea efectuada conjuntamente la sustitución del motor y su/s caja/s de cambio",
+      "sin_tramitar_cr": true,
+      "fuente_literal": "Proyecto técnico requerido únicamente cuando no sea efectuada conjuntamente la sustitución del motor y su/s caja/s de cambio."
     },
     {
       "cr_origen": "CR-IV-3.3",
@@ -46477,7 +46445,7 @@
       "cr_origen": "CR-IV-4.5",
       "cr_destino": "CR-IV-11.0",
       "tipo": "implica_cr",
-      "condicion": "Para RA y MAR matriculados antes del 01/01/2019 (01/01/2021 para fin de serie) usando la tabla de variación de capacidad de carga en función de la velocidad del Anexo VIII del R 54 CEPE/ONU.",
+      "condicion": "Para RA y MAR matriculados antes del 01/01/2019 (01/01/2021 para fin de serie) usando la tabla de variación de capacidad de carga del Anexo VIII del R 54 CEPE/ONU",
       "sin_tramitar_cr": false,
       "fuente_literal": "Alternativamente al supuesto del párrafo anterior, en el caso de RA y MAR matriculados con anterioridad al 01/01/2019 (01/01/2021 para vehículos incluidos en fin de serie) se podrá utilizar la tabla de la variación de la capacidad de carga en función de la velocidad del Anexo VIII del R 54 CEPE/ONU. En tal caso, se tramitará el C.R 11.0."
     },
@@ -46485,17 +46453,25 @@
       "cr_origen": "CR-IV-4.5",
       "cr_destino": "CR-IV-11.3",
       "tipo": "restriccion",
-      "condicion": "No será necesaria la tramitación cuando los neumáticos instalados no tengan un índice de carga acorde con la MMTA que figura en tarjeta ITV.",
+      "condicion": "Cuando los neumáticos instalados no tengan un índice de carga acorde con la MMTA que figura en tarjeta ITV",
       "sin_tramitar_cr": false,
       "fuente_literal": "No será necesaria la tramitación del CR 11.3 cuando los neumáticos instalados no tengan un índice de carga acorde con la MMTA que figura en tarjeta ITV."
     },
     {
       "cr_origen": "CR-IV-6.1",
-      "cr_destino": "CR-IV-6.2",
+      "cr_destino": "CR-IV-2.9",
       "tipo": "implica_cr",
       "condicion": "únicamente cuando se modifique el sistema hidráulico del mecanismo de dirección",
       "sin_tramitar_cr": false,
       "fuente_literal": "instalación de sistemas de autoguiado (únicamente cuando se modifique el sistema hidráulico del mecanismo de dirección)"
+    },
+    {
+      "cr_origen": "CR-IV-6.2",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "No se permitirá la existencia simultánea de dos mandos de dirección (volante) en un mismo habitáculo o compartimento.",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "No se permitirá la existencia simultánea de dos mandos de dirección (volante) en un mismo habitáculo o compartimento."
     },
     {
       "cr_origen": "CR-IV-6.3",
@@ -46514,18 +46490,10 @@
       "fuente_literal": "El acto reglamentario de mecanismos de dirección se aplicará exclusivamente cuando el diámetro del volante sea menor al del original."
     },
     {
-      "cr_origen": "CR-IV-7.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Para vehículos homologados conforme a los AR antes del R (UE) 167/2013",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Para los vehículos homologados conforme a los AR antes del R (UE) 167/2013, cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá́ el cumplimiento con el nivel (3) para el Acto Reglamentario de Frenado."
-    },
-    {
       "cr_origen": "CR-IV-7.3",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 y provistos de frenos con asistencia",
+      "condicion": "vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 con frenos con asistencia",
       "sin_tramitar_cr": false,
       "fuente_literal": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 se deberá cumplir con la Directiva de acoplamiento de freno con los remolques, en los casos en que el vehículo esté provisto de frenos con asistencia."
     },
@@ -46540,9 +46508,9 @@
     {
       "cr_origen": "CR-IV-7.4",
       "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013",
-      "sin_tramitar_cr": false,
+      "tipo": "obliga_incorporar",
+      "condicion": "vehículo esté provisto de frenos con asistencia",
+      "sin_tramitar_cr": true,
       "fuente_literal": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013 se deberá cumplir con la Directiva de acoplamiento de freno con los remolques, en los casos en que el vehículo esté provisto de frenos con asistencia."
     },
     {
@@ -46570,34 +46538,26 @@
       "fuente_literal": "Se exigirá la resistencia de los asientos únicamente cuando el asiento incorpore algún punto de anclaje del cinturón de seguridad."
     },
     {
-      "cr_origen": "CR-IV-8.11",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "cuando no se modifique la posición de los puntos de anclaje",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Cuando no se modifique la posición de los puntos de anclaje, el proyecto técnico no será necesario."
-    },
-    {
       "cr_origen": "CR-IV-8.12",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Solo se permite la tramitación de este CR si el vehículo dispone de ROPS homologada o certificada según norma UNE/EN/ISO aplicable.",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Solo se permite la tramitación de este CR si el vehículo dispone de ROPS homologada o certificada según norma UNE/EN/ISO aplicable."
-    },
-    {
-      "cr_origen": "CR-IV-8.12",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Para vehículos de categoría MA2, cumplimiento R(UE) 1322/2014, anexo XIX o Reglamento CEPE/ONU 16R",
+      "cr_destino": "CR-IV-16R",
+      "tipo": "implica_cr",
+      "condicion": "Para vehículos de categoría MA2",
       "sin_tramitar_cr": false,
       "fuente_literal": "Para vehículos de categoría MA2, cumplimiento R(UE) 1322/2014, anexo XIX o Reglamento CEPE/ONU 16R"
+    },
+    {
+      "cr_origen": "CR-IV-8.12",
+      "cr_destino": null,
+      "tipo": "restriccion",
+      "condicion": "Solo se permite la tramitación de este CR si el vehículo dispone de ROPS homologada o certificada según norma UNE/EN/ISO aplicable",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Solo se permite la tramitación de este CR si el vehículo dispone de ROPS homologada o certificada según norma UNE/EN/ISO aplicable"
     },
     {
       "cr_origen": "CR-IV-8.50",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "solo si se incrementa el voladizo delantero",
+      "condicion": "solo se aplica si se incrementa el voladizo delantero",
       "sin_tramitar_cr": false,
       "fuente_literal": "El acto reglamentario de mecanismos de dirección sólo se aplicará en los casos en que se incremente el voladizo delantero."
     },
@@ -46613,45 +46573,13 @@
       "cr_origen": "CR-IV-8.54",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "si la estructura de protección antivuelco está incluida en la homologación de tipo del vehículo u homologada para el tipo de vehículo por la Orden del 27 de julio de 1979",
-      "sin_tramitar_cr": true,
+      "condicion": "si la estructura de protección antivuelco está incluida en la homologación de tipo del vehículo u homologada por la Orden del 27 de julio de 1979",
+      "sin_tramitar_cr": false,
       "fuente_literal": "En el caso de que la estructura de protección antivuelco esté incluida en la homologación de tipo del vehículo u homologada para el tipo de vehículo por la Orden del 27 de julio de 1979 (Contraseñas EP ----) sólo se tramitará a través de una diligencia administrativa mediante anotación en la tarjeta ITV del mismo."
     },
     {
       "cr_origen": "CR-IV-8.55",
-      "cr_destino": "CR-IV-3",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-IV-8.55",
-      "cr_destino": "CR-IV-4",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-IV-8.55",
-      "cr_destino": "CR-IV-6",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-IV-8.55",
-      "cr_destino": "CR-IV-7",
-      "tipo": "implica_cr",
-      "condicion": null,
-      "sin_tramitar_cr": false,
-      "fuente_literal": "La estructura homologada con código 10 debe estar complementada con los códigos 3, 4, 6, 7 y 8."
-    },
-    {
-      "cr_origen": "CR-IV-8.55",
-      "cr_destino": "CR-IV-8",
+      "cr_destino": "CR-IV-10",
       "tipo": "implica_cr",
       "condicion": null,
       "sin_tramitar_cr": false,
@@ -46672,22 +46600,6 @@
       "condicion": "cuando la estructura de protección no incorpore parabrisas, vidrios o ventanas",
       "sin_tramitar_cr": false,
       "fuente_literal": "Cuando la estructura de protección no incorpore parabrisas, vidrios o ventanas no estará obligada al cumplimiento con la 89/173/CEE III ó 92/22/CEE."
-    },
-    {
-      "cr_origen": "CR-IV-9.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Para vehículos homologados conforme a los AR anteriores al R (UE) 167/2013"
-    },
-    {
-      "cr_origen": "CR-IV-9.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "No se consideran reforma la instalación de faros de trabajo, los rotativos o destellantes propios de la señalización luminosa específica para servicios especiales o propios de vehículos prioritarios, vehículos especiales, así como la desinstalación de faros adicionales de largo alcance, faros antiniebla opcionales y cualquier otro dispositivo no obligatorio",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se consideran reforma la instalación de faros de trabajo, los rotativos o destellantes propios de la señalización luminosa específica para servicios especiales o propios de vehículos prioritarios, vehículos especiales, así como la desinstalación de faros adicionales de largo alcance, faros antiniebla opcionales y cualquier otro dispositivo no obligatorio"
     },
     {
       "cr_origen": "CR-IV-10.5",
@@ -46725,7 +46637,7 @@
       "cr_origen": "CR-IV-11.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "La MMA no podrá superar nunca la MMTA del vehículo",
+      "condicion": "La MMA no podrá superar nunca la MMTA del vehículo.",
       "sin_tramitar_cr": false,
       "fuente_literal": "La MMA no podrá superar nunca la MMTA del vehículo."
     },
@@ -46733,7 +46645,7 @@
       "cr_origen": "CR-IV-11.2",
       "cr_destino": null,
       "tipo": "restriccion",
-      "condicion": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg",
+      "condicion": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg.",
       "sin_tramitar_cr": false,
       "fuente_literal": "En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg."
     },
@@ -46741,25 +46653,25 @@
       "cr_origen": "CR-IV-11.2",
       "cr_destino": null,
       "tipo": "implica_cr",
-      "condicion": "La modificación de la MMA puede estar asociada a otras reformas",
+      "condicion": "La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras).",
       "sin_tramitar_cr": false,
       "fuente_literal": "La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras)."
     },
     {
       "cr_origen": "CR-IV-11.3",
       "cr_destino": null,
-      "tipo": "obliga_incorporar",
-      "condicion": "cuando se produzca un cambio de categoría",
-      "sin_tramitar_cr": true,
-      "fuente_literal": "Cuando se produzca un cambio de categoría deberán cumplirse los actos reglamentarios aplicables a la nueva categoría."
+      "tipo": "implica_cr",
+      "condicion": "cuando se produzca como consecuencia o derive de la ejecución de otras reformas",
+      "sin_tramitar_cr": false,
+      "fuente_literal": "Esta reforma solo podrá aceptarse cuando se produzca como consecuencia o derive de la ejecución de otras reformas."
     },
     {
       "cr_origen": "CR-IV-11.3",
       "cr_destino": null,
-      "tipo": "implica_cr",
-      "condicion": "cuando derive de la ejecución de otras reformas",
+      "tipo": "restriccion",
+      "condicion": "cuando se produzca un cambio de categoría",
       "sin_tramitar_cr": false,
-      "fuente_literal": "Esta reforma solo podrá aceptarse cuando se produzca como consecuencia o derive de la ejecución de otras reformas."
+      "fuente_literal": "Cuando se produzca un cambio de categoría deberán cumplirse los actos reglamentarios aplicables a la nueva categoría."
     },
     {
       "cr_origen": "CR-IV-11.4",
@@ -46768,78 +46680,6 @@
       "condicion": "Sólo podrá realizarse el aumento de velocidad máxima si el vehículo se corresponde con un tipo homologado a esa velocidad",
       "sin_tramitar_cr": false,
       "fuente_literal": "Sólo podrá realizarse el aumento de velocidad máxima si el vehículo se corresponde con un tipo homologado a esa velocidad"
-    },
-    {
-      "cr_origen": "CR-II-8.10",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "si no afecta al número de plazas, asidero ni dimensiones máximas del vehículo",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "la modificación del sillín y/o instalación de respaldo en vehículos de categoría L1e, L3e y Quads no se considerará reforma si no afecta al número de plazas, asidero ni dimensiones máximas del vehículo, en cuyo caso se tramitaran por la/s reforma/s correspondiente/s."
-    },
-    {
-      "cr_origen": "CR-II-8.10",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "si no se modifican/varían los puntos de anclaje del asiento y de los cinturones",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No se exigirá proyecto técnico si no se modifican/varían los puntos de anclaje del asiento y de los cinturones."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "obliga_incorporar",
-      "condicion": "Cuando el nuevo chasis, carrocería o pieza, no tenga grabado el número de identificación",
-      "sin_tramitar_cr": true,
-      "fuente_literal": "Cuando el nuevo chasis, carrocería o pieza, no tenga grabado el número de identificación, se procederá por la Administración competente en materia de ITV, al troquelado del número."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Las piezas o conjuntos a incorporar al vehículo, deben ser de nueva fabricación y de las mismas características que el primitivo",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Se entenderá, que, en todo caso, las piezas o conjuntos a incorporar al vehículo, deben ser de nueva fabricación y de las mismas características que el primitivo."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "La Administración competente en materia de ITV podrá autorizar la utilización de piezas reutilizadas",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "No obstante, la Administración competente en materia de ITV podrá autorizar la utilización de piezas reutilizadas."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Se autorizará la reforma únicamente en los casos de accidente, deterioro de la pieza, inutilización del autobastidor primitivo, o por indicación del fabricante por defecto de fabricación o garantía",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Se autorizará la reforma únicamente en los casos en que, por accidente, deterioro de la pieza, se hubiese inutilizado el autobastidor primitivo, o por indicación del fabricante por defecto de fabricación o garantía."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "obliga_incorporar",
-      "condicion": "Si la nueva pieza careciere de la numeración otorgada por el fabricante",
-      "sin_tramitar_cr": true,
-      "fuente_literal": "Si la nueva pieza careciere de la numeración otorgada por el fabricante, se procederá a troquelar o grabar un nuevo número de identificación, bajo el control del órgano competente en materia de ITV."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "Tanto los bastidores como las estructuras autoportantes que se sustituyan deberán ser inutilizados en presencia de personal técnico del órgano competente",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "Tanto los bastidores como las estructuras autoportantes que se sustituyan deberán ser inutilizados en presencia de personal técnico del órgano competente, que levantará la correspondiente acta."
-    },
-    {
-      "cr_origen": "CR-IV-1.1",
-      "cr_destino": null,
-      "tipo": "restriccion",
-      "condicion": "En el caso de inexistencia del fabricante del vehículo, el organismo competente de la Comunidad Autónoma que vaya a troquelar el número de identificación deberá realizar el retroquelado siguiendo las prescripciones de la 76/114/CEE",
-      "sin_tramitar_cr": false,
-      "fuente_literal": "En el caso de inexistencia del fabricante del vehículo, el organismo competente de la Comunidad Autónoma que vaya a troquelar el número de identificación deberá realizar el retroquelado siguiendo las prescripciones de la 76/114/CEE en lo que se refiere a caracteres, secuencia y tamaño."
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "generado": "2026-06-05T11:38:30",
+  "generado": "2026-10-20T12:02:40",
   "total": 103,
   "errores": 0,
   "directivas": [
@@ -1403,6 +1403,7 @@
       ],
       "secciones": [
         "I",
+        "II",
         "III",
         "IV"
       ],

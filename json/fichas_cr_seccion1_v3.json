@@ -22,7 +22,7 @@
         "descripcion": "Caso especial — solo Documentación adicional"
       }
     },
-    "ultimo_enriquecimiento": "2026-06-03 17:02",
+    "ultimo_enriquecimiento": "2026-10-20 11:52",
     "keywords_csv": "keywords_reformas.csv"
   },
   "fichas": [
@@ -487,16 +487,7 @@
         "kit admisión",
         "cold air intake",
         "snorkel",
-        "intercooler",
-        "turbo",
-        "turbocompresor",
-        "sobrealimentación",
-        "chiptuning",
-        "reprogramación motor",
-        "más potencia",
-        "aumentar caballos",
-        "kw motor",
-        "cv motor"
+        "intercooler"
       ]
     },
     {
@@ -549,12 +540,7 @@
       "informacion_adicional": "El campo de aplicación de diesel ligeros o pesados será el establecido en la homologación de tipo del vehículo. La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la centralita. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9. Los componentes instalados que se encuentren homologados por el Reglamento 67 ó 110, deberán cumplir con la Directiva de compatibilidad electromagnética al nivel indicado en dicho Reglamento, no el que marca el Real Decreto 2028/1986. Los vehículos que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible. Las modificaciones relacionadas con tecnologías de electrificación total o parcial del sistema de propulsión del vehículo se tramitarán según los CR 2.11 o 2.12.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carburador",
-        "inyección",
-        "sistema de alimentación",
-        "combustible"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -1128,12 +1114,7 @@
       "keywords_reformas": [
         "motor eléctrico",
         "conversión eléctrica",
-        "retrofitting eléctrico",
-        "cambio de motor",
-        "motor nuevo",
-        "motor distinto",
-        "swap motor",
-        "sustituir motor"
+        "retrofitting eléctrico"
       ]
     },
     {
@@ -1270,11 +1251,7 @@
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
       "keywords_reformas": [
         "cambio ubicación motor",
-        "motor trasero",
-        "tracción",
-        "4x4",
-        "tracción total",
-        "cambiar tracción"
+        "motor trasero"
       ]
     },
     {
@@ -1471,12 +1448,7 @@
       "informacion_adicional": "No se considerará reforma la sustitución de silenciosos por otros que cumplan la Directiva 96/20/CE o la sustitución de catalizadores por otros que cumplan la Directiva 98/77/CE. Se entiende por tramo de salida, el comprendido entre el último silencioso y la salida. No se considera reforma la modificación del tramo de salida para la instalación de un embellecedor de escape si no afecta al silencioso trasero o no introduce cambios importantes en la geometría (simple-doble salida). Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9. Se admitirá el nivel de emisiones a fecha de matriculación del vehículo.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "caja de cambios",
-        "transmisión automática",
-        "transmisión manual",
-        "cambiar caja"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -1645,9 +1617,7 @@
       "informacion_adicional": "En esta reforma se considerarán los casos en los que se altera la configuración inicial de los depósitos de combustible, por cambio de emplazamiento, sustitución por otro diferente, añadir o eliminar depósitos, adición de depósito(s) auxiliar(es), modificar los periféricos, conexiones o fijaciones al vehículo. La Directiva 70/221/CEE será aplicable únicamente en las sustituciones del/los depósito/s de carburante líquido y/o adición de depósito/s auxiliar/es. Si esta reforma supone modificación de la potencia máxima, se tramitará además la reforma 2.9. Los componentes instalados que se encuentren homologados por el Reglamento 67 ó 110, deberán cumplir con la Directiva de compatibilidad electromagnética al nivel indicado en dicho Reglamento, no el que marca el Real Decreto 2028/1986.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "embrague"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -1748,16 +1718,7 @@
       "informacion_adicional": "En esta reforma se contemplarán modificaciones, tales como: doble mando autoescuela, adaptación para PMR, instalación de sistema de control de velocidad de crucero, entre otras. No se considerará reforma la desinstalación de doble mando de autoescuela y de PMR, anotándose en la tarjeta mediante diligencia. Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad. De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público.” En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción de PMR” En el comportamiento del dispositivo de conducción en caso de colisión (Directiva 74/297/CEE), se estará a lo dispuesto en los puntos 5.4.1 y 5.4.2 de la 91/662/CEE. Se exigirá cumplimiento con la Directiva 72/245/CEE a los elementos instalados. En caso de no cumplirla, se exigirá a vehículo completo.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "escape",
-        "tubo de escape",
-        "catalizador",
-        "silenciador",
-        "downpipe",
-        "escape deportivo",
-        "FAP",
-        "filtro de partículas"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -1938,15 +1899,7 @@
       "informacion_adicional": "La Directiva de compatibilidad electromagnética no se aplicará en caso de que sólo se efectúe la reprogramación de la Unidad Electrónica de Control (ECU). La Directiva Nivel sonoro admisible no será exigible en el caso de disminución de potencia. En el caso de variación de la velocidad máxima, deberá adecuarse el código de velocidad de los neumáticos a la nueva velocidad máxima. Se admitirá el nivel de emisiones a fecha de matriculación del vehículo.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "climatización",
-        "aire acondicionado",
-        "GLP",
-        "GNC",
-        "gas licuado",
-        "gas natural",
-        "bifuel"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -4731,14 +4684,7 @@
       "informacion_adicional": "Esta reforma obliga a la incorporación de protección lateral, sistema antiproyección y protección trasera para vehículos que en la fecha de matriculación no era obligatoria la incorporación de estos dispositivos, aunque la reforma no afecte a estos Actos Reglamentarios no siendo necesario tramitar los CR asociados a estas incorporaciones. Los Actos Reglamentarios relativos a protección delantera contra el empotramiento, protección de los peatones y sistemas de protección delantera no se exigirán a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para estos Actos Reglamentarios. Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "frenos",
-        "pastillas de freno",
-        "discos de freno",
-        "sistema de frenado",
-        "frenos mejorados",
-        "upgrade frenos"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -5020,10 +4966,7 @@
       "informacion_adicional": "Esta reforma obliga a la incorporación de protección lateral, sistema antiproyección y protección trasera para vehículos que en la fecha de matriculación no era obligatoria la incorporación de estos dispositivos, aunque la reforma no afecte a estos Actos Reglamentarios, no siendo necesario tramitar los CR asociados a estas incorporaciones. Los Actos Reglamentarios relativos a protección delantera contra el empotramiento, protección de los peatones y sistemas de protección delantera no se exigirán a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para estos Actos Reglamentarios. Cuando el vehículo reformado se corresponda con un tipo homologado, se admitirá el cumplimiento con el nivel (2) para los Actos Reglamentarios de Depósito de combustible, Mecanismos de Dirección y Frenado, no siendo necesario tramitar los CR 2.7, 6.1 y 7.1. Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "ABS",
-        "sistema antibloqueo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -5353,11 +5296,7 @@
       "informacion_adicional": "Esta reforma obliga a la incorporación de protección lateral, sistema antiproyección y protección trasera para vehículos que en la fecha de matriculación no era obligatoria la incorporación de estos dispositivos, aunque la reforma no afecte a estos Actos Reglamentarios, no siendo necesario tramitar los CR asociados a estas incorporaciones. Los Actos Reglamentarios relativos a protección delantera contra el empotramiento, protección de los peatones y sistemas de protección delantera no se exigirán a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para estos Actos Reglamentarios. Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno de mano",
-        "freno de estacionamiento",
-        "freno de parking"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -6202,26 +6141,7 @@
       "informacion_adicional": "Aquellas modificaciones de suspensión que afecten o alteren la regulación de válvulas distribuidoras o válvulas sensibles a la carga deberán cumplir con la directiva de frenado 71/320/CEE. Esta reforma obliga a la incorporación de protección lateral, sistema antiproyección y protección trasera para vehículos que en la fecha de matriculación no era obligatoria la incorporación de estos dispositivos, aunque la reforma no afecte a estos Actos Reglamentarios, no siendo necesario tramitar los CR asociados a estas incorporaciones. Los Actos Reglamentarios relativos a protección delantera contra el empotramiento, protección de los peatones y sistemas de protección delantera no se exigirán a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para estos Actos Reglamentarios. No se considerará reforma la instalación de barras de unión en torretas de suspensión. Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "amortiguadores",
-        "muelles",
-        "muelle",
-        "bajar",
-        "subir altura",
-        "suspensión deportiva",
-        "resortes",
-        "ballesta",
-        "barras estabilizadoras",
-        "coilovers",
-        "altura del vehículo",
-        "altura libre al suelo",
-        "lowering",
-        "suspensión roscada",
-        "kit de suspensión",
-        "rebaje",
-        "elevar",
-        "lift kit"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -6311,11 +6231,7 @@
       "informacion_adicional": "Esta reforma se refiere a la modificación del sistema de dirección: no asistida por asistida, modificaciones en los elementos de asistencia, modificaciones en el sistema mecánico de dirección, excepto en el volante, entre otras.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "carrocería",
-        "estructura",
-        "bastidor"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -6577,12 +6493,7 @@
       "informacion_adicional": "En la Directiva 78/317/CEE y en la 78/318/CEE, para las categorías M2, M3, N1, N2 y N3, sólo se verificará respectivamente la presencia de dispositivos antihielo y antivaho y limpiaparabrisas y lavaparabrisas adecuados para el vehículo. Se incluye dentro de esta reforma la instalación de elementos que alejan el volante del salpicadero y lo acercan al conductor. En el caso de vehículos que vayan a ser conducidos por PMR y, que por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el titular declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción por PMR” y cuando proceda “Modificado (elemento de seguridad afectado)”, por ejemplo, “modificación airbag”",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "techo",
-        "cabrio",
-        "descapotable",
-        "cortar techo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -6683,13 +6594,7 @@
       "informacion_adicional": "No se permite la sustitución de un volante con airbag por otro que no lo tenga. Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad. De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público. No se considerará reforma cuando se sustituya el volante original del vehículo por otro con el mismo diámetro o que no varíe en un + 10 % siempre que el vehículo no disponga de airbag.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "volante",
-        "volante deportivo",
-        "volante pequeño",
-        "cambiar volante",
-        "quick release"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -7048,16 +6953,7 @@
       "informacion_adicional": "Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "neumáticos",
-        "llantas",
-        "ruedas",
-        "tamaño neumático",
-        "perfil neumático",
-        "cambiar neumáticos",
-        "cambiar llantas",
-        "anchura rueda"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -7147,15 +7043,7 @@
       "informacion_adicional": "Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando, en caso de ser necesaria la adecuada reprogramación del sistema ESC, ésta sea posible.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "alumbrado",
-        "luces",
-        "faros",
-        "LED",
-        "xenon",
-        "faros de xenon",
-        "faros LED"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -7261,10 +7149,7 @@
       "informacion_adicional": "Esta reforma contemplará las modificaciones consistentes en la instalación de dobles mandos autoescuela, adaptación para la conducción por PMR y casos especiales para aplicaciones de obras y servicios. No se considerará reforma la desinstalación de doble mando de autoescuela y de PMR, anotándose en la tarjeta mediante diligencia, cuando la desinstalación devuelva al vehículo a las condiciones técnicas anteriores a la instalación. Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, debiéndose indicar expresamente esta condición en el informe de conformidad. De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y los utilizados para el mantenimiento del orden público. En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el titular declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción por PMR” Los vehículos que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "freno pie",
-        "pedal freno"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -8753,24 +8638,14 @@
       "informacion_adicional": "Esta reforma se aplica a transformaciones tales como: pantallas de DVD en salpicadero, sistemas GPS, instalación de ayudas técnicas para PMR (solo aplicable para mandos de alumbrado y señalización, avisador acústico y limpia-lavaparabrisas), entre otras. Se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad. De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público. En el caso de vehículos que vayan a ser conducidos por PMR y, que, por el tipo de minusvalía del conductor, necesiten la retirada o modificación de algún elemento de seguridad, la reforma podrá ser legalizada sin el cumplimiento íntegro de los ensayos que le sean de aplicación, siempre que no afecte a la seguridad de terceros y el mismo declare su conocimiento y conformidad a dicha condición o condiciones de excepción. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo adaptado para la conducción de PMR” No se considerará reforma: • Los taxímetros instalados antes de la entrada en vigor de la Revisión Sexta de este Manual. No se realizará ninguna anotación en la tarjeta ITV • La instalación de taxímetros y sus elementos asociados cuando existan instrucciones de montaje elaboradas por el fabricante del vehículo y la instalación se corresponda con dichas instrucciones [y en el certificado del reparador de taxímetros se indique de manera expresa esta circunstancia]. En este supuesto se anotarán mediante diligencia los datos del taxímetro, junto con el correspondiente cambio de clasificación del vehículo. Las instrucciones de montaje elaboradas por el fabricante del vehículo, en color, deberán estar fechadas y firmadas por el responsable de su emisión. Deben recoger todos los elementos del vehículo que es necesario desmontar para realizar la instalación entre la toma de señal taquimétrica y el taxímetro y, si procede, entre éste y el resto de dispositivos asociados al funcionamiento del taxímetro (el fabricante del vehículo puede opcionalmente incluir otros elementos periféricos que considere oportunos para vehículos destinados al servicio del taxi) y se indique exactamente el recorrido del cableado de la instalación, con fotografías reales o esquemas de los vehículos y sus elementos a desmontar. Además, se deberá contemplar el modo de precintar o justificación de solución alternativa para garantizar la cadena metrológica. • La desinstalación del taxímetro o de cualquiera de los elementos asociados, anotándose mediante diligencia. • La instalación de aparatos de radio • Pomo de palanca de cambios • Sistema telefónico de manos libres • Visera de tablero de abordo cuya proyección no exceda de la proyección máxima del volante de dirección • Dispositivos de navegación y/o multimedia (DVD) instalados en el hueco de origen del salpicadero • La desinstalación de dispositivos para PMR, anotándose en la tarjeta mediante diligencia.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "alerón",
-        "spoiler",
-        "splitter",
-        "difusor",
-        "bodykit",
-        "kit carrocería",
-        "faldones",
-        "lip",
-        "aerodinámica"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
       "grupo_numero": 8,
       "cr": "8.21",
       "revision": "7ª",
-      "fecha_revision": "Junio 2022",
+      "fecha_revision": "Abril 2023 Página 1 de 2",
       "paginas": [
         136,
         137
@@ -8865,15 +8740,11 @@
         "Certificado del Taller": "SI",
         "Documentación adicional": "NO"
       },
-      "documentacion_detalle": {
-        "Proyecto Técnico y certificación final de obra": "No será necesario para la desinstalación.",
-        "Informe de conformidad": "",
-        "Certificado del Taller": ""
-      },
+      "documentacion_detalle": {},
       "conjunto_funcional": "El titular del vehículo o la persona por él autorizada aportará: - Copia de la Resolución de la Autoridad de homologación. - Informe según Anexo II. - Certificado del taller según Anexo III.",
       "inspeccion_especifica": "Capítulo 3. - Acondicionamiento interior",
-      "normalizacion_tarjeta_itv": "__/__/___ Instalación de mampara marca: _________ en la zona ___________del interior del vehículo (Firma y sello) ITV Nº NNNN",
-      "informacion_adicional": "Esta reforma se aplica a transformaciones tales como: instalación de mamparas de metacrilato detrás del asiento del conductor para vehículos taxi o policía; separadores frontales o laterales, entre otras. No se considerará reforma la instalación de elementos desmontables y temporales para cumplir las medidas de protección adoptadas durante la crisis sanitaria derivada por el COVID-19. Se permitirá la desinstalación de los airbags laterales o de cortinilla cuando dichos elementos sean un equipamiento opcional, y por tanto el vehículo sin dichos airbags continúe cumpliendo la reglamentación de seguridad pasiva relativa al choque lateral. En caso contrario, se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad. De esta exigencia se excluyen a los vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público.",
+      "normalizacion_tarjeta_itv": "__/__/___ Instalación de mampara marca: _________ en la zona ___________del interior del vehículo Vehículo con airbags laterales desactivados. Justificación médica” (cuando proceda). (Firma y sello) ITV Nº NNNN",
+      "informacion_adicional": "Esta reforma se aplica a transformaciones tales como: instalación de mamparas de metacrilato detrás del asiento del conductor; separadores frontales o laterales, entre otras. No se considerará reforma la instalación de elementos desmontables y temporales para cumplir las medidas de protección adoptadas durante la crisis sanitaria derivada por el COVID-19. Se permitirá la desinstalación de los airbags laterales o de cortinilla:  cuando dichos elementos sean un equipamiento opcional, y por tanto el vehículo sin dichos airbags continúe cumpliendo la reglamentación de seguridad pasiva relativa al choque lateral.  en vehículos para uso por el ejército, protección civil, servicio de bomberos y para responsables del mantenimiento del orden público.  cuando exista certificado médico que acredite la necesidad de instalar mamparas de protección. El titular del vehículo deberá demostrar relación de parentesco de primer o segundo grado y, en el caso de empresas, asociaciones, etc, relación de prestación de servicios de transporte a la persona referida en el certificado. Esta situación será señalada en el informe de conformidad y se recogerá en la Tarjeta ITV mediante la anotación: “Vehículo con airbags laterales desactivados. Justificación médica” En el resto de casos, se garantizará la no interferencia en el normal funcionamiento de los sistemas de airbag y pretensores del vehículo después de la transformación, o la modificación del mismo, indicándolo expresamente en el informe de conformidad.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
       "keywords_reformas": []
@@ -10163,10 +10034,7 @@
       "informacion_adicional": "En los autobuses y autocares, si existen modificaciones en su estructura, se tramitará por la reforma 8.51. Los Actos Reglamentarios relativos a protección delantera contra el empotramiento, protección de los peatones, sistemas de protección delantera, colisión frontal y colisión lateral no se exigirán a los vehículos matriculados antes de la fecha de obligatoriedad marcada en el Real Decreto 2028/1986 para estos Actos Reglamentarios. Los AR mencionados en el párrafo anterior, no se exigirán a los vehículos para uso exclusivo por las fuerzas armadas, protección civil, servicio de bomberos y las fuerzas responsables del mantenimiento del orden público. El emisor del Informe de Conformidad deberá verificar que el vehículo se destina a uno de estos usos. A tal efecto, se entenderá suficiente declaración por parte del responsable del organismo oficial que solicita la transformación (no necesaria cuando el vehículo, por antigüedad no esté sujeto al cumplimiento del AR). Se entiende por caja ordinaria todo tipo de caja fijada al bastidor del vehículo (abierta, cerrada o semicerrada, isotermo o frigorífico) cuya carga se reparta uniformemente.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "tracción integral",
-        "4WD"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -11297,10 +11165,7 @@
       "informacion_adicional": "Los vehículos homologados para el ADR que se reformen deberán tramitar esta reforma además de las que le sean de aplicación (tales como modificación, incorporación o desinstalación de equipos de iluminación, equipos de comunicación, equipos eléctricos de bombeo, equipos autónomos de bombeo, equipos de medida, equipos de control de apertura y cierre, equipos de posicionamiento y equipos de impresión). La modificación, incorporación o desinstalación de equipos de servicio de vehículos cisterna destinados al transporte de mercancías peligrosas deberá hacerse en instalaciones autorizadas según el RD 948/2003. Los vehículos de categorías M y N que no incorporaban en su construcción original el ESC, podrán ser reformados, aunque la transformación afecte al sistema de frenado, sin el cumplimiento de las exigencias técnicas requeridas en los Reglamentos CEPE/ONU Nº 13 ó 13H para dicho sistema, dado que no es posible técnicamente la incorporación del mismo. Cuando la transformación afecte al sistema de frenado, los vehículos de categorías M y N que incorporen ESC de serie podrán ser reformados solo cuando sea posible una reprogramación adecuada del sistema ESC.",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "calefacción",
-        "climatizador"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -12643,19 +12508,14 @@
       "informacion_adicional": "No se consideran reforma la instalación (ver CR 8.52 para la instalación del soporte): • de sistemas de alumbrado específico. • de la señal V-1 (Vehículo prioritario), la V-2 (vehículo-obstáculo en la vía), ni la V-23 (distintivo de vehículos de transporte de mercancías). Tampoco se considerará reforma la desinstalación de faros adicionales de largo alcance, faros antiniebla opcionales y cualquier otro dispositivo no obligatorio, anotándose mediante diligencia. La modificación o instalación de elementos de alumbrado y señalización no se tramitará por este CR si el AR de Instalación de Dispositivos de Alumbrado y Señalización ya ha sido analizado en otro CR con un nivel de cumplimiento igual o superior.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "remolque",
-        "enganche",
-        "bola remolque",
-        "punto remolque"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
       "grupo_numero": 9,
       "cr": "9.2",
       "revision": "7ª",
-      "fecha_revision": "Junio 2022",
+      "fecha_revision": "Abril 2023 Página 1 de 3",
       "paginas": [
         187,
         189
@@ -12983,20 +12843,14 @@
         "Certificado del Taller": "SI",
         "Documentación adicional": "NO"
       },
-      "documentacion_detalle": {
-        "Informe de conformidad": "",
-        "Certificado del Taller": ""
-      },
+      "documentacion_detalle": {},
       "conjunto_funcional": "El titular del vehículo o la persona por él autorizada aportará: - Copia de la Resolución de la Autoridad de homologación. - Informe según Anexo II. - Certificado del taller según Anexo III.",
       "inspeccion_especifica": "Capítulo 4. - Alumbrado y señalización.",
       "normalizacion_tarjeta_itv": "__/__/___ Modificación o sustitución de elemento/ dispositivo/ sistema/ componente/unidad técnica independiente: marca, tipo y contraseña (Firma y sello) ITV Nº NNNN",
-      "informacion_adicional": "No se considerará reforma la instalación de repuestos o recambios (incluidos las lámparas LED de sustitución homologados según el Reglamento nº 37 de NNUU en faros homologados para óptica de incandescencia) ni la sustitución de grupos ópticos laterales y traseros de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original. La modificación o instalación de elementos de alumbrado y señalización no se tramitará por este CR si el AR de Instalación de Dispositivos de Alumbrado y Señalización ya ha sido analizado en otro CR con un nivel de cumplimiento igual o superior.",
+      "informacion_adicional": "No se considerará reforma:  la instalación de repuestos o recambios  la sustitución, en faros homologados para óptica de incandescencia, de las lámparas originales por lámparas LED homologadas según el Reglamento nº 37 de NNUU o regulación nacional de un Estado Miembro del Espacio Económico Europeo. En este último caso deberán disponer de certificado de recambio equivalente, según modelo establecido en la GUÍA DE REGLAMENTACIÓN SOBRE HOMOLOGACIÓN DE VEHÍCULOS (https://industria.gob.es/Calidad-Industrial/vehiculos/Paginas/homologacion-vehiculos.aspx).  la sustitución de grupos ópticos laterales y traseros de incandescencia por otros de sistema LED debidamente homologados y situados en el emplazamiento original. La modificación o instalación de elementos de alumbrado y señalización no se tramitará por este CR si el AR de Instalación de Dispositivos de Alumbrado y Señalización ya ha sido analizado en otro CR con un nivel de cumplimiento igual o superior.",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "portabicicletas",
-        "porta esquís"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -13195,13 +13049,7 @@
       "informacion_adicional": "En todos los casos los Dispositivo vehículos deberán estar homologado. homologados de tipo con Dispositivo e Emplazamiento capacidad de arrastre. En instalación Dispositivo Dispositivo e distinto al vehículos distintos a homologada homologado. instalación no homologado o categoría M1 y N1 según Anexo VII instalación no homologada según declarado por el completo se podrá de la Directiva homologada según Anexo VII de la fabricante del conseguir esta capacidad 94/20/CE o Anexo VII de la Directiva Directiva 94/20/CE vehículo Anexo 7 del 94/20/CE o Anexo 7 del o Anexo 7 del de arrastre mediante la R(CEPE/ONU) R(CEPE/ONU) Nº55 R(CEPE/ONU) Nº55 (vehículos realización de las Nº55 distintos de la reformas que categoría M1 y N1 correspondan. completo) VEHÍCULOS M1 MATRICULADOS ANTES DEL 1/1/98 Y Se exigirá el Se exigirá el RESTO DE Se exigirá el Proyecto Proyecto Técnico, Proyecto Técnico, CATEGORÍAS Técnico, basado en el basado en el Anexo basado en el Anexo Exento de Anexo VII de la Directiva VII de la Directiva VII de la Directiva MATRICULADOS ANTES Proyecto Técnico 94/20/CE o Anexo 7 del 94/20/CE o Anexo 7 94/20/CE o Anexo 7 DEL 26/1/01 R(CEPE/ONU) Nº55 del R(CEPE/ONU) del R(CEPE/ONU) (NO es obligatorio que el Nº55 Nº55 dispositivo esté homologado con la 94/20/CE) VEHÍCULOS M1 MATRICULADOS DESPUES DEL 1/1/98 Y Se exigirá el Se exigirá el Proyecto Proyecto Técnico, RESTO DE Técnico, basado en el basado en el Anexo Exento de No se puede CATEGORÍAS Anexo VII de la Directiva VII de la Directiva Proyecto Técnico tramitar la reforma 94/20/CE o Anexo 7 del 94/20/CE o Anexo 7 MATRICULADOS R(CEPE/ONU) Nº55 del R(CEPE/ONU) DESPUES DEL 26/1/01 Nº55 (Es obligatorio que el dispositivo esté homologado con la 94/20/CE) Se considerará la tabla siguiente: No se considerará reforma la desinstalación de dispositivos mecánicos de acoplamiento anotándose mediante diligencia. No obstante, si la desinstalación afecta a otras reformas, se deberán tramitar por el código de reforma correspondiente. Los “dispositivos para soporte de carga, no aptos para remolcar (MMR = 0), de uso exclusivo para portabicicletas, portamotos, VMP y portaanimales“, se tramitarán por la reforma 8.52 Unión entre vehículos",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "gas",
-        "GLP",
-        "propano",
-        "butano",
-        "gas licuado del petróleo"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -13461,12 +13309,7 @@
       "informacion_adicional": "Requisitos técnicos a considerar para el sistema de frenado: Cumplimiento con el reglamento 13 como vehículo remolcado, además, al actuar como remolcador, deberá satisfacer los siguientes puntos del R13: • Conductos de control neumático (Cabezas de acoplamiento automáticas Roja y Amarilla) según punto 5.1.3., en parte trasera del vehículo remolcado y remolcador. • Conducto de control eléctrico según punto 5.1.3.6. • Válvula de control remolque, según requisitos punto 5.2.1.18. • Válvula de doble retención inversa, que en caso de rotura de la línea roja descargaría la boca 43 de la válvula de control remolque, que enviaría presión por la línea amarilla al siguiente vehículo remolcado, aplicando los requisitos del punto 5.2.1.18. • Válvula de doble retención que garantiza las señales de frenado de la boca 42 de la válvula de control remolque aun en caso de rotura de la línea amarilla, según punto 5.2.18. • Válvula de retención y calderín para garantizar un circuito de aire independiente del sistema de frenado del remolque remolcador, que garantiza la alimentación de la válvula de control remolque en caso de rotura de la línea roja, según punto 5.2.18. • CAN Router, que divide la línea CAN procedente de la tractora en dos, una para el vehículo remolcado y remolcador, y otra para el vehículo posterior. Asegura que no exista una pérdida de velocidad en la transmisión de datos que comprometiera el tiempo de respuesta del último vehículo remolcado. En todos los casos será obligatoria la instalación de la señalización de contorno V-23. Deberá garantizarse el cumplimiento de cualquier otro Acto Reglamentario de los afectados, en el caso de dispositivos de acoplamiento, el componente y la instalación del mismo deberá cumplir con el Reglamento 55. Unión entre vehículos",
       "via_tramitacion": "A",
       "via_tramitacion_desc": "Reforma mayor — Proyecto Técnico + Certificación Final de Obra + Informe de Conformidad + Certificado de Taller",
-      "keywords_reformas": [
-        "eléctrico",
-        "motor eléctrico",
-        "conversión eléctrica",
-        "EV"
-      ]
+      "keywords_reformas": []
     },
     {
       "seccion": "I",
@@ -13617,7 +13460,7 @@
       "grupo_numero": 11,
       "cr": "11.2",
       "revision": "7ª",
-      "fecha_revision": "AUDIENCIA",
+      "fecha_revision": "enero 2026",
       "paginas": [
         203,
         204
@@ -13711,7 +13554,7 @@
       "conjunto_funcional": null,
       "inspeccion_especifica": "Capitulo 10.- Otros",
       "normalizacion_tarjeta_itv": "__/__/___ Nueva MMA: (Firma y sello) ITV Nº NNNN",
-      "informacion_adicional": "La MMA no podrá superar nunca la MMTA del vehículo. En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg. Por ejemplo, para un vehículo de categoría O2 la MMA siempre será superior a 750 kg y por tanto, su matriculación será obligatoria. La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras). En cualquier caso, con la reducción de MMA, el vehículo ha de mantener las condiciones técnicas que le sean de aplicación por normativa por su MMTA ya que ésta no varía (Limitador, etc.) No se considerará reforma la restitución de la MMA previamente anotada y homologada, anotándose mediante diligencia. Otros",
+      "informacion_adicional": "La MMA no podrá superar nunca la MMTA del vehículo. En vehículos arrastrados de MMTA superior a 750 kg, la MMA también deberá ser superior a 750 kg. Por ejemplo, para un vehículo de categoría O2 la MMA siempre será superior a 750 kg y por tanto, su matriculación será obligatoria. La modificación de la MMA puede estar asociada a otras reformas que deberán legalizarse según los requisitos que le sean de aplicación en el código de reforma correspondiente (disminución de asientos, modificaciones en la MMR, entre otras). En cualquier caso, con la reducción de MMA, el vehículo ha de mantener las condiciones técnicas que le sean de aplicación por normativa por su MMTA ya que ésta no varía (Limitador, etc.) No se considerará reforma la restitución de la MMA previamente anotada y homologada, anotándose mediante diligencia. Adicionalmente, hasta 1 de enero de 2027, tampoco se considerará reforma la ampliación de los valores de MMA, según los nuevos límites recogidos en la Orden PJC/780/2025, anotándose mediante diligencia en el momento de la inspección periódica completa considerando las nuevas masas. Otros",
       "via_tramitacion": "B",
       "via_tramitacion_desc": "Reforma intermedia — Informe de Conformidad + Certificado de Taller",
       "keywords_reformas": []
