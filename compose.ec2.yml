@@ -1,0 +1,46 @@
+# Primera prueba privada. Acceso mediante túnel SSH, sin puertos web públicos.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    command: ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    env_file: .env
+    volumes:
+      - type: bind
+        source: ./scripts_index/chroma_db
+        target: /app/scripts_index/chroma_db
+        bind:
+          create_host_path: false
+      - ./outputs:/app/outputs
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    env_file: .env
+    environment:
+      BACKEND_URL: http://backend:8000
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - type: bind
+        source: ./scripts_index/chroma_db
+        target: /app/scripts_index/chroma_db
+        bind:
+          create_host_path: false
+      - ./outputs:/app/outputs
+    depends_on:
+      - backend
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

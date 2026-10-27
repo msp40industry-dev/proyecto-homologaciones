@@ -1,0 +1,3 @@
+# En EC2, crear users.caddy con una línea: usuario HASH_BCRYPT
+# Generar el hash de forma interactiva con:
+# sudo docker run --rm -it caddy:2-alpine caddy hash-password

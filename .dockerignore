@@ -10,6 +10,10 @@ __pycache__/
 *.pyd
 .DS_Store
 node_modules/
+backups/
+scripts_index/chroma_db*/
+*.pem
+*.key
 docs/
 README_POC_Reformas.docx
 get-pip.py

@@ -20,6 +20,7 @@
 11. [Tests](#11-tests)
 12. [Estructura del proyecto](#12-estructura-del-proyecto)
 13. [Pendiente / Roadmap](#13-pendiente--roadmap)
+14. [Despliegue en AWS](#14-despliegue-en-aws)
 
 ---
 
@@ -698,3 +699,57 @@ Proyecto_homologaciones/
 - [x] Tests automatizados: 128 tests unitarios sin dependencias externas
 - [x] Configuración dinámica de modelos vía variables de entorno
 - [x] Tool calling (structured outputs) en el Identificador CR
+
+---
+
+## 14. Despliegue en AWS
+
+El piloto se ejecuta en una única instancia EC2 con Ubuntu y Docker Compose.
+La [guía completa paso a paso](docs/DESPLIEGUE_EC2.md) explica desde la creación
+del servidor hasta el acceso público, distinguiendo los comandos de PowerShell
+local de los de Ubuntu en EC2.
+
+### Arquitectura
+
+- **EC2 `t3.medium` en Irlanda:** ejecuta los tres contenedores.
+- **Streamlit:** interfaz y generador de proyectos técnicos.
+- **FastAPI:** API interna de consultas y validación.
+- **Caddy:** entrada pública con HTTPS y contraseña.
+- **DuckDNS:** subdominio gratuito que apunta a la IP pública del servidor.
+- **EBS gp3 cifrado de 30 GiB:** conserva el índice ChromaDB, la configuración y los Word.
+- **OpenAI:** modelos y embeddings consumidos mediante API externa.
+
+### Pasos del despliegue
+
+1. Preparar el acceso administrativo de AWS, MFA y avisos de gasto.
+2. Crear EC2, su clave SSH y el grupo de seguridad.
+3. Instalar Docker Engine y Docker Compose en Ubuntu.
+4. Transferir el código y la carpeta completa de ChromaDB con los procesos locales detenidos.
+5. Configurar `.env` en el servidor y arrancar frontend y backend para una prueba privada.
+6. Registrar el subdominio DuckDNS y apuntarlo a la IP pública de EC2.
+7. Generar el hash de la contraseña de Caddy y configurar `PUBLIC_DOMAIN`.
+8. Abrir HTTP/HTTPS, arrancar Caddy y verificar el acceso desde otra conexión.
+
+Los comandos, comprobaciones y soluciones a errores están en la
+[guía de despliegue](docs/DESPLIEGUE_EC2.md).
+
+### Arranque público
+
+Desde Ubuntu, en `/home/ubuntu/proyecto-homologaciones`, una vez completada la configuración:
+
+```bash
+sudo docker compose -f compose.ec2.yml -f compose.public.yml up -d --build
+sudo docker compose -f compose.ec2.yml -f compose.public.yml ps
+```
+
+`compose.ec2.yml` define frontend y backend; `compose.public.yml` añade Caddy.
+Los archivos se combinan para ejecutar los tres servicios en la misma EC2.
+
+### Persistencia y operación
+
+- ChromaDB y `outputs` se montan desde el disco EBS: no hace falta reindexar al reiniciar.
+- Los certificados HTTPS permanecen en volúmenes Docker; no usar `down -v`.
+- Para ahorrar cómputo, detener EC2 desde AWS. El disco conservado sigue facturándose.
+- Al arrancar de nuevo, comprobar la IP pública y actualizar DuckDNS si cambia.
+- El estado de los proyectos en revisión sigue en memoria y se pierde al reiniciar.
+- La contraseña de Caddy protege el acceso, pero no implementa usuarios ni aislamiento de expedientes.

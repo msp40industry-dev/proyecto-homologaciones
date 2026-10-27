@@ -9,12 +9,13 @@ Flujo de la interfaz:
 """
 
 import asyncio
+import os
 import requests
 import streamlit as st
 from pathlib import Path
 import sys
 
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000").rstrip("/")
 
 # Añadir raíz del proyecto al path
 ROOT = Path(__file__).resolve().parents[2]

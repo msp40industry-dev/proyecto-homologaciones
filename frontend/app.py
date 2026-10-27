@@ -3,6 +3,7 @@ Frontend Streamlit — Hub principal
 Menú central para elegir entre el asistente RAG y el generador de proyectos técnicos.
 """
 
+import os
 import sys
 from pathlib import Path
 
@@ -12,7 +13,7 @@ import streamlit as st
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-BACKEND_URL = "http://localhost:8000"
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000").rstrip("/")
 
 # ─── Config ───────────────────────────────────────────────────────────────────
 

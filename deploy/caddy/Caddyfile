@@ -1,0 +1,6 @@
+{$PUBLIC_DOMAIN} {
+    basic_auth {
+        import /etc/caddy/users.caddy
+    }
+    reverse_proxy frontend:8501
+}
