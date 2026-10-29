@@ -384,7 +384,8 @@ def paso_generacion():
 #  PASO 3 — REVISIÓN
 # ─────────────────────────────────────────────
 
-# Orden y configuración de las secciones en la interfaz
+# Orden y configuración de las secciones en la interfaz (mismo orden que en el documento).
+# Las claves "__*" son secciones de adjunto puro que gestiona el ingeniero.
 SECCIONES_CONFIG = {
     "peticionario":           {"titulo": "0. Peticionario",                    "adjunto": False},
     "objeto":                 {"titulo": "1.1 Objeto",                         "adjunto": False},
@@ -393,17 +394,16 @@ SECCIONES_CONFIG = {
     "caracteristicas_antes":  {"titulo": "1.3.2 Características antes de la reforma",  "adjunto": False, "manual": True},
     "caracteristicas_despues":{"titulo": "1.3.3 Características después de la reforma","adjunto": False, "manual": True},
     "descripcion_reforma":    {"titulo": "1.4 Descripción de la reforma",       "adjunto": False},
+    "__calculos":             {"titulo": "2. Cálculos justificativos",          "adjunto": True,  "solo_adjunto": True},
     "calidad_materiales":     {"titulo": "3.1 Calidad de materiales",           "adjunto": False},
     "normas_ejecucion":       {"titulo": "3.2 Normas de ejecución",             "adjunto": False},
     "certificados":           {"titulo": "3.3 Certificados y autorizaciones",   "adjunto": False},
     "taller_ejecutor":        {"titulo": "3.4 Taller ejecutor",                 "adjunto": False},
-    "conclusiones":           {"titulo": "8. Conclusiones",                     "adjunto": False},
-    # Secciones con adjunto (las gestiona el ingeniero)
-    "__calculos":             {"titulo": "2. Cálculos justificativos",          "adjunto": True,  "solo_adjunto": True},
     "__presupuesto":          {"titulo": "4. Presupuesto",                      "adjunto": True,  "solo_adjunto": True},
     "__planos":               {"titulo": "5. Planos",                           "adjunto": True,  "solo_adjunto": True},
     "__fotografias":          {"titulo": "6. Reportaje fotográfico",            "adjunto": True,  "solo_adjunto": True},
     "__documentacion":        {"titulo": "7. Documentación del vehículo",       "adjunto": True,  "solo_adjunto": True},
+    "conclusiones":           {"titulo": "8. Conclusiones",                     "adjunto": False},
 }
 
 ESTADOS_ICONOS = {
@@ -437,8 +437,13 @@ def paso_revision():
         return
 
     # ── Resumen de estado ──────────────────────
-    total = len([k for k in SECCIONES_CONFIG if not k.startswith("__")])
-    aprobadas = sum(1 for sid in secciones if revisiones.get(sid, {}).get("estado") == "aprobado")
+    # Secciones que requieren aprobación: las generadas y las manuales (1.3.2 y 1.3.3)
+    ids_revisables = [
+        sid for sid, cfg in SECCIONES_CONFIG.items()
+        if cfg.get("manual") or sid in secciones
+    ]
+    total = len(ids_revisables)
+    aprobadas = sum(1 for sid in ids_revisables if revisiones.get(sid, {}).get("estado") == "aprobado")
     st.progress(aprobadas / total if total > 0 else 0, text=f"{aprobadas}/{total} secciones aprobadas")
 
     # ── Tabs por sección ───────────────────────
@@ -470,7 +475,7 @@ def paso_revision():
 
     todas_revisadas = all(
         revisiones.get(sid, {}).get("estado") in ("aprobado", "reescribir")
-        for sid in secciones
+        for sid in ids_revisables
     )
     hay_reescrituras = any(
         revisiones.get(sid, {}).get("estado") == "reescribir"
@@ -490,7 +495,7 @@ def paso_revision():
     with colb:
         if not todas_revisadas:
             if st.button("✅ Aprobar todas las secciones pendientes"):
-                for sid in secciones:
+                for sid in ids_revisables:
                     if revisiones.get(sid, {}).get("estado") not in ("aprobado", "reescribir"):
                         st.session_state.revisiones[sid] = {"estado": "aprobado"}
                 st.rerun()
@@ -540,7 +545,12 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
 
     # Sección de texto manual (1.3.2 y 1.3.3)
     if cfg.get("manual"):
-        st.subheader(cfg["titulo"])
+        estado = revisiones.get(sid, {}).get("estado", "pendiente")
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            st.subheader(cfg["titulo"])
+        with col2:
+            st.metric("Estado", ESTADOS_ICONOS.get(estado, "⏳") + " " + estado.capitalize())
         placeholders = {
             "caracteristicas_antes": (
                 "Indica las características técnicas del vehículo ANTES de la reforma.\n\n"
@@ -570,6 +580,13 @@ def _render_tab_seccion(sid: str, cfg: dict, secciones: dict, revisiones: dict):
         )
         if texto != st.session_state.textos_manuales.get(sid, ""):
             st.session_state.textos_manuales[sid] = texto
+        if not texto.strip():
+            st.caption("Si la apruebas vacía, el documento incluirá el aviso [COMPLETAR POR EL INGENIERO].")
+        st.button(
+            "✅ Aprobar", key=f"aprobar_{sid}",
+            type="primary" if estado == "pendiente" else "secondary",
+            on_click=_aprobar_seccion_y_avanzar, args=(sid,),
+        )
         return
 
     # Sección con texto generado
@@ -774,7 +791,8 @@ def paso_descarga():
             "- Todas las secciones revisadas y aprobadas\n"
             "- Tablas de CRs y Actos Reglamentarios\n"
             "- Marcadores **[COMPLETAR]** en rojo para las secciones del ingeniero\n"
-            "- Cabecera y pie de página con paginación"
+            "- Cabecera y pie de página con paginación\n"
+            "- Marca de agua **BORRADOR** (se quita en Word desde *Diseño › Marca de agua › Quitar marca de agua*)"
         )
 
         st.download_button(

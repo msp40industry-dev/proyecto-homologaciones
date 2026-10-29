@@ -1,13 +1,17 @@
 """
-test_ensamblador.py — Tests de _construir_payload en el ensamblador de documentos.
+test_ensamblador.py — Tests del ensamblador de documentos.
 
-Solo se prueba la función pura _construir_payload, que no requiere Node.js
-ni subprocess. Se verifica la estructura y el contenido del dict devuelto.
+Se prueban las funciones que no requieren Node.js ni subprocess:
+_construir_payload (estructura del dict devuelto) y _aplicar_marca_agua
+(postprocesado del .docx sobre un paquete mínimo).
 """
+
+import zipfile
+from xml.dom import minidom
 
 import pytest
 
-from proyecto_tecnico.agents.ensamblador import _construir_payload
+from proyecto_tecnico.agents.ensamblador import _aplicar_marca_agua, _construir_payload
 from proyecto_tecnico.models import (
     DatosVehiculo,
     Ingeniero,
@@ -268,3 +272,54 @@ class TestConstruirPayload:
             textos_manuales={},
         )
         assert payload["adjuntos"] == adjuntos_test
+
+
+# ── _aplicar_marca_agua ───────────────────────────────────────────────────────
+
+_HDR_NS = (
+    '<w:hdr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+    'xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" '
+    'xmlns:w10="urn:schemas-microsoft-com:office:word">'
+)
+
+
+@pytest.fixture
+def docx_con_cabeceras(tmp_path):
+    """Docx mínimo: cabecera con párrafo vacío (portada) y cabecera con texto."""
+    path = tmp_path / "doc.docx"
+    with zipfile.ZipFile(path, "w") as z:
+        z.writestr("[Content_Types].xml", "<Types/>")
+        z.writestr("word/document.xml", "<w:document/>")
+        z.writestr("word/header1.xml", _HDR_NS + "<w:p/></w:hdr>")
+        z.writestr("word/header2.xml", _HDR_NS + "<w:p><w:r><w:t>Cabecera</w:t></w:r></w:p><w:p/></w:hdr>")
+        z.writestr("word/_rels/header1.xml.rels", "<Relationships/>")
+    return path
+
+
+class TestAplicarMarcaAgua:
+    def test_todas_las_cabeceras_llevan_la_marca(self, docx_con_cabeceras):
+        _aplicar_marca_agua(str(docx_con_cabeceras), "BORRADOR")
+        with zipfile.ZipFile(docx_con_cabeceras) as z:
+            for nombre in ("word/header1.xml", "word/header2.xml"):
+                xml = z.read(nombre).decode()
+                minidom.parseString(xml)  # sigue siendo XML bien formado
+                assert xml.count('string="BORRADOR"') == 1
+                assert "rotation:315" in xml
+
+    def test_ids_de_forma_unicos(self, docx_con_cabeceras):
+        _aplicar_marca_agua(str(docx_con_cabeceras), "BORRADOR")
+        with zipfile.ZipFile(docx_con_cabeceras) as z:
+            assert 'id="PowerPlusWaterMarkObject1"' in z.read("word/header1.xml").decode()
+            assert 'id="PowerPlusWaterMarkObject2"' in z.read("word/header2.xml").decode()
+
+    def test_resto_del_paquete_intacto(self, docx_con_cabeceras):
+        _aplicar_marca_agua(str(docx_con_cabeceras), "BORRADOR")
+        with zipfile.ZipFile(docx_con_cabeceras) as z:
+            assert z.namelist()[0] == "[Content_Types].xml"
+            assert z.read("word/document.xml") == b"<w:document/>"
+            assert z.read("word/_rels/header1.xml.rels") == b"<Relationships/>"
+
+    def test_texto_se_escapa(self, docx_con_cabeceras):
+        _aplicar_marca_agua(str(docx_con_cabeceras), 'A&B "copia"')
+        with zipfile.ZipFile(docx_con_cabeceras) as z:
+            minidom.parseString(z.read("word/header1.xml"))

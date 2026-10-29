@@ -9,9 +9,12 @@ y genera el .docx maquetado con portada, índice y paginación.
 from __future__ import annotations
 import json
 import os
+import re
 import subprocess
 import tempfile
+import zipfile
 from pathlib import Path
+from xml.sax.saxutils import quoteattr
 
 from proyecto_tecnico.models import (
     EntradaProyecto, FichaCR, ARFiltrado, SeccionGenerada
@@ -31,9 +34,11 @@ async def ensamblar_documento(
     ars: list[ARFiltrado],
     adjuntos: dict | None = None,
     textos_manuales: dict | None = None,
+    borrador: bool = True,
 ) -> str:
     """
     Genera el .docx y devuelve la ruta del fichero.
+    Si `borrador` es True, añade la marca de agua diagonal «BORRADOR» en todas las páginas.
     """
     adjuntos = adjuntos or {}
     textos_manuales = textos_manuales or {}
@@ -87,6 +92,8 @@ async def ensamblar_documento(
         )
         if result.returncode != 0:
             raise RuntimeError(f"Error en generación docx: {result.stderr}")
+        if borrador:
+            _aplicar_marca_agua(output_path, "BORRADOR")
     finally:
         os.unlink(payload_path)
         if script_path:
@@ -101,6 +108,75 @@ async def ensamblar_documento(
                 pass
 
     return output_path
+
+
+# ── Marca de agua ─────────────────────────────────────────
+# docx-js no soporta marcas de agua, así que se inyecta en cada cabecera el mismo
+# objeto VML (WordArt rotado 315°) que crea Word en Diseño › Marca de agua.
+# Al ser nativa, el ingeniero puede quitarla desde Word cuando el proyecto sea definitivo.
+
+_SHAPETYPE_TEXTO_VML = (
+    '<v:shapetype id="_x0000_t136" coordsize="21600,21600" o:spt="136" adj="10800" '
+    'path="m@7,l@8,m@5,21600l@6,21600e">'
+    '<v:formulas>'
+    '<v:f eqn="sum #0 0 10800"/><v:f eqn="prod #0 2 1"/><v:f eqn="sum 21600 0 @1"/>'
+    '<v:f eqn="sum 0 0 @2"/><v:f eqn="sum 21600 0 @3"/><v:f eqn="if @0 @3 0"/>'
+    '<v:f eqn="if @0 21600 @1"/><v:f eqn="if @0 0 @2"/><v:f eqn="if @0 @4 21600"/>'
+    '<v:f eqn="mid @5 @6"/><v:f eqn="mid @8 @5"/><v:f eqn="mid @7 @8"/>'
+    '<v:f eqn="mid @6 @7"/><v:f eqn="sum @6 0 @5"/>'
+    '</v:formulas>'
+    '<v:path textpathok="t" o:connecttype="custom" '
+    'o:connectlocs="@9,0;@10,10800;@11,21600;@12,10800" o:connectangles="270,180,90,0"/>'
+    '<v:textpath on="t" fitshape="t"/>'
+    '<v:handles><v:h position="#0,bottomRight" xrange="6629,14971"/></v:handles>'
+    '<o:lock v:ext="edit" text="t" shapetype="t"/>'
+    '</v:shapetype>'
+)
+
+
+def _run_marca_agua(texto: str, indice: int) -> str:
+    """Run WordprocessingML con la marca de agua diagonal centrada en la página."""
+    return (
+        '<w:r><w:rPr><w:noProof/></w:rPr><w:pict>'
+        + _SHAPETYPE_TEXTO_VML
+        + f'<v:shape id="PowerPlusWaterMarkObject{indice}" o:spid="_x0000_s{2048 + indice}" '
+        'type="#_x0000_t136" '
+        'style="position:absolute;margin-left:0;margin-top:0;width:468pt;height:117pt;'
+        'rotation:315;z-index:-251654144;'
+        'mso-position-horizontal:center;mso-position-horizontal-relative:margin;'
+        'mso-position-vertical:center;mso-position-vertical-relative:margin" '
+        'o:allowincell="f" fillcolor="#bfbfbf" stroked="f">'
+        '<v:fill opacity=".5"/>'
+        f'<v:textpath style="font-family:&quot;Arial&quot;;font-size:1pt" string={quoteattr(texto)}/>'
+        '<w10:wrap anchorx="margin" anchory="margin"/>'
+        '</v:shape></w:pict></w:r>'
+    )
+
+
+def _aplicar_marca_agua(docx_path: str, texto: str) -> None:
+    """Inserta la marca de agua en todas las cabeceras (word/headerN.xml) del .docx."""
+    patron_cabecera = re.compile(r"word/header\d+\.xml")
+    with zipfile.ZipFile(docx_path) as zin:
+        entradas = [(info, zin.read(info)) for info in zin.infolist()]
+
+    tmp_path = docx_path + ".tmp"
+    with zipfile.ZipFile(tmp_path, "w", zipfile.ZIP_DEFLATED) as zout:
+        indice = 0
+        for info, contenido in entradas:
+            if patron_cabecera.fullmatch(info.filename):
+                indice += 1
+                xml = contenido.decode("utf-8")
+                # El run se añade al final del primer párrafo de la cabecera
+                # (un párrafo vacío se serializa como <w:p/>)
+                run = _run_marca_agua(texto, indice)
+                xml = re.sub(
+                    r"<w:p/>|</w:p>",
+                    lambda m: f"<w:p>{run}</w:p>" if m.group() == "<w:p/>" else run + "</w:p>",
+                    xml, count=1,
+                )
+                contenido = xml.encode("utf-8")
+            zout.writestr(info, contenido)
+    os.replace(tmp_path, docx_path)
 
 
 def _construir_payload(
@@ -762,7 +838,7 @@ const doc = new Document({
     ],
   },
   sections: [
-    // Sección 1: Portada (sin header/footer)
+    // Sección 1: Portada (cabecera vacía: solo soporta la marca de agua de borrador)
     {
       properties: {
         page: {
@@ -770,6 +846,7 @@ const doc = new Document({
           margin: { top: 1440, right: 1440, bottom: 1440, left: 1800 },
         },
       },
+      headers: { default: new Header({ children: [new Paragraph({})] }) },
       children: construirPortada(data),
     },
     // Sección 2: Índice + contenido
