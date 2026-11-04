@@ -465,7 +465,7 @@ Los documentos Word generados se guardan en `outputs/proyectos/` en el host.
 
 ### 9.3 Opción B — Entorno virtual local (desarrollo)
 
-**Requisitos:** Python 3.11, Node.js 20 LTS.
+**Requisitos:** Python 3.11 y Node.js 24 LTS (incluidos en la imagen Docker).
 
 ```bash
 # 1. Crear el entorno virtual
@@ -703,6 +703,10 @@ Proyecto_homologaciones/
 ---
 
 ## 14. Despliegue en AWS
+
+La [base Docker y configuración DEV/PROD](docs/BASE_DESPLIEGUE.md) describe el
+Dockerfile común, las plantillas de entorno, permisos de carpetas y verificaciones
+previas al despliegue. No crea recursos AWS ni incorpora Terraform todavía.
 
 El piloto se ejecuta en una única instancia EC2 con Ubuntu y Docker Compose.
 La [guía completa paso a paso](docs/DESPLIEGUE_EC2.md) explica desde la creación

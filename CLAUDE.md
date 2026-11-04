@@ -174,6 +174,6 @@ Toda la configuración de modelos vive en variables de entorno (`.env`), sin toc
 - El frontend del generador (`proyecto_tecnico_app.py`) llama al grafo **directamente** (sin HTTP), no a través del backend FastAPI. El backend FastAPI existe para integraciones externas.
 - El **generador solo opera con Sección I** (M, N, O). `identificador_cr.py` filtra `seccion="I"` tanto en búsqueda semántica como en recuperación exacta. No modificar este filtro.
 - La ChromaDB **no se incluye en git** (`scripts_index/chroma_db/`). Hay que indexar antes de arrancar.
-- El ensamblador requiere **Node.js 20 LTS** instalado en el sistema (`npm install` instala `docx`).
+- El ensamblador requiere **Node.js soportado**; Docker usa Node.js 24 y `npm ci` con el lockfile para instalar `docx`.
 - Las secciones 1.3.2, 1.3.3, 2, 4, 5, 6 y 7 las completa el ingeniero manualmente o subiendo ficheros; el sistema inserta `[COMPLETAR POR EL INGENIERO]` en rojo si quedan vacías.
 - El PDF fuente es `docs/Manual de Reformas de Vehículos Revisión 7.2.pdf` (828 páginas, todas las secciones).

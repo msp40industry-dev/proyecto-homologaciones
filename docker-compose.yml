@@ -1,33 +1,53 @@
-version: "3.9"
-
 services:
 
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.backend
+      dockerfile: Dockerfile
+      target: backend
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     env_file:
       - .env
     volumes:
       # ChromaDB (indexada previamente en el host)
-      - ./scripts_index/chroma_db:/app/scripts_index/chroma_db:ro
+      - type: bind
+        source: ./scripts_index/chroma_db
+        target: /app/scripts_index/chroma_db
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./outputs
+        target: /app/outputs
+        bind:
+          create_host_path: false
     restart: unless-stopped
 
   frontend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
+      dockerfile: Dockerfile
+      target: frontend
     ports:
-      - "8501:8501"
+      - "127.0.0.1:8501:8501"
     env_file:
       - .env
+    environment:
+      BACKEND_URL: http://backend:8000
     volumes:
       # ChromaDB (el generador de proyectos también la consulta directamente)
-      - ./scripts_index/chroma_db:/app/scripts_index/chroma_db:ro
+      - type: bind
+        source: ./scripts_index/chroma_db
+        target: /app/scripts_index/chroma_db
+        bind:
+          create_host_path: false
       # Documentos Word generados (persistidos en el host)
-      - ./outputs:/app/outputs
+      - type: bind
+        source: ./outputs
+        target: /app/outputs
+        bind:
+          create_host_path: false
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
