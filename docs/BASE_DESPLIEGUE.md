@@ -161,6 +161,9 @@ Compose no es un control de permisos entre cuentas AWS; eso llegará con Terrafo
 
 ## Compatibilidad y siguientes fases
 
+La preparación de S3 para el estado compartido y ECR se documenta en
+[infra/README.md](../infra/README.md).
+
 - Se sustituyen `Dockerfile.frontend` y `Dockerfile.backend` por los destinos del
   `Dockerfile` común. Actualizar cualquier script externo que los referencie.
 - La imagen solo incluye el código necesario, JSON y grafo; los parsers y scripts

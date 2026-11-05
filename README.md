@@ -21,6 +21,10 @@
 12. [Estructura del proyecto](#12-estructura-del-proyecto)
 13. [Pendiente / Roadmap](#13-pendiente--roadmap)
 14. [Despliegue en AWS](#14-despliegue-en-aws)
+    - [14.1 Cuentas, roles y configuración inicial de acceso](#141-cuentas-roles-y-configuración-inicial-de-acceso)
+    - [14.2 Despliegue manual del piloto en EC2](#142-despliegue-manual-del-piloto-en-ec2)
+    - [14.3 Preparación del repositorio: Docker y entornos](#143-preparación-del-repositorio-docker-y-entornos)
+    - [14.4 Terraform: estado compartido e infraestructura DEV](#144-terraform-estado-compartido-e-infraestructura-dev)
 
 ---
 
@@ -704,56 +708,96 @@ Proyecto_homologaciones/
 
 ## 14. Despliegue en AWS
 
-La [base Docker y configuración DEV/PROD](docs/BASE_DESPLIEGUE.md) describe el
-Dockerfile común, las plantillas de entorno, permisos de carpetas y verificaciones
-previas al despliegue. No crea recursos AWS ni incorpora Terraform todavía.
+Este apartado es el punto de entrada a la documentación de despliegue. Distingue
+el piloto manual anterior de la preparación actual para desplegar mediante
+Terraform e imágenes publicadas en ECR. Las guías enlazadas contienen los comandos
+y las comprobaciones de cada fase.
 
-El piloto se ejecuta en una única instancia EC2 con Ubuntu y Docker Compose.
-La [guía completa paso a paso](docs/DESPLIEGUE_EC2.md) explica desde la creación
-del servidor hasta el acceso público, distinguiendo los comandos de PowerShell
-local de los de Ubuntu en EC2.
+### 14.1 Cuentas, roles y configuración inicial de acceso
 
-### Arquitectura
+La organización del equipo separa administración central, desarrollo y producción:
 
-- **EC2 `t3.medium` en Irlanda:** ejecuta los tres contenedores.
-- **Streamlit:** interfaz y generador de proyectos técnicos.
-- **FastAPI:** API interna de consultas y validación.
-- **Caddy:** entrada pública con HTTPS y contraseña.
-- **DuckDNS:** subdominio gratuito que apunta a la IP pública del servidor.
-- **EBS gp3 cifrado de 30 GiB:** conserva el índice ChromaDB, la configuración y los Word.
-- **OpenAI:** modelos y embeddings consumidos mediante API externa.
+| Cuenta | Función |
+|---|---|
+| Management Account | Organización, políticas generales, facturación consolidada y presupuestos |
+| Identity Delegated Admin | Gestión de identidades y asignación de accesos |
+| DEV | Desarrollo y pruebas de la aplicación en Irlanda (`eu-west-1`) |
+| PROD | Producción, con recursos y datos separados de DEV |
 
-### Pasos del despliegue
+Cada colaborador accede con su **Builder ID individual y MFA**. Account Access
+Manager le asigna el rol **`TeamAdministratorAccess`** de DEV y/o PROD; cada cuenta
+contiene su propio rol. Los permisos administrativos siguen sujetos a las políticas
+de la organización. La identidad individual no cambia la titularidad ni la
+facturación de los recursos.
 
-1. Preparar el acceso administrativo de AWS, MFA y avisos de gasto.
-2. Crear EC2, su clave SSH y el grupo de seguridad.
-3. Instalar Docker Engine y Docker Compose en Ubuntu.
-4. Transferir el código y la carpeta completa de ChromaDB con los procesos locales detenidos.
-5. Configurar `.env` en el servidor y arrancar frontend y backend para una prueba privada.
-6. Registrar el subdominio DuckDNS y apuntarlo a la IP pública de EC2.
-7. Generar el hash de la contraseña de Caddy y configurar `PUBLIC_DOMAIN`.
-8. Abrir HTTP/HTTPS, arrancar Caddy y verificar el acceso desde otra conexión.
+La [guía de cuentas y accesos AWS](docs/ACCESOS_AWS.md) explica el mapa de cuentas,
+qué identidad utilizar para cada tarea, cómo incorporar a un socio y cómo comprobar
+la cuenta y el rol desde PowerShell antes de ejecutar Terraform.
 
-Los comandos, comprobaciones y soluciones a errores están en la
-[guía de despliegue](docs/DESPLIEGUE_EC2.md).
+### 14.2 Despliegue manual del piloto en EC2
 
-### Arranque público
+La [guía del piloto manual](docs/DESPLIEGUE_EC2.md) documenta la ruta anterior:
+crear EC2 desde la consola, instalar Docker, transferir código e índice y construir
+las imágenes en el servidor. Utiliza un único `.env` y describe el acceso mediante
+SSH, las pruebas privadas y la publicación con DuckDNS, HTTPS y contraseña.
 
-Desde Ubuntu, en `/home/ubuntu/proyecto-homologaciones`, una vez completada la configuración:
+Su arquitectura es una EC2 Ubuntu `t3.medium` en Irlanda con disco EBS gp3 cifrado
+de 30 GiB. Compose ejecuta frontend Streamlit, backend FastAPI y Caddy. ChromaDB
+se utiliza como librería con almacenamiento en disco; los modelos se consumen
+mediante la API de OpenAI.
 
-```bash
-sudo docker compose -f compose.ec2.yml -f compose.public.yml up -d --build
-sudo docker compose -f compose.ec2.yml -f compose.public.yml ps
-```
+Esta guía también reúne parada y reanudación, copias, actualizaciones y diagnóstico.
+Su configuración inicial mediante usuario IAM corresponde al piloto anterior;
+para el equipo actual se utiliza el acceso individual descrito en 14.1.
 
-`compose.ec2.yml` define frontend y backend; `compose.public.yml` añade Caddy.
-Los archivos se combinan para ejecutar los tres servicios en la misma EC2.
+### 14.3 Preparación del repositorio: Docker y entornos
 
-### Persistencia y operación
+La [base Docker y configuración de entornos](docs/BASE_DESPLIEGUE.md) explica la
+preparación común que ya se ha probado en local:
 
-- ChromaDB y `outputs` se montan desde el disco EBS: no hace falta reindexar al reiniciar.
-- Los certificados HTTPS permanecen en volúmenes Docker; no usar `down -v`.
-- Para ahorrar cómputo, detener EC2 desde AWS. El disco conservado sigue facturándose.
-- Al arrancar de nuevo, comprobar la IP pública y actualizar DuckDNS si cambia.
-- El estado de los proyectos en revisión sigue en memoria y se pierde al reiniciar.
-- La contraseña de Caddy protege el acceso, pero no implementa usuarios ni aislamiento de expedientes.
+- Un `Dockerfile` con destinos `frontend` y `backend`, que produce dos imágenes.
+- `docker-compose.yml` para ejecución local habitual; `compose.ec2.yml` como base
+  configurable por entorno; `compose.public.yml` añade Caddy al segundo.
+- Una plantilla `.env.example`, con archivos reales `.env.dev` y `.env.prod`
+  excluidos de Git y configuración separada de las imágenes.
+- Carpetas de ChromaDB y outputs montadas desde el host, permisos y comprobaciones
+  de salud, consulta RAG y generación de Word.
+
+Esta preparación no crea infraestructura. Los Compose actuales construyen desde
+el código; su adaptación para descargar versiones publicadas en ECR está pendiente.
+La publicación pública sigue requiriendo configurar dominio, Caddy y reglas de red.
+
+### 14.4 Terraform: estado compartido e infraestructura DEV
+
+La [guía de infraestructura](infra/README.md) contiene el procedimiento de
+autenticación, inicialización, revisión de planes y aplicación de los recursos:
+
+- **`infra/bootstrap/`:** bucket S3 privado, cifrado, con versiones y bloqueo nativo
+  para compartir el estado de Terraform. El primer estado se crea localmente y se
+  migra una vez a `bootstrap/terraform.tfstate` en S3.
+- **`infra/environments/dev/`:** repositorios privados ECR del frontend y backend,
+  con etiquetas inmutables, escaneo y limpieza de imágenes sin etiqueta. Su estado
+  se guarda separadamente en `dev/terraform.tfstate`, dentro del mismo bucket.
+
+El estado permite a los colaboradores administrar los mismos recursos. Una vez
+configurado el backend S3, Terraform lo actualiza automáticamente tras aplicar
+cambios; no se repite la migración en cada despliegue. Los archivos `.tf` y
+`.terraform.lock.hcl` se guardan en Git; los estados, planes y secretos se excluyen.
+
+**Situación de esta fase:** se han creado el bucket y los repositorios ECR de DEV.
+La publicación de imágenes está en curso. Todavía falta definir EC2, red y permisos
+con Terraform, completar el despliegue desde ECR y preparar PROD y GitHub Actions.
+No existe aún una automatización completa de despliegue.
+
+El flujo previsto separa dos operaciones:
+
+| Tipo de cambio | Procedimiento |
+|---|---|
+| Código de la aplicación | Construir y probar imágenes, publicar una versión en ECR y actualizar los contenedores |
+| Infraestructura | Modificar `.tf`, revisar `terraform plan` y ejecutar `terraform apply` |
+
+ChromaDB y outputs deben conservarse en el disco del servidor al actualizar
+contenedores. Esto no persiste las sesiones y revisiones de LangGraph que están
+en memoria ni sustituye las copias de seguridad. Detener EC2 reduce cómputo, pero
+el almacenamiento conservado sigue facturándose; los avisos de presupuesto no
+detienen por sí solos el gasto.

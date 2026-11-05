@@ -19,3 +19,13 @@ node_modules/
 lib/
 docs/*.pdf
 deploy/caddy/users.caddy
+
+# Terraform: conservar código y .terraform.lock.hcl; excluir estado y planes.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+!*.tfvars.example
+crash.log
+crash.*.log
