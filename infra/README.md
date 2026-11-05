@@ -532,6 +532,19 @@ completo validado y sus JSON/grafo compatibles; no copiar sobre el índice activ
 
 ### Pausa, costes y vuelta al servicio
 
+Para hacerlo desde PowerShell con un comando, utilizar
+[deploy/dev.ps1 y la guía de pausa](../docs/PAUSAR_DEV.md):
+
+```powershell
+.\deploy\dev.ps1 status
+.\deploy\dev.ps1 pause
+# Cuando se necesite de nuevo:
+.\deploy\dev.ps1 resume
+```
+
+El script no elimina infraestructura y requiere una sesión CLI DEV válida. La guía
+explica cómo actualizar DuckDNS con `resume -UpdateDns` sin guardar el token en Git.
+
 Para pausar, esperar a que terminen las generaciones y usar EC2 → Instance state →
 Stop instance. Cerrar el navegador, SSH o parar contenedores no detiene la máquina.
 Parar EC2 evita el cómputo mientras está parada, pero siguen los cargos por ambos

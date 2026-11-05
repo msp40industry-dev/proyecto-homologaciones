@@ -810,6 +810,10 @@ detienen por sí solos el gasto.
 
 ### 14.5 DEV publicado y operación
 
+Para uso intermitente, [pausar y reanudar DEV](docs/PAUSAR_DEV.md) explica los
+comandos `.\deploy\dev.ps1 pause`, `start` y `status`, la actualización opcional
+de DuckDNS y los costes que permanecen al conservar discos, ECR y S3.
+
 ```mermaid
 flowchart LR
     U[Usuario] --> DNS[DuckDNS]
