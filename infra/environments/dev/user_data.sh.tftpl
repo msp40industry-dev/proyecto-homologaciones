@@ -1,0 +1,62 @@
+#!/bin/bash
+set -euo pipefail
+
+# Solo prepara el host. No contiene secretos ni arranca la aplicacion.
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y ca-certificates curl unzip
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+. /etc/os-release
+printf 'deb [arch=%s signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu %s stable\n' "$(dpkg --print-architecture)" "$VERSION_CODENAME" > /etc/apt/sources.list.d/docker.list
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+curl -fsSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip
+unzip -q /tmp/awscliv2.zip -d /tmp/homologaciones-awscli
+/tmp/homologaciones-awscli/aws/install
+
+# En Nitro, /dev/sdf aparece como NVMe. Buscar exclusivamente el volumen previsto
+# por su serial EBS; nunca elegir un disco por su orden ni formatear el raiz.
+expected_serial=$(printf '%s' '${data_volume_id}' | tr -d '-')
+data_device=''
+for attempt in $(seq 1 180); do
+  for serial_file in /sys/block/nvme*n1/device/serial; do
+    [ -f "$serial_file" ] || continue
+    actual_serial=$(tr -d '[:space:]-' < "$serial_file")
+    if [ "$actual_serial" = "$expected_serial" ]; then
+      device_name=$(basename "$(dirname "$(dirname "$serial_file")")")
+      data_device="/dev/$device_name"
+      break
+    fi
+  done
+  [ -z "$data_device" ] || break
+  sleep 2
+done
+[ -n "$data_device" ] || { echo 'No aparece el volumen de datos esperado'; exit 1; }
+
+if blkid "$data_device"; then
+  [ "$(blkid -s TYPE -o value "$data_device")" = 'ext4' ] || {
+    echo 'Formato de datos inesperado: se requiere revision manual'; exit 1;
+  }
+else
+  # Solo crear el sistema de archivos en el disco EBS nuevo y sin firmas/particiones.
+  [ -z "$(wipefs --noheadings --output TYPE "$data_device")" ] || exit 1
+  [ "$(lsblk -nr -o TYPE "$data_device" | wc -l)" -eq 1 ] || exit 1
+  mkfs.ext4 "$data_device"
+fi
+
+install -d /srv/homologaciones
+data_uuid=$(blkid -s UUID -o value "$data_device")
+printf 'UUID=%s /srv/homologaciones ext4 defaults 0 2\n' "$data_uuid" >> /etc/fstab
+mount /srv/homologaciones
+install -d -o ubuntu -g ubuntu -m 0750 /srv/homologaciones/app
+install -d -o 1000 -g 1000 -m 0750 /srv/homologaciones/outputs /srv/homologaciones/caddy
+# No crear una Chroma vacia: se copiara el indice validado antes del arranque.
+install -d /etc/systemd/system/docker.service.d
+printf '[Unit]\nRequiresMountsFor=/srv/homologaciones\n' > /etc/systemd/system/docker.service.d/data.conf
+systemctl daemon-reload
+systemctl enable docker
+systemctl restart docker
+touch /var/lib/cloud/instance/homologaciones-host-ready

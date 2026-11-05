@@ -15,7 +15,7 @@
 6. [API REST (FastAPI)](#6-api-rest-fastapi)
 7. [Frontend Streamlit](#7-frontend-streamlit)
 8. [Generación del documento Word](#8-generación-del-documento-word)
-9. [Scripts y puesta en marcha](#9-scripts-y-puesta-en-marcha)
+9. [Puesta en marcha](#9-puesta-en-marcha)
 10. [Configuración de modelos](#10-configuración-de-modelos)
 11. [Tests](#11-tests)
 12. [Estructura del proyecto](#12-estructura-del-proyecto)
@@ -25,6 +25,7 @@
     - [14.2 Despliegue manual del piloto en EC2](#142-despliegue-manual-del-piloto-en-ec2)
     - [14.3 Preparación del repositorio: Docker y entornos](#143-preparación-del-repositorio-docker-y-entornos)
     - [14.4 Terraform: estado compartido e infraestructura DEV](#144-terraform-estado-compartido-e-infraestructura-dev)
+    - [14.5 DEV publicado y operación](#145-dev-publicado-y-operación)
 
 ---
 
@@ -763,8 +764,9 @@ preparación común que ya se ha probado en local:
 - Carpetas de ChromaDB y outputs montadas desde el host, permisos y comprobaciones
   de salud, consulta RAG y generación de Word.
 
-Esta preparación no crea infraestructura. Los Compose actuales construyen desde
-el código; su adaptación para descargar versiones publicadas en ECR está pendiente.
+Esta preparación no crea infraestructura. `compose.ec2.yml` permite construir desde
+el código o descargar versiones de ECR mediante `BACKEND_IMAGE` y `FRONTEND_IMAGE`.
+La guía explica los comandos de cada modo para evitar reconstruir una versión publicada.
 La publicación pública sigue requiriendo configurar dominio, Caddy y reglas de red.
 
 ### 14.4 Terraform: estado compartido e infraestructura DEV
@@ -776,7 +778,9 @@ autenticación, inicialización, revisión de planes y aplicación de los recurs
   para compartir el estado de Terraform. El primer estado se crea localmente y se
   migra una vez a `bootstrap/terraform.tfstate` en S3.
 - **`infra/environments/dev/`:** repositorios privados ECR del frontend y backend,
-  con etiquetas inmutables, escaneo y limpieza de imágenes sin etiqueta. Su estado
+  con etiquetas inmutables, escaneo y limpieza de imágenes sin etiqueta; definición
+  de EC2, red y rol de lectura ECR. Disco de sistema de 20 GiB y datos de 10 GiB,
+  ambos EBS gp3 cifrados. Su estado
   se guarda separadamente en `dev/terraform.tfstate`, dentro del mismo bucket.
 
 El estado permite a los colaboradores administrar los mismos recursos. Una vez
@@ -784,10 +788,12 @@ configurado el backend S3, Terraform lo actualiza automáticamente tras aplicar
 cambios; no se repite la migración en cada despliegue. Los archivos `.tf` y
 `.terraform.lock.hcl` se guardan en Git; los estados, planes y secretos se excluyen.
 
-**Situación de esta fase:** se han creado el bucket y los repositorios ECR de DEV.
-La publicación de imágenes está en curso. Todavía falta definir EC2, red y permisos
-con Terraform, completar el despliegue desde ECR y preparar PROD y GitHub Actions.
-No existe aún una automatización completa de despliegue.
+**Estado a 5 de noviembre de 2026:** DEV está desplegado y se ha comprobado el acceso
+público con HTTPS y contraseña en **https://upgradewith-ai.duckdns.org**. Frontend
+y backend utilizan imágenes de ECR con la versión `piloto-20261105-081821`.
+La infraestructura se ha creado con Terraform; la transferencia inicial de datos,
+configuración y ejecución de Compose se ha realizado manualmente. PROD y GitHub
+Actions siguen pendientes: no existe aún un despliegue continuo automático.
 
 El flujo previsto separa dos operaciones:
 
@@ -801,3 +807,48 @@ contenedores. Esto no persiste las sesiones y revisiones de LangGraph que están
 en memoria ni sustituye las copias de seguridad. Detener EC2 reduce cómputo, pero
 el almacenamiento conservado sigue facturándose; los avisos de presupuesto no
 detienen por sí solos el gasto.
+
+### 14.5 DEV publicado y operación
+
+```mermaid
+flowchart LR
+    U[Usuario] --> DNS[DuckDNS]
+    DNS --> C[Caddy · HTTPS y contraseña]
+    subgraph EC2[EC2 DEV · Ubuntu · Irlanda]
+        C --> F[Frontend Streamlit]
+        F --> B[Backend FastAPI]
+        D[(EBS de datos · ChromaDB y outputs)] --- F
+        D --- B
+    end
+    ECR[ECR · imágenes versionadas] -. descarga .-> EC2
+    TF[Terraform] -. gestiona .-> EC2
+    TF -. estado compartido .-> S3[S3]
+    F --> IA[OpenAI]
+    B --> IA
+```
+
+| Elemento | Configuración actual |
+|---|---|
+| Cuenta / región | DEV `086358667619` / `eu-west-1` |
+| Máquina | `t3.medium`, Ubuntu 24.04, una instancia |
+| Contenedores | Frontend, backend y Caddy; ChromaDB no tiene contenedor propio |
+| Discos | Sistema 20 GiB y datos 10 GiB, EBS gp3 cifrados |
+| Aplicación y entorno remoto | `/srv/homologaciones/app/` y su `.env.dev` |
+| Datos y configuración Caddy | `/srv/homologaciones/chroma_db/`, `outputs/` y `caddy/` |
+| Acceso web | HTTPS público con autenticación básica compartida de Caddy |
+| Acceso administrativo | SSH desde una IP /32, clave privada externa al repositorio |
+| Puertos | 80/443 públicos; backend y 8501 cerrados al exterior |
+| Modelos | API externa OpenAI; sin migración a Bedrock todavía |
+
+La [guía de infraestructura y operación DEV](infra/README.md#7-transferencia-inicial-y-arranque-privado)
+documenta los pasos ya realizados y los comandos para repetirlos: transferencia de
+ChromaDB, entorno remoto, descarga con el rol EC2, túnel SSH, DuckDNS y publicación
+con Caddy. Los apartados finales incluyen actualizaciones, reinicio, diagnóstico
+y costes al detener el entorno.
+
+No repetir la transferencia inicial sobre un servidor en uso. Las actualizaciones
+de código cambian las imágenes, preservando configuración, índice y documentos.
+La IP pública no está reservada: al cambiar tras una parada y arranque, actualizar
+DuckDNS. Los certificados Caddy están en volúmenes Docker del disco de sistema;
+los datos de la aplicación están en el volumen EBS separado. Ninguno de estos
+almacenamientos sustituye una copia de seguridad.

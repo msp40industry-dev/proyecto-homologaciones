@@ -1,6 +1,7 @@
 # Primera prueba privada. Acceso mediante túnel SSH, sin puertos web públicos.
 services:
   backend:
+    image: "${BACKEND_IMAGE:-${COMPOSE_PROJECT_NAME:-homologaciones}-backend:latest}"
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,6 +26,7 @@ services:
         max-file: "3"
 
   frontend:
+    image: "${FRONTEND_IMAGE:-${COMPOSE_PROJECT_NAME:-homologaciones}-frontend:latest}"
     build:
       context: .
       dockerfile: Dockerfile

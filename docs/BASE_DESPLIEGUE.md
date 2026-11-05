@@ -1,7 +1,9 @@
 # Base Docker y configuración de entornos
 
-Esta fase prepara contenedores. No crea infraestructura AWS, usuarios de
-aplicación, persistencia de expedientes ni integración con Bedrock.
+Esta guía describe la preparación de contenedores y entornos. El despliegue DEV
+actual mediante Terraform, ECR y EC2 está documentado en [infra/README.md](../infra/README.md).
+La configuración Docker no crea usuarios de aplicación, persistencia de expedientes
+ni integración con Bedrock.
 
 ## Imágenes
 
@@ -75,6 +77,7 @@ Usar siempre el mismo `--env-file` con `config`, `up`, `ps`, `logs`, `exec` y
 | `CADDY_CONFIG_PATH` | Carpeta con `Caddyfile` y `users.caddy` |
 | `FRONTEND_PORT` | Puerto local del túnel; Streamlit usa 8501 dentro del contenedor |
 | `PUBLIC_DOMAIN` | Dominio del entorno; requerido únicamente con Caddy |
+| `BACKEND_IMAGE` / `FRONTEND_IMAGE` | URI completa de cada imagen; vacías para construcción local |
 
 La plantilla no incorpora claves reales ni cambia el modelo de embeddings.
 El índice y el modelo de consulta deben coincidir.
@@ -145,19 +148,68 @@ completa. Los comandos anteriores no sustituyen esa prueba funcional.
 
 ## Publicación y operación
 
+### Usar las imágenes publicadas en ECR
+
+El mismo `compose.ec2.yml` permite construir en local o descargar imágenes.
+Con `BACKEND_IMAGE` y `FRONTEND_IMAGE` vacías o sin definir, las imágenes locales
+se nombran según `COMPOSE_PROJECT_NAME`, por ejemplo `homologaciones-dev-backend:latest`.
+Para ECR, añadir las URI completas al archivo del entorno, sin sobrescribir sus claves
+ni las rutas de datos existentes. Ejemplo de la versión piloto publicada en DEV:
+
+```dotenv
+BACKEND_IMAGE=086358667619.dkr.ecr.eu-west-1.amazonaws.com/homologaciones-dev/backend:piloto-20261105-081821
+FRONTEND_IMAGE=086358667619.dkr.ecr.eu-west-1.amazonaws.com/homologaciones-dev/frontend:piloto-20261105-081821
+```
+
+También se admite una referencia por digest (`repositorio@sha256:...`). El host debe
+tener permisos de lectura y autenticación en ECR. En Windows, usar el helper de ECR
+con el perfil temporal; su configuración se documenta en [infra/README.md](../infra/README.md).
+La EC2 de DEV utiliza su propio rol de servicio para descargar las imágenes.
+
+Desde la raíz, ejecutar primero la descarga y continuar solo si termina correctamente:
+
+```powershell
+docker compose --env-file .env.dev -f compose.ec2.yml config --quiet
+docker compose --env-file .env.dev -f compose.ec2.yml config --images
+docker compose --env-file .env.dev -f compose.ec2.yml pull backend frontend
+docker compose --env-file .env.dev -f compose.ec2.yml up -d --no-build --pull never
+docker compose --env-file .env.dev -f compose.ec2.yml ps
+```
+
+`config --images` muestra únicamente las imágenes, sin volcar las claves del entorno.
+La descarga obtiene la versión publicada; `up --no-build --pull never` arranca esa
+versión ya descargada sin construir ni intentar otra descarga. No ejecutar `build`
+ni `up --build` mientras las variables apunten a ECR: etiquetaría una construcción
+local con la referencia remota. Para volver al modo local, vaciar ambas variables
+y utilizar los comandos de construcción del apartado anterior.
+
+Actualizar una aplicación implica publicar otra versión, cambiar estas referencias,
+descargar y recrear los servicios. Para volver atrás, restaurar las referencias de
+una versión anterior compatible y repetir el procedimiento. Los datos y cambios
+de esquema requieren su propia estrategia de recuperación.
+
+### Añadir acceso público con Caddy
+
 Generar `users.caddy` en la carpeta indicada por `CADDY_CONFIG_PATH`, manteniendo
 el hash fuera del repositorio. Preparar DNS y reglas 80/443 como indica
-[DESPLIEGUE_EC2.md](DESPLIEGUE_EC2.md).
+[la guía actual de DEV](../infra/README.md#8-publicación-con-duckdns-https-y-contraseña).
+La guía [DESPLIEGUE_EC2.md](DESPLIEGUE_EC2.md) conserva la ruta manual anterior.
 
 ```bash
 docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml config --quiet
-docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml up -d --build
+docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml pull
+docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml up -d --no-build --pull never
 docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml ps
 ```
 
+Este bloque corresponde al modo ECR: completar las dos URI antes de ejecutarlo y
+continuar solo si la descarga termina correctamente. Para el modo de construcción
+local en el servidor, con ambas variables vacías, utilizar `up -d --build`.
+
 No ejecutar DEV y PROD públicos simultáneamente en una misma máquina: ambos
 publican 80/443. El destino previsto son cuentas/servidores separados. Separar
-Compose no es un control de permisos entre cuentas AWS; eso llegará con Terraform.
+Compose no es un control de permisos entre cuentas AWS; DEV se gestiona mediante
+su configuración Terraform y las asignaciones de acceso del equipo.
 
 ## Compatibilidad y siguientes fases
 
@@ -173,5 +225,5 @@ La preparación de S3 para el estado compartido y ECR se documenta en
   los anteriores con su configuración antes de migrar y conservar los certificados;
   no usar `down -v`.
 - No se cambia la API, la marca de agua Word, el índice ni el estado de LangGraph.
-- Terraform, ECR, CI, Bedrock, usuarios y persistencia de expedientes se abordarán
-  en fases separadas.
+- Terraform, ECR y el despliegue EC2 de DEV ya están implementados. CI/CD, PROD,
+  Bedrock, usuarios de aplicación y persistencia de expedientes siguen pendientes.

@@ -1,5 +1,13 @@
 # Despliegue del piloto en AWS EC2
 
+**Ruta histórica del piloto manual.** Esta guía conserva el procedimiento de
+creación desde la consola y construcción en el servidor. El entorno DEV del equipo
+se desplegó el 5 de noviembre de 2026 con Terraform, imágenes en ECR y configuración
+por entorno: utilizar [la guía actual](../infra/README.md) para ese despliegue y el
+[apartado 14 del README](../README.md#14-despliegue-en-aws) como punto de entrada.
+No mezclar sus rutas, usuarios iniciales ni comandos de construcción con los del
+DEV actual. Las comprobaciones generales de SSH y diagnóstico siguen siendo útiles.
+
 Para la configuración separada DEV/PROD y el nuevo Dockerfile común, ver primero
 [Base Docker y configuración de entornos](BASE_DESPLIEGUE.md). Los comandos de
 esta guía mantienen el modo compatible con un único archivo `.env`.

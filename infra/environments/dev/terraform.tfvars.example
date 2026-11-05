@@ -1,0 +1,8 @@
+# Copiar a terraform.tfvars, que está excluido de Git.
+# Clave creada en EC2 -> Key pairs de la cuenta DEV en Irlanda, sin extensión .pem.
+ssh_key_name = "homologaciones-dev"
+# Sustituir por tu IPv4 pública actual con /32. Esta dirección es solo un ejemplo.
+admin_ipv4_cidr = "203.0.113.10/32"
+# Obtener con el comando de infra/README.md; no utilizar literalmente este marcador.
+ubuntu_ami_id = "ami-SUSTITUIR"
+enable_public_web = false
