@@ -522,8 +522,9 @@ compartida por `proyecto_tecnico/config.py` (generador) y `backend/rag/config.py
 La configuración selecciona el cliente de texto OpenAI o Bedrock de cada grupo.
 La integración cuenta con pruebas automatizadas con clientes/transportes simulados
 y pruebas reales en Docker local con Sonnet 4.6 y Haiku 4.5. Se ha comprobado el
-chatbot y la generación del Word, con llamadas visibles en CloudWatch. Quedan
-pendientes el despliegue de Bedrock en EC2 y la validación de la familia 5.
+chatbot y la generación del Word, con llamadas visibles en CloudWatch. El flujo
+también está desplegado y comprobado por el equipo en EC2 DEV con su rol de
+instancia. Sigue pendiente la validación de la familia 5.
 Los embeddings siguen en OpenAI.
 
 ### 10.1 Variables disponibles
@@ -632,8 +633,8 @@ otro proveedor ni reintentos adicionales propios del adaptador.
 Los clientes se crean al solicitar el modelo, no al importar el módulo. OpenAI
 utiliza sus credenciales habituales; Bedrock usa la cadena de credenciales del SDK
 AWS, sin claves o perfil fijados en código. El acceso con credenciales dentro de los
-contenedores y los permisos de invocación están comprobados en local; para EC2 sigue
-pendiente preparar el acceso mediante el rol de la instancia. El adaptador no carga `.env`
+contenedores y los permisos de invocación están comprobados en local y en EC2 DEV
+mediante el rol de la instancia. El adaptador no carga `.env`
 por su cuenta ni modifica infraestructura. La selección por sí sola tampoco verifica
 remotamente el acceso al modelo.
 
@@ -656,7 +657,7 @@ supone cambiar de proveedor.
 | Aplicación en Docker local con Bedrock | Chatbot y generación de Word comprobados por el equipo |
 | Métricas de Bedrock | Aumento de llamadas visible en CloudWatch, Irlanda |
 | Familia 5 / 5.5 | Sin validación completa; acceso a Haiku 5.5 bloqueado en DEV pese al acuerdo `AVAILABLE`, trasladado a AWS |
-| Aplicación remota en EC2 | Migración a Bedrock pendiente; no confundir con la prueba local |
+| Aplicación remota en EC2 | Flujo con Bedrock comprobado por el equipo desde la URL pública; ambos contenedores utilizan el rol EC2 |
 
 Estas pruebas verifican la integración técnica, no la exactitud de todas las
 respuestas normativas ni la equivalencia de resultados entre modelos.
@@ -770,10 +771,19 @@ Remove-Item Env:AWS_ACCESS_KEY_ID, Env:AWS_SECRET_ACCESS_KEY, Env:AWS_SESSION_TO
 ```
 
 Este procedimiento utiliza permisos administrativos solo para desarrollo local.
-En EC2 se preparará el rol `homologaciones-dev-ec2` con permisos de invocación
+En EC2 se utiliza el rol `homologaciones-dev-ec2` con permisos de invocación
 acotados y acceso a credenciales temporales desde los contenedores. No se deben
 copiar al servidor las credenciales del usuario. La EC2 puede permanecer pausada
 durante las pruebas locales; las llamadas Bedrock On-Demand sí consumen tokens.
+
+**Despliegue remoto validado:** imágenes de backend y frontend con la etiqueta
+`bedrock-20261106-195609`, descargadas desde ECR en DEV. Terraform añadió la política
+de invocación y actualizó IMDSv2 en sitio, sin reemplazar la instancia ni modificar
+discos. Backend y frontend se identificaron mediante STS como
+`assumed-role/homologaciones-dev-ec2/i-0cfac93db6ece709a`; ambos cargaron los modelos
+de la familia 4 indicados arriba. El equipo confirmó el funcionamiento remoto.
+Los pasos de actualización y comprobación se mantienen en
+[infra/README.md, sección 12](infra/README.md#12-acceso-a-bedrock-desde-los-contenedores-ec2).
 
 #### Acceso a modelos y diagnóstico
 
@@ -1121,7 +1131,7 @@ flowchart LR
 | Acceso web | HTTPS público con autenticación básica compartida de Caddy |
 | Acceso administrativo | SSH desde una IP /32, clave privada externa al repositorio |
 | Puertos | 80/443 públicos; backend y 8501 cerrados al exterior |
-| Modelos en EC2 | API externa OpenAI; Bedrock validado en local, despliegue remoto pendiente (sección 10.5) |
+| Modelos en EC2 | Bedrock: Sonnet 4.6 y Haiku 4.5 con rol EC2; embeddings en OpenAI (sección 10.5) |
 
 La [guía de infraestructura y operación DEV](infra/README.md#7-transferencia-inicial-y-arranque-privado)
 documenta los pasos ya realizados y los comandos para repetirlos: transferencia de

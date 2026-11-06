@@ -25,6 +25,7 @@ cada `-chdir` selecciona una configuración y su estado.
 | Actualizar, pausar o reanudar | [9. Operación](#9-operación-y-actualizaciones) |
 | Resolver problemas | [10. Diagnóstico](#10-diagnóstico-del-despliegue-realizado) |
 | Consultar qué se desplegó | [11. Registro](#11-registro-y-próximos-pasos) |
+| Preparar el rol EC2 para Bedrock | [12. Bedrock](#12-acceso-a-bedrock-desde-los-contenedores-ec2) |
 
 ## 1. Acceso temporal desde PowerShell
 
@@ -632,8 +633,8 @@ y generación de Word desde las imágenes publicadas y el acceso al entorno remo
 
 Pendientes: PROD, automatización GitHub Actions/OIDC, actualización automática de
 DuckDNS, copias automáticas y prueba de restauración, usuarios de aplicación y
-aislamiento de expedientes, persistencia de conversaciones/revisiones y despliegue
-remoto con Bedrock. La integración Bedrock ya está validada en Docker local con
+aislamiento de expedientes, persistencia de conversaciones/revisiones y validación
+de la familia 5. Bedrock está validado en Docker local y EC2 DEV con
 Sonnet 4.6 y Haiku 4.5; configuración, autenticación temporal y comprobaciones en
 [README, sección 10.5](../README.md#105-bedrock-prueba-local-y-estado-de-la-migración).
 El piloto mantiene una contraseña compartida; no es aún una plataforma multiusuario
@@ -641,3 +642,109 @@ con aislamiento de datos ni alta disponibilidad.
 
 Referencias: [backend S3](https://developer.hashicorp.com/terraform/language/backend/s3)
 y [repositorios ECR](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecr_repository).
+
+## 12. Acceso a Bedrock desde los contenedores EC2
+
+**Aplicado y comprobado en DEV el 6 de noviembre de 2026.** Terraform añadió
+una política IAM y actualizó la instancia en sitio: `1 added, 1 changed, 0 destroyed`.
+La instancia `i-0cfac93db6ece709a` y el volumen de datos se conservaron.
+`environments/dev/bedrock.tf` añade al rol `homologaciones-dev-ec2` una política
+para invocar Sonnet 4.6 y Haiku 4.5 mediante sus perfiles europeos desde Irlanda.
+Los permisos sobre los modelos de destino se condicionan al perfil correspondiente:
+no se concede acceso general al catálogo, a perfiles globales ni a suscripciones
+Marketplace. Los acuerdos del modelo se gestionan antes con la identidad administrativa.
+La lista `local.bedrock_models` debe actualizarse al adoptar nuevos modelos.
+
+`compute.tf` mantiene IMDSv2 obligatorio y cambia su límite de saltos de 1 a 2
+para que el SDK dentro del puente Docker pueda obtener y renovar las credenciales
+temporales del rol de la instancia. No requiere copiar claves administrativas al
+servidor ni añadirlas a Compose. El cambio de metadatos afecta al host completo:
+otros contenedores, incluido Caddy, también podrían acceder al rol. Es una solución
+para este piloto DEV con un único rol compartido, no aislamiento IAM por servicio.
+
+### Revisión y aplicación (procedimiento ya realizado)
+
+Desde PowerShell local, iniciar sesión en DEV y seleccionar el perfil Terraform
+del apartado 1. Si quedan variables `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` y
+`AWS_SESSION_TOKEN` de las pruebas Docker, quitarlas antes de utilizar el perfil,
+para que unas credenciales antiguas no tengan prioridad sobre él:
+
+```powershell
+Remove-Item Env:AWS_ACCESS_KEY_ID, Env:AWS_SECRET_ACCESS_KEY, Env:AWS_SESSION_TOKEN -ErrorAction SilentlyContinue
+$env:AWS_PROFILE = 'homologaciones-dev-terraform'
+aws sts get-caller-identity
+terraform "-chdir=infra/environments/dev" validate
+terraform "-chdir=infra/environments/dev" plan "-out=bedrock.tfplan"
+```
+
+Al incorporar por primera vez estos cambios, revisar el plan antes de aplicar. Se
+espera **una política IAM nueva y una actualización en sitio de la EC2** para
+metadatos. No se espera sustitución de la máquina, modificación de discos ni
+cambios de `user_data`. Si aparecen cambios adicionales, revisarlos antes de seguir.
+El plan no despliega imágenes ni modifica el `.env.dev` remoto.
+En el entorno ya actualizado, un nuevo plan debería indicar que no hay cambios,
+salvo que se haya modificado otra configuración o exista deriva.
+
+Con la EC2 pausada, el proveedor puede leer `associate_public_ip_address=false`
+porque la IPv4 automática se ha liberado y proponer un reemplazo para restaurar
+`true`. La regla `ignore_changes = [associate_public_ip_address]` del recurso EC2
+evita gestionar esa diferencia después de la creación; se conserva `true` al crear
+una instancia y la subred también asigna IPv4 automáticamente. Esto no reserva una
+IP ni impide que cambie al reanudar. También deja fuera de detección de deriva ese
+atributo concreto: si se necesita cambiar deliberadamente la política de IP pública,
+revisar esta excepción. No quitar `prevent_destroy` ni utilizar `-target` para
+sortear un reemplazo inesperado. Tras corregirlo, generar un plan nuevo.
+
+Después de revisar el plan:
+
+```powershell
+terraform "-chdir=infra/environments/dev" apply "bedrock.tfplan"
+```
+
+### Actualización y comprobaciones en el servidor
+
+Versión desplegada y comprobada: **`bedrock-20261106-195609`**, en los repositorios
+`homologaciones-dev/backend` y `homologaciones-dev/frontend` de ECR. Tras reanudar,
+la instancia obtuvo `52.212.218.123`; es una referencia de esta ejecución, no una
+dirección fija. Utilizar siempre la IP actual y actualizar DuckDNS si cambia.
+
+Publicar las imágenes de la rama que incluye el adaptador antes de utilizarlas en
+EC2. Configurar los modelos de la sección 10.5 del README en el `.env.dev` remoto,
+mantener la clave OpenAI para embeddings y recrear backend/frontend. No copiar el
+Compose temporal de credenciales locales ni sus variables AWS al servidor. En EC2,
+dejar sin definir `AWS_PROFILE`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` y
+`AWS_SESSION_TOKEN` para que Boto3 utilice el rol; tampoco desactivar IMDS mediante
+`AWS_EC2_METADATA_DISABLED=true`.
+
+Después de configurar `BACKEND_IMAGE`, `FRONTEND_IMAGE` y los modelos en el entorno
+remoto, actualizar desde SSH:
+
+```bash
+cd /srv/homologaciones/app
+aws ecr get-login-password --region eu-west-1 | sudo docker login --username AWS --password-stdin 086358667619.dkr.ecr.eu-west-1.amazonaws.com
+sudo docker compose --env-file .env.dev -f compose.ec2.yml pull backend frontend
+sudo docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml up -d --no-build --pull never
+sudo docker compose --env-file .env.dev -f compose.ec2.yml -f compose.public.yml ps
+```
+
+Tras reanudar la instancia con el procedimiento habitual, comprobar desde SSH:
+
+```bash
+cd /srv/homologaciones/app
+sudo docker compose --env-file .env.dev -f compose.ec2.yml exec backend python -c "import boto3; r=boto3.client('sts', region_name='eu-west-1').get_caller_identity(); print(r['Account']); print(r['Arn'])"
+sudo docker compose --env-file .env.dev -f compose.ec2.yml exec frontend python -c "import boto3; r=boto3.client('sts', region_name='eu-west-1').get_caller_identity(); print(r['Account']); print(r['Arn'])"
+```
+
+Ambos deben mostrar DEV y `assumed-role/homologaciones-dev-ec2/`, no el rol
+administrativo personal. Ambas identidades se comprobaron correctamente y el equipo
+confirmó el funcionamiento de la aplicación remota con Bedrock. En cada nueva
+versión, repetir chatbot, identificación/validación y Word, y revisar las llamadas
+en CloudWatch; las métricas pueden tardar unos minutos en aparecer.
+
+Las SCP de la organización también deben permitir los destinos del perfil europeo.
+Si AWS devuelve una denegación explícita de SCP, revisar esa política desde
+Management; conceder permisos al rol no anula una denegación de la organización.
+Este cambio no modifica SCP, acuerdos de modelos ni la restricción de Haiku 5.5.
+
+Referencias: [IMDS y contenedores](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
+y [permisos de inferencia geográfica](https://docs.aws.amazon.com/bedrock/latest/userguide/geographic-cross-region-inference.html).

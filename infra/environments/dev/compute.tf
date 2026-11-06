@@ -163,9 +163,11 @@ resource "aws_instance" "app" {
     tags                  = { Name = "homologaciones-dev-system" }
   }
   metadata_options {
-    http_endpoint               = "enabled"
-    http_tokens                 = "required"
-    http_put_response_hop_limit = 1
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+    # El puente Docker añade un salto. IMDSv2 sigue siendo obligatorio.
+    # Los contenedores del host podrán obtener las credenciales del rol EC2.
+    http_put_response_hop_limit = 2
   }
   credit_specification {
     cpu_credits = "standard"
@@ -178,6 +180,9 @@ resource "aws_instance" "app" {
   ]
   lifecycle {
     prevent_destroy = true
+    # Al pausar la EC2 se libera su IPv4 y el proveedor puede leer false.
+    # Conservar true para la creación, sin reemplazar el host por esa lectura.
+    ignore_changes = [associate_public_ip_address]
   }
 }
 
