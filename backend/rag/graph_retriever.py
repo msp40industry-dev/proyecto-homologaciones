@@ -26,13 +26,11 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Optional
 
-from langchain_openai import ChatOpenAI
+from proyecto_tecnico.model_adapter import get_reasoning_model
 from pydantic import BaseModel, Field
 
 ROOT       = Path(__file__).resolve().parents[2]
 GRAPH_PATH = ROOT / "scripts_graph" / "graph.json"
-
-MODELO = None   # se inicializa lazy desde config para no importar en tests
 
 
 # Descripciones exactas del Apartado 4 del Preámbulo (Sección I)
@@ -122,13 +120,9 @@ def _cargar_grafo() -> dict:
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _get_llm():
-    global MODELO
-    if MODELO is None:
-        import os
-        from dotenv import load_dotenv
-        load_dotenv(ROOT / ".env")
-        MODELO = os.environ.get("MODELO_RAZONAMIENTO", "gpt-4o")
-    return ChatOpenAI(model=MODELO, temperature=0)
+    # Configuración y credenciales resueltas al usar el grafo, no al importarlo.
+    from proyecto_tecnico.config import MODEL_CONFIGURATION
+    return get_reasoning_model(MODEL_CONFIGURATION, temperature=0)
 
 
 def _ars_para_categoria(nodo: dict, categoria: str) -> list[dict]:

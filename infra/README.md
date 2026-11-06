@@ -632,7 +632,10 @@ y generación de Word desde las imágenes publicadas y el acceso al entorno remo
 
 Pendientes: PROD, automatización GitHub Actions/OIDC, actualización automática de
 DuckDNS, copias automáticas y prueba de restauración, usuarios de aplicación y
-aislamiento de expedientes, persistencia de conversaciones/revisiones y Bedrock.
+aislamiento de expedientes, persistencia de conversaciones/revisiones y despliegue
+remoto con Bedrock. La integración Bedrock ya está validada en Docker local con
+Sonnet 4.6 y Haiku 4.5; configuración, autenticación temporal y comprobaciones en
+[README, sección 10.5](../README.md#105-bedrock-prueba-local-y-estado-de-la-migración).
 El piloto mantiene una contraseña compartida; no es aún una plataforma multiusuario
 con aislamiento de datos ni alta disponibilidad.
 

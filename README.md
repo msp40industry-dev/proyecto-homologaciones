@@ -17,6 +17,7 @@
 8. [Generación del documento Word](#8-generación-del-documento-word)
 9. [Puesta en marcha](#9-puesta-en-marcha)
 10. [Configuración de modelos](#10-configuración-de-modelos)
+    - [10.5 Bedrock: prueba local y estado de la migración](#105-bedrock-prueba-local-y-estado-de-la-migración)
 11. [Tests](#11-tests)
 12. [Estructura del proyecto](#12-estructura-del-proyecto)
 13. [Pendiente / Roadmap](#13-pendiente--roadmap)
@@ -513,25 +514,56 @@ python scripts_index/indexado.py --reset
 
 ## 10. Configuración de modelos
 
-Los modelos de cada agente son configurables mediante variables de entorno sin necesidad de modificar código. La configuración vive en `proyecto_tecnico/config.py` (generador) y `backend/rag/config.py` (RAG).
+La selección de modelos se lee y valida en `proyecto_tecnico/model_config.py`,
+compartida por `proyecto_tecnico/config.py` (generador) y `backend/rag/config.py`
+(RAG). Las variables de entorno del proceso tienen prioridad sobre `.env`.
+
+**Migración por fases:** chatbot, auxiliares y agentes utilizan el adaptador común.
+La configuración selecciona el cliente de texto OpenAI o Bedrock de cada grupo.
+La integración cuenta con pruebas automatizadas con clientes/transportes simulados
+y pruebas reales en Docker local con Sonnet 4.6 y Haiku 4.5. Se ha comprobado el
+chatbot y la generación del Word, con llamadas visibles en CloudWatch. Quedan
+pendientes el despliegue de Bedrock en EC2 y la validación de la familia 5.
+Los embeddings siguen en OpenAI.
 
 ### 10.1 Variables disponibles
 
 | Variable | Default | Afecta a |
 |---|---|---|
-| `MODELO_RAZONAMIENTO` | `gpt-4o` | Identificador CR, Validador CRs |
+| `PROVEEDOR_RAZONAMIENTO` | `openai` | Proveedor de razonamiento y validación; admite `openai` o `bedrock` |
+| `MODELO_RAZONAMIENTO` | `gpt-4o` | Identificador CR, condiciones KAG y Validador CR |
+| `PROVEEDOR_REDACCION` | `openai` | Proveedor de chatbot, redactores y auxiliares; admite `openai` o `bedrock` |
 | `MODELO_REDACCION` | `gpt-4o-mini` | Redactor Memoria, Pliego, Conclusiones, RAG chain |
-| `MODELO_EMBEDDING` | `text-embedding-3-small` | ChromaDB (indexación y búsqueda) |
+| `AWS_REGION` | `eu-west-1` | Región prevista para Bedrock; se usa `AWS_DEFAULT_REGION` si no se define |
+| `MODELO_EMBEDDING` | `text-embedding-3-small` | Embeddings de consulta; la indexación actual utiliza ese modelo explícitamente |
+
+Los proveedores se normalizan a minúsculas; un valor desconocido produce un error
+de configuración. Con `bedrock` es obligatorio indicar explícitamente el modelo o
+perfil de inferencia: no se hereda un modelo predeterminado de OpenAI. La validación
+no consulta AWS ni comprueba aún disponibilidad o capacidades del modelo.
+`OPENAI_API_KEY` sigue siendo necesaria porque los embeddings permanecen en OpenAI,
+incluso cuando se complete la migración de los modelos de texto.
+
+No quedan nombres de modelo de texto fijados en los agentes: la reformulación
+de consultas utiliza redacción y el Validador CR utiliza razonamiento. Este último
+pasa de su antiguo `gpt-4o-mini` fijo al modelo de razonamiento configurado, por lo
+que puede cambiar su consumo y comportamiento incluso manteniendo OpenAI.
+No hay variable de validación separada ni fallback automático entre proveedores.
 
 ### 10.2 Cómo actualizar a un nuevo modelo
 
 ```bash
 # En .env, añadir o modificar:
+PROVEEDOR_RAZONAMIENTO=openai
 MODELO_RAZONAMIENTO=gpt-4.1
+PROVEEDOR_REDACCION=openai
 MODELO_REDACCION=gpt-4o-mini-2025-04-14
 ```
 
-Reiniciar el backend y el frontend. No hace falta tocar ningún fichero de código.
+Reiniciar los procesos backend y frontend para recargar la configuración. En Docker,
+recrear los contenedores con `compose up -d` (o `--force-recreate`), usando el mismo
+archivo de entorno y los Compose del despliegue; un simple `restart` no carga nuevas
+variables de entorno. Con imágenes publicadas, conservar `--no-build --pull never`.
 
 > **⚠️ Cambio de `MODELO_EMBEDDING`:** si se cambia el modelo de embeddings hay que re-indexar la ChromaDB completa, ya que los vectores almacenados son incompatibles con un modelo diferente:
 > ```bash
@@ -540,7 +572,8 @@ Reiniciar el backend y el frontend. No hace falta tocar ningún fichero de códi
 
 ### 10.3 Salidas estructuradas (tool calling)
 
-El `identificador_cr.py` usa `ChatOpenAI.with_structured_output()` para obtener la respuesta del LLM directamente como un objeto Pydantic validado, en lugar de parsear JSON manualmente. El esquema de salida está definido en `_RespuestaCRs`:
+El `identificador_cr.py` usa `get_reasoning_model(...).with_structured_output()`
+para obtener un objeto Pydantic validado. El esquema es `_RespuestaCRs`:
 
 ```python
 class _RespuestaCRs(BaseModel):
@@ -548,7 +581,247 @@ class _RespuestaCRs(BaseModel):
     crs_adicionales_detectados: list[_CRAdicional]
 ```
 
-Esto elimina el riesgo de JSON malformado y aprovecha la API de function calling de OpenAI, que garantiza la estructura de la respuesta.
+La salida se valida con Pydantic y reduce el parseo manual. Todavía es necesario
+gestionar errores de formato o generación; la compatibilidad de estos esquemas con
+Bedrock debe comprobarse también con llamadas reales a los modelos elegidos; se
+ha validado en local con Sonnet 4.6, incluida una prueba Pydantic independiente.
+KAG utiliza igualmente un esquema Pydantic. El Validador CR conserva su análisis
+JSON de información adicional: moverlo al grupo de razonamiento no reescribe su lógica.
+
+### 10.4 Adaptador común de modelos
+
+`proyecto_tecnico/model_adapter.py` expone la interfaz utilizada por los agentes:
+
+| Operación | Resultado |
+|---|---|
+| `get_reasoning_model()` | Selecciona el proveedor/modelo de razonamiento y validación |
+| `get_writing_model()` | Selecciona el proveedor/modelo de redacción y chatbot |
+| `invoke(...)` / `ainvoke(...)` | Mensaje `AIMessage` con `.content` de texto normalizado |
+| `with_structured_output(Esquema)` | Adaptador síncrono/asíncrono que devuelve el objeto Pydantic validado |
+
+Las fábricas aceptan `temperature` y `max_tokens`; `temperature=None` omite ese
+parámetro para modelos que no lo admitan. Las diferencias adicionales de capacidades
+deben verificarse al seleccionar cada modelo. El cliente OpenAI es `ChatOpenAI` y
+el de AWS es `ChatBedrockConverse`, mediante `langchain-aws==0.2.35`, compatible con
+el stack LangChain 0.3 actual. Bedrock necesita un modelo/perfil compatible con
+Converse, no cualquier modelo del catálogo. No soporta en esta fase streaming,
+embeddings ni todas las funcionalidades de cada proveedor.
+
+Ejemplo de uso:
+
+```python
+from proyecto_tecnico.model_adapter import get_reasoning_model, get_writing_model
+
+# El punto de entrada debe haber cargado la configuración del entorno.
+redactor = get_writing_model(max_tokens=4096)
+mensaje = redactor.invoke("Redacta una explicación utilizando el contexto aportado.")
+texto = mensaje.content
+
+# Esquema debe ser una clase Pydantic BaseModel del proyecto.
+# resultado = await get_reasoning_model().with_structured_output(Esquema).ainvoke(mensajes)
+```
+
+El adaptador conserva metadatos de respuesta y consumo cuando el cliente los
+proporciona. En Bedrock extrae los bloques de texto, sin añadir bloques de
+razonamiento al contenido mostrado. Una respuesta sin texto genera error explícito.
+La salida estructurada usa herramientas y validación Pydantic; no supone que el
+modelo soporte de antemano cualquier esquema. Los fallos de invocación se exponen
+como `ModelAdapterError`, con la excepción original como causa, sin fallback a
+otro proveedor ni reintentos adicionales propios del adaptador.
+
+Los clientes se crean al solicitar el modelo, no al importar el módulo. OpenAI
+utiliza sus credenciales habituales; Bedrock usa la cadena de credenciales del SDK
+AWS, sin claves o perfil fijados en código. El acceso con credenciales dentro de los
+contenedores y los permisos de invocación están comprobados en local; para EC2 sigue
+pendiente preparar el acceso mediante el rol de la instancia. El adaptador no carga `.env`
+por su cuenta ni modifica infraestructura. La selección por sí sola tampoco verifica
+remotamente el acceso al modelo.
+
+Los redactores y el identificador crean sus clientes de forma diferida y los
+reutilizan durante el proceso. Importar el grafo no inicializa conexiones Bedrock.
+El chatbot y sus auxiliares conservan sus límites de tokens y temperaturas. La
+reformulación conserva su recuperación original si falla la expansión; esto no
+supone cambiar de proveedor.
+
+### 10.5 Bedrock: prueba local y estado de la migración
+
+**Validación manual realizada el 6 de noviembre de 2026:**
+
+| Comprobación | Resultado |
+|---|---|
+| OpenAI después de integrar el adaptador | Flujo local comprobado por el equipo |
+| Identidad AWS desde un contenedor temporal | Cuenta DEV y rol `TeamAdministratorAccess` correctos |
+| Haiku 4.5 mediante el adaptador | Respuesta de texto y metadatos de tokens |
+| Sonnet 4.6 mediante el adaptador | Respuesta estructurada validada con Pydantic |
+| Aplicación en Docker local con Bedrock | Chatbot y generación de Word comprobados por el equipo |
+| Métricas de Bedrock | Aumento de llamadas visible en CloudWatch, Irlanda |
+| Familia 5 / 5.5 | Sin validación completa; acceso a Haiku 5.5 bloqueado en DEV pese al acuerdo `AVAILABLE`, trasladado a AWS |
+| Aplicación remota en EC2 | Migración a Bedrock pendiente; no confundir con la prueba local |
+
+Estas pruebas verifican la integración técnica, no la exactitud de todas las
+respuestas normativas ni la equivalencia de resultados entre modelos.
+
+**Configuración local comprobada**, en `.env.dev`:
+
+```dotenv
+PROVEEDOR_RAZONAMIENTO=bedrock
+MODELO_RAZONAMIENTO=eu.anthropic.claude-sonnet-4-6
+PROVEEDOR_REDACCION=bedrock
+MODELO_REDACCION=eu.anthropic.claude-haiku-4-5-20251001-v1:0
+AWS_REGION=eu-west-1
+MODELO_EMBEDDING=text-embedding-3-small
+```
+
+Conservar `OPENAI_API_KEY`: los embeddings de consulta siguen utilizando OpenAI.
+Cambiar los modelos de texto no requiere reindexar ChromaDB. Los perfiles `eu.`
+utilizan inferencia entre regiones europeas; no garantizan procesamiento exclusivo
+en Irlanda. IAM y las políticas de la organización deben permitir los destinos
+que requiera el perfil.
+
+#### Autenticación temporal en Docker local (PowerShell)
+
+`aws login` autentica la CLI del ordenador, no los contenedores. Para estas pruebas
+se exportan credenciales temporales a la sesión de PowerShell y se entregan tanto
+al backend como al frontend, que también ejecuta el generador de documentos.
+No se incorporan al Dockerfile, a la imagen ni a los archivos `.env`.
+
+1. Desde la raíz del repositorio, autenticar y comprobar la cuenta:
+
+```powershell
+aws login --profile homologaciones-dev
+aws sts get-caller-identity --profile homologaciones-dev
+```
+
+Seleccionar la identidad individual y DEV con `TeamAdministratorAccess`. El ID
+esperado es `086358667619`. Preparar las imágenes locales de esta rama antes de
+probarla; no usar las imágenes ECR antiguas del piloto que aún no llevan el adaptador.
+Para construir localmente, dejar `BACKEND_IMAGE` y `FRONTEND_IMAGE` vacíos en
+`.env.dev` y mantener `APP_ENV_FILE=.env.dev` y las rutas de datos locales existentes:
+
+```powershell
+docker compose --env-file .env.dev -f compose.ec2.yml build backend frontend
+```
+
+2. Exportar las credenciales sin mostrarlas por pantalla:
+
+```powershell
+$credencialesAws = aws configure export-credentials --profile homologaciones-dev --format process | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0 -or !$credencialesAws.SessionToken) {
+    throw "No se han obtenido credenciales temporales. Revisa aws login."
+}
+$env:AWS_ACCESS_KEY_ID = $credencialesAws.AccessKeyId
+$env:AWS_SECRET_ACCESS_KEY = $credencialesAws.SecretAccessKey
+$env:AWS_SESSION_TOKEN = $credencialesAws.SessionToken
+Remove-Variable credencialesAws
+```
+
+3. Crear una configuración Compose temporal. El fichero contiene referencias a
+variables, no sus valores:
+
+```powershell
+$composeAwsLocal = Join-Path $env:TEMP "compose.aws-local.yml"
+@'
+services:
+  backend:
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?Faltan credenciales temporales}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?Faltan credenciales temporales}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:?Faltan credenciales temporales}
+      AWS_DEFAULT_REGION: eu-west-1
+  frontend:
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?Faltan credenciales temporales}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?Faltan credenciales temporales}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:?Faltan credenciales temporales}
+      AWS_DEFAULT_REGION: eu-west-1
+'@ | Set-Content -Path $composeAwsLocal -Encoding UTF8
+```
+
+4. Comprobar la identidad desde Docker y recrear los servicios:
+
+```powershell
+docker compose --env-file .env.dev -f compose.ec2.yml -f "$composeAwsLocal" run --rm --no-deps backend python -c "import boto3; r=boto3.client('sts').get_caller_identity(); print('Cuenta:', r['Account']); print('Rol:', r['Arn']); assert r['Account']=='086358667619', 'Cuenta incorrecta'"
+docker compose --env-file .env.dev -f compose.ec2.yml -f "$composeAwsLocal" up -d --no-build --pull never --force-recreate
+docker compose --env-file .env.dev -f compose.ec2.yml ps
+```
+
+Abrir `http://localhost:8501` (o el `FRONTEND_PORT` configurado). Probar una consulta,
+la identificación y validación de una reforma y la generación/descarga del Word.
+Comparar con un caso conocido de OpenAI y revisar contenido y marca de borrador.
+Para diagnosticar errores:
+
+```powershell
+docker compose --env-file .env.dev -f compose.ec2.yml logs --tail 100 backend frontend
+```
+
+Las credenciales caducan. Renovar la sesión, repetir la exportación y recrear los
+dos servicios con la configuración adicional; un `restart` no actualiza las
+credenciales. Al abrir otra PowerShell también hay que recuperar esas variables.
+El SDK recibe aquí una copia temporal: este procedimiento no proporciona renovación
+automática. Evitar compartir `docker inspect` o `docker compose config`, ya que
+pueden mostrar las credenciales y otros secretos resueltos.
+
+Al terminar, eliminar los contenedores de esta prueba y las variables de sesión
+(los directorios montados de ChromaDB y outputs se conservan):
+
+```powershell
+docker compose --env-file .env.dev -f compose.ec2.yml down
+Remove-Item Env:AWS_ACCESS_KEY_ID, Env:AWS_SECRET_ACCESS_KEY, Env:AWS_SESSION_TOKEN -ErrorAction SilentlyContinue
+```
+
+Este procedimiento utiliza permisos administrativos solo para desarrollo local.
+En EC2 se preparará el rol `homologaciones-dev-ec2` con permisos de invocación
+acotados y acceso a credenciales temporales desde los contenedores. No se deben
+copiar al servidor las credenciales del usuario. La EC2 puede permanecer pausada
+durante las pruebas locales; las llamadas Bedrock On-Demand sí consumen tokens.
+
+#### Acceso a modelos y diagnóstico
+
+El formulario de primer uso de Anthropic y el acuerdo del modelo son pasos
+distintos. En DEV se consultaron las ofertas con
+`list-foundation-model-agreement-offers` y se aceptaron mediante
+`create-foundation-model-agreement`, tras revisar sus términos. Consultar el estado:
+
+```powershell
+aws bedrock get-foundation-model-availability --model-id anthropic.claude-haiku-5-5 --region eu-west-1 --profile homologaciones-dev --no-cli-pager
+```
+
+Un acuerdo `AVAILABLE` no garantiza que la invocación funcione: en las pruebas de
+Haiku 5.5 persistió `model is not available for this account` y apareció un aviso
+de verificación de cuenta. Si ocurre, conservar las salidas y trasladarlas a AWS
+por el canal indicado en el error. No aceptar repetidamente el acuerdo ni ampliar
+permisos sin identificar la causa. Las pruebas de la familia 4 no validan por sí
+solas parámetros, salidas estructuradas o consumo de la familia 5.
+
+#### Seguimiento mínimo de consumo
+
+En DEV, región Irlanda: **CloudWatch → Metrics → All metrics → AWS/Bedrock →
+By ModelId**. Bedrock publica las métricas estándar automáticamente; no hace falta
+activar el registro completo de invocaciones.
+
+| Métrica | Estadística | Interpretación |
+|---|---|---|
+| `Invocations` | Sum | Peticiones aceptadas para procesamiento, no consultas de usuario |
+| `InputTokenCount` / `OutputTokenCount` | Sum | Tokens acumulados en cada intervalo |
+| `InvocationLatency` | Average | Latencia media en milisegundos; usar gráfico separado o eje derecho |
+| `InvocationClientErrors` / `InvocationServerErrors` | Sum | Errores de cliente o servicio |
+| `InvocationThrottles` | Sum | Peticiones limitadas por el servicio |
+
+`EstimatedTPMQuotaUsage` estima el uso de cuota, no el coste facturado. Para revisar
+errores, considerar también la agrupación sin `ModelId`: algunos fallos no llegan
+a identificar el modelo. No sumar las series agregadas y por modelo como si fueran
+consumos diferentes. Los embeddings de OpenAI no aparecen en estas métricas.
+
+La publicación de métricas estándar no añade un cargo de métricas personalizadas.
+Los logs completos, consultas API, alarmas y dashboards pueden tener costes propios.
+Para el piloto se consultan las métricas existentes y se guarda la URL en favoritos,
+sin activar **Model invocation logging** ni crear dashboards personalizados.
+LangGraph ejecuta el flujo; LangSmith ofrece trazabilidad si se configura, pero no
+es necesario para esta comprobación y `.env.example` lo deja desactivado.
+
+Referencias: [métricas Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/monitoring-runtime-metrics.html),
+[precios CloudWatch](https://aws.amazon.com/cloudwatch/pricing/) y
+[acceso a modelos](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html).
 
 ---
 
@@ -575,8 +848,14 @@ python -m pytest tests/test_rag_chain.py -v
 | `test_ensamblador.py` | `_construir_payload`: estructura y contenido del payload al script Node.js | 11 |
 | `test_api.py` | Endpoints FastAPI con `TestClient` y mocks | 18 |
 | `test_enriquecimiento.py` | `cargar_csv` y `enriquecer` con ficheros temporales (`tmp_path`) | 16 |
+| `test_model_config.py` | Proveedores por rol, defaults y configuración inválida | 7 |
+| `test_model_adapter.py` | Selección, texto, salida estructurada, asincronía y transporte de clientes simulado | 18 |
+| `test_model_integration.py` | Enrutado de chatbot, auxiliares, identificador, KAG, validación y redactores | 7 |
 
-**Total: 128 tests · 0 llamadas reales a APIs externas**
+Las pruebas de configuración/adaptador no consumen APIs. La compatibilidad de los
+clientes se comprueba con transportes simulados. Las pruebas reales de Bedrock son
+manuales y están descritas en la sección 10.5; no forman parte de esta suite ni
+deben ejecutarse automáticamente consumiendo APIs.
 
 ---
 
@@ -842,7 +1121,7 @@ flowchart LR
 | Acceso web | HTTPS público con autenticación básica compartida de Caddy |
 | Acceso administrativo | SSH desde una IP /32, clave privada externa al repositorio |
 | Puertos | 80/443 públicos; backend y 8501 cerrados al exterior |
-| Modelos | API externa OpenAI; sin migración a Bedrock todavía |
+| Modelos en EC2 | API externa OpenAI; Bedrock validado en local, despliegue remoto pendiente (sección 10.5) |
 
 La [guía de infraestructura y operación DEV](infra/README.md#7-transferencia-inicial-y-arranque-privado)
 documenta los pasos ya realizados y los comandos para repetirlos: transferencia de

@@ -1,5 +1,5 @@
 """
-redactor_pliego.py — Agente 3 (gpt-4o-mini)
+redactor_pliego.py — Agente 3 (modelo configurable de redacción)
 
 Genera las secciones del Pliego de Condiciones (3.1–3.4):
   3.1 Calidad de materiales
@@ -9,15 +9,18 @@ Genera las secciones del Pliego de Condiciones (3.1–3.4):
 """
 
 from __future__ import annotations
-from langchain_openai import ChatOpenAI
+from functools import lru_cache
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from proyecto_tecnico.models import (
     EntradaProyecto, FichaCR, SeccionGenerada, EstadoRevision
 )
-from proyecto_tecnico.config import MODELO_REDACCION
+from proyecto_tecnico.config import MODEL_CONFIGURATION
+from proyecto_tecnico.model_adapter import get_writing_model
 
-_llm = ChatOpenAI(model=MODELO_REDACCION, temperature=0.0)
+@lru_cache(maxsize=1)
+def _get_llm():
+    return get_writing_model(MODEL_CONFIGURATION, temperature=0.0)
 
 _SYSTEM = """Eres un redactor técnico especializado en proyectos de reforma de vehículos en España.
 Redactas el Pliego de Condiciones en lenguaje formal de ingeniería, en español.
@@ -106,7 +109,7 @@ indicados por el usuario y conserva los demás. No inventes valores ni referenci
 Puedes adaptar el tono y la claridad sin perder precisión técnica."""
 
         contexto = _construir_contexto(entrada, crs, contexto_kag)
-        respuesta = await _llm.ainvoke([
+        respuesta = await _get_llm().ainvoke([
             SystemMessage(content=_SYSTEM),
             HumanMessage(content=f"{instruccion}\n\nDATOS DEL PROYECTO:\n{contexto}"),
         ])

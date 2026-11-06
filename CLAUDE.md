@@ -142,11 +142,20 @@ Toda la configuración de modelos vive en variables de entorno (`.env`), sin toc
 
 | Variable | Default |
 |---|---|
+| `PROVEEDOR_RAZONAMIENTO` | `openai` |
 | `MODELO_RAZONAMIENTO` | `gpt-4o` |
+| `PROVEEDOR_REDACCION` | `openai` |
 | `MODELO_REDACCION` | `gpt-4o-mini` |
 | `MODELO_EMBEDDING` | `text-embedding-3-small` |
+| `AWS_REGION` | `eu-west-1` |
 
 `proyecto_tecnico/config.py` y `backend/rag/config.py` leen estas variables.  
+Comparten la validación de `proyecto_tecnico/model_config.py`. Los clientes de texto
+se construyen únicamente mediante `proyecto_tecnico/model_adapter.py`: razonamiento
+para Identificador CR, KAG y Validador CR; redacción para chatbot, auxiliares y
+redactores. No añadir llamadas directas a `ChatOpenAI` fuera del adaptador. Bedrock
+utiliza Converse y requiere permisos y credenciales en el entorno; los embeddings
+permanecen en OpenAI. No existe fallback entre proveedores.
 **Si se cambia `MODELO_EMBEDDING` hay que re-indexar ChromaDB completa** (`python scripts_index/indexado.py --reset`).
 
 ---

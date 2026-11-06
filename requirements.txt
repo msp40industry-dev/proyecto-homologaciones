@@ -10,6 +10,8 @@ tiktoken==0.9.0
 # ── LangChain stack ───────────────────────────────────────────────────────────
 langchain==0.3.25
 langchain-openai==0.3.16
+# Rama compatible con LangChain 0.3; no migrar el stack a 1.x en este cambio.
+langchain-aws==0.2.35
 langchain-chroma==0.2.4
 langchain-community==0.3.24
 langgraph==0.4.5

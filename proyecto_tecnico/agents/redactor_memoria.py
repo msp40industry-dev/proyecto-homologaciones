@@ -1,5 +1,5 @@
 """
-redactor_memoria.py — Agente 2 (gpt-4o)
+redactor_memoria.py — Agente 2 (modelo configurable de redacción)
 
 Genera las siguientes secciones del proyecto técnico:
   - 0.  Peticionario
@@ -14,15 +14,18 @@ Genera las siguientes secciones del proyecto técnico:
 """
 
 from __future__ import annotations
-from langchain_openai import ChatOpenAI
+from functools import lru_cache
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from proyecto_tecnico.models import (
     EntradaProyecto, FichaCR, ARFiltrado, SeccionGenerada, EstadoRevision
 )
-from proyecto_tecnico.config import MODELO_REDACCION
+from proyecto_tecnico.config import MODEL_CONFIGURATION
+from proyecto_tecnico.model_adapter import get_writing_model
 
-_llm = ChatOpenAI(model=MODELO_REDACCION, temperature=0.0)
+@lru_cache(maxsize=1)
+def _get_llm():
+    return get_writing_model(MODEL_CONFIGURATION, temperature=0.0)
 
 # ─── Prompts de sistema por sección ──────────────────────────────────────────
 
@@ -168,7 +171,7 @@ solicite expresamente modificarlos. En ese caso, modifica únicamente los elemen
 indicados por el usuario y conserva los demás. No inventes valores ni referencias.
 Puedes adaptar el tono y la claridad sin perder precisión técnica."""
 
-    respuesta = await _llm.ainvoke([
+    respuesta = await _get_llm().ainvoke([
         SystemMessage(content=_SYSTEM_BASE),
         HumanMessage(content=f"{instruccion}\n\nDATOS DEL PROYECTO:\n{contexto}"),
     ])

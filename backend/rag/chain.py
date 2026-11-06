@@ -1,5 +1,5 @@
 """
-Chain — cadena RAG: contexto recuperado + prompt + GPT-4o mini.
+Chain — cadena RAG: contexto recuperado + prompt + modelo de redacción.
 
 El prompt instruye al modelo para:
   - Responder SOLO en base a los documentos proporcionados
@@ -10,7 +10,7 @@ El prompt instruye al modelo para:
 
 import re
 
-from langchain_openai import ChatOpenAI
+from proyecto_tecnico.model_adapter import ChatModelAdapter, get_writing_model
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langchain_core.documents import Document
 
@@ -319,10 +319,9 @@ def _contexto_kag_chatbot(crs: list[str], categoria: str | None) -> str:
 
 # ─── LLM ──────────────────────────────────────────────────────────────────────
 
-def _get_llm() -> ChatOpenAI:
-    return ChatOpenAI(
-        api_key=config.OPENAI_API_KEY,
-        model=config.GENERATION_MODEL,
+def _get_llm() -> ChatModelAdapter:
+    return get_writing_model(
+        config.MODEL_CONFIGURATION,
         temperature=config.TEMPERATURE,
         max_tokens=config.MAX_TOKENS_RESPUESTA,
     )
@@ -342,7 +341,7 @@ _PROMPT_DIRECTIVA = (
 )
 
 
-def _describir_directiva(ref: str, llm: ChatOpenAI) -> str:
+def _describir_directiva(ref: str, llm: ChatModelAdapter) -> str:
     """
     Recupera los chunks más ricos de una directiva y genera una descripción detallada
     con una llamada independiente al LLM — misma calidad que preguntar individualmente.

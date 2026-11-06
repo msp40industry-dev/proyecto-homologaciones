@@ -19,7 +19,9 @@ from typing import Optional
 
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_openai import OpenAIEmbeddings
+from proyecto_tecnico.config import MODEL_CONFIGURATION
+from proyecto_tecnico.model_adapter import ChatModelAdapter, get_reasoning_model
 from langchain_core.messages import SystemMessage, HumanMessage
 from pydantic import BaseModel
 
@@ -124,7 +126,7 @@ def _analizar_informacion_adicional(
     cr: str,
     texto_ficha: str,
     descripcion_usuario: str,
-    llm: ChatOpenAI,
+    llm: ChatModelAdapter,
 ) -> list[dict]:
     """
     Llama al LLM para detectar CRs adicionales mencionados en informacion_adicional
@@ -172,7 +174,7 @@ async def validar_crs(
     Valida los CRs indicados por el usuario aplicando la lógica completa de 4 fases.
     """
     col = _get_coleccion()
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = get_reasoning_model(MODEL_CONFIGURATION, temperature=0)
 
     crs_incluidos: list[CRValidado] = []
     crs_excluidos: list[CRValidado] = []

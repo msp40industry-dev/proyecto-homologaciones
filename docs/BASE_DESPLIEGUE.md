@@ -2,8 +2,9 @@
 
 Esta guía describe la preparación de contenedores y entornos. El despliegue DEV
 actual mediante Terraform, ECR y EC2 está documentado en [infra/README.md](../infra/README.md).
-La configuración Docker no crea usuarios de aplicación, persistencia de expedientes
-ni integración con Bedrock.
+La configuración Docker no crea usuarios de aplicación ni persistencia de expedientes.
+El adaptador OpenAI/Bedrock y la prueba local con credenciales temporales se explican
+en [Configuración de modelos](../README.md#105-bedrock-prueba-local-y-estado-de-la-migración).
 
 ## Imágenes
 
@@ -226,4 +227,5 @@ La preparación de S3 para el estado compartido y ECR se documenta en
   no usar `down -v`.
 - No se cambia la API, la marca de agua Word, el índice ni el estado de LangGraph.
 - Terraform, ECR y el despliegue EC2 de DEV ya están implementados. CI/CD, PROD,
-  Bedrock, usuarios de aplicación y persistencia de expedientes siguen pendientes.
+  El despliegue remoto con Bedrock, los usuarios de aplicación y la persistencia de
+  expedientes siguen pendientes; Bedrock ya se ha validado en Docker local.

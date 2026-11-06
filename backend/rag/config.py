@@ -6,6 +6,7 @@ Todas las variables de entorno y paths se leen desde aquí.
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from proyecto_tecnico.model_config import load_model_configuration
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
@@ -28,12 +29,18 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     raise EnvironmentError(
         "OPENAI_API_KEY no encontrada.\n"
-        "Crea un fichero .env en el directorio raíz con:\n"
+        "Los embeddings siguen utilizando OpenAI aunque los modelos de texto migren.\n"
+        "Configura la variable en el entorno o en un fichero .env con:\n"
         "  OPENAI_API_KEY=sk-..."
     )
 
-EMBEDDING_MODEL  = os.environ.get("MODELO_EMBEDDING", "text-embedding-3-small")
-GENERATION_MODEL = os.environ.get("MODELO_REDACCION", "gpt-4o-mini")
+MODEL_CONFIGURATION = load_model_configuration()
+REASONING_PROVIDER = MODEL_CONFIGURATION.reasoning.provider
+REASONING_MODEL = MODEL_CONFIGURATION.reasoning.model
+GENERATION_PROVIDER = MODEL_CONFIGURATION.writing.provider
+GENERATION_MODEL = MODEL_CONFIGURATION.writing.model
+EMBEDDING_MODEL = MODEL_CONFIGURATION.embedding_model
+AWS_REGION = MODEL_CONFIGURATION.aws_region
 
 # ─── LangSmith ────────────────────────────────────────────────────────────────
 # Opcional — si no se configura, simplemente no hay trazas

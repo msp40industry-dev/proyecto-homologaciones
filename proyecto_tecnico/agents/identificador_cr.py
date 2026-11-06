@@ -1,5 +1,5 @@
 """
-identificador_cr.py — Agente 1 (gpt-4o)
+identificador_cr.py — Agente 1 (modelo configurable de razonamiento)
 
 Responsabilidad:
   - Si el ingeniero ya indicó CRs: recupera las fichas directamente del RAG.
@@ -13,9 +13,10 @@ Responsabilidad:
 
 from __future__ import annotations
 import re
+from functools import lru_cache
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_core.messages import SystemMessage, HumanMessage
 from pydantic import BaseModel, Field
 import sys
@@ -28,7 +29,8 @@ sys.path.insert(0, str(ROOT / "backend"))   # para encontrar rag/
 from rag.retriever import recuperar
 from rag.graph_retriever import enriquecer_con_grafo
 from proyecto_tecnico.models import FichaCR, ARFiltrado
-from proyecto_tecnico.config import MODELO_RAZONAMIENTO, MODELO_EMBEDDING
+from proyecto_tecnico.config import MODEL_CONFIGURATION, MODELO_EMBEDDING
+from proyecto_tecnico.model_adapter import get_reasoning_model
 
 
 # ── Esquema de salida estructurada ────────────────────────────────────────────
@@ -54,9 +56,9 @@ class _RespuestaCRs(BaseModel):
 
 _CHROMA_DIR = ROOT / "scripts_index" / "chroma_db"
 
-# Modelo configurable vía MODELO_RAZONAMIENTO en .env
-_llm = ChatOpenAI(model=MODELO_RAZONAMIENTO, temperature=0.0)
-_llm_structured = _llm.with_structured_output(_RespuestaCRs)
+@lru_cache(maxsize=1)
+def _get_llm_structured():
+    return get_reasoning_model(MODEL_CONFIGURATION, temperature=0.0).with_structured_output(_RespuestaCRs)
 
 DESCRIPCIONES_NIVEL = {
     "(1)": "Se aplica en su última actualización en vigor a fecha de tramitación",
@@ -119,7 +121,7 @@ FICHAS CR RECUPERADAS DEL SISTEMA RAG:
 
 Analiza la descripción y los documentos. Identifica todos los CRs aplicables."""
 
-    datos: _RespuestaCRs = await _llm_structured.ainvoke([
+    datos: _RespuestaCRs = await _get_llm_structured().ainvoke([
         SystemMessage(content=SYSTEM_PROMPT),
         HumanMessage(content=prompt_usuario),
     ])

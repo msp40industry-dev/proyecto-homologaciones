@@ -11,7 +11,8 @@ Estrategia de retrieval:
 import re
 
 from langchain_chroma import Chroma
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from proyecto_tecnico.model_adapter import get_writing_model
 
 from . import config
 
@@ -88,9 +89,8 @@ def _expandir_query(query: str) -> str:
     Fallback silencioso si el LLM falla.
     """
     try:
-        llm = ChatOpenAI(
-            api_key=config.OPENAI_API_KEY,
-            model="gpt-4o-mini",
+        llm = get_writing_model(
+            config.MODEL_CONFIGURATION,
             temperature=0,
             max_tokens=100,
         )

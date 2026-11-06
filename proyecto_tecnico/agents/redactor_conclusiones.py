@@ -1,19 +1,22 @@
 """
-redactor_conclusiones.py — Agente 4 (gpt-4o-mini)
+redactor_conclusiones.py — Agente 4 (modelo configurable de redacción)
 
 Genera la sección 8. Conclusiones del proyecto técnico.
 """
 
 from __future__ import annotations
-from langchain_openai import ChatOpenAI
+from functools import lru_cache
 from langchain_core.messages import SystemMessage, HumanMessage
 
 from proyecto_tecnico.models import (
     EntradaProyecto, FichaCR, ARFiltrado, SeccionGenerada, EstadoRevision
 )
-from proyecto_tecnico.config import MODELO_REDACCION
+from proyecto_tecnico.config import MODEL_CONFIGURATION
+from proyecto_tecnico.model_adapter import get_writing_model
 
-_llm = ChatOpenAI(model=MODELO_REDACCION, temperature=0.0)
+@lru_cache(maxsize=1)
+def _get_llm():
+    return get_writing_model(MODEL_CONFIGURATION, temperature=0.0)
 
 _SYSTEM = """Eres un redactor técnico especializado en proyectos de reforma de vehículos en España.
 Redactas la sección de Conclusiones en lenguaje formal de ingeniería, en español.
@@ -72,7 +75,7 @@ indicados por el usuario y conserva los demás. No inventes valores ni referenci
 Puedes adaptar el tono y la claridad sin perder precisión técnica."""
 
     contexto = _construir_contexto(entrada, crs, ars, contexto_kag)
-    respuesta = await _llm.ainvoke([
+    respuesta = await _get_llm().ainvoke([
         SystemMessage(content=_SYSTEM),
         HumanMessage(content=f"{instruccion}\n\nDATOS DEL PROYECTO:\n{contexto}"),
     ])
