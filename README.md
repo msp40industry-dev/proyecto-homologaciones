@@ -15,12 +15,17 @@
 6. [API REST (FastAPI)](#6-api-rest-fastapi)
 7. [Frontend Streamlit](#7-frontend-streamlit)
 8. [Generación del documento Word](#8-generación-del-documento-word)
-9. [Scripts y puesta en marcha](#9-scripts-y-puesta-en-marcha)
+9. [Puesta en marcha](#9-puesta-en-marcha)
 10. [Configuración de modelos](#10-configuración-de-modelos)
 11. [Tests](#11-tests)
 12. [Estructura del proyecto](#12-estructura-del-proyecto)
 13. [Pendiente / Roadmap](#13-pendiente--roadmap)
 14. [Despliegue en AWS](#14-despliegue-en-aws)
+    - [14.1 Cuentas, roles y configuración inicial de acceso](#141-cuentas-roles-y-configuración-inicial-de-acceso)
+    - [14.2 Despliegue manual del piloto en EC2](#142-despliegue-manual-del-piloto-en-ec2)
+    - [14.3 Preparación del repositorio: Docker y entornos](#143-preparación-del-repositorio-docker-y-entornos)
+    - [14.4 Terraform: estado compartido e infraestructura DEV](#144-terraform-estado-compartido-e-infraestructura-dev)
+    - [14.5 DEV publicado y operación](#145-dev-publicado-y-operación)
 
 ---
 
@@ -465,7 +470,7 @@ Los documentos Word generados se guardan en `outputs/proyectos/` en el host.
 
 ### 9.3 Opción B — Entorno virtual local (desarrollo)
 
-**Requisitos:** Python 3.11, Node.js 20 LTS.
+**Requisitos:** Python 3.11 y Node.js 24 LTS (incluidos en la imagen Docker).
 
 ```bash
 # 1. Crear el entorno virtual
@@ -704,52 +709,150 @@ Proyecto_homologaciones/
 
 ## 14. Despliegue en AWS
 
-El piloto se ejecuta en una única instancia EC2 con Ubuntu y Docker Compose.
-La [guía completa paso a paso](docs/DESPLIEGUE_EC2.md) explica desde la creación
-del servidor hasta el acceso público, distinguiendo los comandos de PowerShell
-local de los de Ubuntu en EC2.
+Este apartado es el punto de entrada a la documentación de despliegue. Distingue
+el piloto manual anterior de la preparación actual para desplegar mediante
+Terraform e imágenes publicadas en ECR. Las guías enlazadas contienen los comandos
+y las comprobaciones de cada fase.
 
-### Arquitectura
+### 14.1 Cuentas, roles y configuración inicial de acceso
 
-- **EC2 `t3.medium` en Irlanda:** ejecuta los tres contenedores.
-- **Streamlit:** interfaz y generador de proyectos técnicos.
-- **FastAPI:** API interna de consultas y validación.
-- **Caddy:** entrada pública con HTTPS y contraseña.
-- **DuckDNS:** subdominio gratuito que apunta a la IP pública del servidor.
-- **EBS gp3 cifrado de 30 GiB:** conserva el índice ChromaDB, la configuración y los Word.
-- **OpenAI:** modelos y embeddings consumidos mediante API externa.
+La organización del equipo separa administración central, desarrollo y producción:
 
-### Pasos del despliegue
+| Cuenta | Función |
+|---|---|
+| Management Account | Organización, políticas generales, facturación consolidada y presupuestos |
+| Identity Delegated Admin | Gestión de identidades y asignación de accesos |
+| DEV | Desarrollo y pruebas de la aplicación en Irlanda (`eu-west-1`) |
+| PROD | Producción, con recursos y datos separados de DEV |
 
-1. Preparar el acceso administrativo de AWS, MFA y avisos de gasto.
-2. Crear EC2, su clave SSH y el grupo de seguridad.
-3. Instalar Docker Engine y Docker Compose en Ubuntu.
-4. Transferir el código y la carpeta completa de ChromaDB con los procesos locales detenidos.
-5. Configurar `.env` en el servidor y arrancar frontend y backend para una prueba privada.
-6. Registrar el subdominio DuckDNS y apuntarlo a la IP pública de EC2.
-7. Generar el hash de la contraseña de Caddy y configurar `PUBLIC_DOMAIN`.
-8. Abrir HTTP/HTTPS, arrancar Caddy y verificar el acceso desde otra conexión.
+Cada colaborador accede con su **Builder ID individual y MFA**. Account Access
+Manager le asigna el rol **`TeamAdministratorAccess`** de DEV y/o PROD; cada cuenta
+contiene su propio rol. Los permisos administrativos siguen sujetos a las políticas
+de la organización. La identidad individual no cambia la titularidad ni la
+facturación de los recursos.
 
-Los comandos, comprobaciones y soluciones a errores están en la
-[guía de despliegue](docs/DESPLIEGUE_EC2.md).
+La [guía de cuentas y accesos AWS](docs/ACCESOS_AWS.md) explica el mapa de cuentas,
+qué identidad utilizar para cada tarea, cómo incorporar a un socio y cómo comprobar
+la cuenta y el rol desde PowerShell antes de ejecutar Terraform.
 
-### Arranque público
+### 14.2 Despliegue manual del piloto en EC2
 
-Desde Ubuntu, en `/home/ubuntu/proyecto-homologaciones`, una vez completada la configuración:
+La [guía del piloto manual](docs/DESPLIEGUE_EC2.md) documenta la ruta anterior:
+crear EC2 desde la consola, instalar Docker, transferir código e índice y construir
+las imágenes en el servidor. Utiliza un único `.env` y describe el acceso mediante
+SSH, las pruebas privadas y la publicación con DuckDNS, HTTPS y contraseña.
 
-```bash
-sudo docker compose -f compose.ec2.yml -f compose.public.yml up -d --build
-sudo docker compose -f compose.ec2.yml -f compose.public.yml ps
+Su arquitectura es una EC2 Ubuntu `t3.medium` en Irlanda con disco EBS gp3 cifrado
+de 30 GiB. Compose ejecuta frontend Streamlit, backend FastAPI y Caddy. ChromaDB
+se utiliza como librería con almacenamiento en disco; los modelos se consumen
+mediante la API de OpenAI.
+
+Esta guía también reúne parada y reanudación, copias, actualizaciones y diagnóstico.
+Su configuración inicial mediante usuario IAM corresponde al piloto anterior;
+para el equipo actual se utiliza el acceso individual descrito en 14.1.
+
+### 14.3 Preparación del repositorio: Docker y entornos
+
+La [base Docker y configuración de entornos](docs/BASE_DESPLIEGUE.md) explica la
+preparación común que ya se ha probado en local:
+
+- Un `Dockerfile` con destinos `frontend` y `backend`, que produce dos imágenes.
+- `docker-compose.yml` para ejecución local habitual; `compose.ec2.yml` como base
+  configurable por entorno; `compose.public.yml` añade Caddy al segundo.
+- Una plantilla `.env.example`, con archivos reales `.env.dev` y `.env.prod`
+  excluidos de Git y configuración separada de las imágenes.
+- Carpetas de ChromaDB y outputs montadas desde el host, permisos y comprobaciones
+  de salud, consulta RAG y generación de Word.
+
+Esta preparación no crea infraestructura. `compose.ec2.yml` permite construir desde
+el código o descargar versiones de ECR mediante `BACKEND_IMAGE` y `FRONTEND_IMAGE`.
+La guía explica los comandos de cada modo para evitar reconstruir una versión publicada.
+La publicación pública sigue requiriendo configurar dominio, Caddy y reglas de red.
+
+### 14.4 Terraform: estado compartido e infraestructura DEV
+
+La [guía de infraestructura](infra/README.md) contiene el procedimiento de
+autenticación, inicialización, revisión de planes y aplicación de los recursos:
+
+- **`infra/bootstrap/`:** bucket S3 privado, cifrado, con versiones y bloqueo nativo
+  para compartir el estado de Terraform. El primer estado se crea localmente y se
+  migra una vez a `bootstrap/terraform.tfstate` en S3.
+- **`infra/environments/dev/`:** repositorios privados ECR del frontend y backend,
+  con etiquetas inmutables, escaneo y limpieza de imágenes sin etiqueta; definición
+  de EC2, red y rol de lectura ECR. Disco de sistema de 20 GiB y datos de 10 GiB,
+  ambos EBS gp3 cifrados. Su estado
+  se guarda separadamente en `dev/terraform.tfstate`, dentro del mismo bucket.
+
+El estado permite a los colaboradores administrar los mismos recursos. Una vez
+configurado el backend S3, Terraform lo actualiza automáticamente tras aplicar
+cambios; no se repite la migración en cada despliegue. Los archivos `.tf` y
+`.terraform.lock.hcl` se guardan en Git; los estados, planes y secretos se excluyen.
+
+**Estado a 5 de noviembre de 2026:** DEV está desplegado y se ha comprobado el acceso
+público con HTTPS y contraseña en **https://upgradewith-ai.duckdns.org**. Frontend
+y backend utilizan imágenes de ECR con la versión `piloto-20261105-081821`.
+La infraestructura se ha creado con Terraform; la transferencia inicial de datos,
+configuración y ejecución de Compose se ha realizado manualmente. PROD y GitHub
+Actions siguen pendientes: no existe aún un despliegue continuo automático.
+
+El flujo previsto separa dos operaciones:
+
+| Tipo de cambio | Procedimiento |
+|---|---|
+| Código de la aplicación | Construir y probar imágenes, publicar una versión en ECR y actualizar los contenedores |
+| Infraestructura | Modificar `.tf`, revisar `terraform plan` y ejecutar `terraform apply` |
+
+ChromaDB y outputs deben conservarse en el disco del servidor al actualizar
+contenedores. Esto no persiste las sesiones y revisiones de LangGraph que están
+en memoria ni sustituye las copias de seguridad. Detener EC2 reduce cómputo, pero
+el almacenamiento conservado sigue facturándose; los avisos de presupuesto no
+detienen por sí solos el gasto.
+
+### 14.5 DEV publicado y operación
+
+Para uso intermitente, [pausar y reanudar DEV](docs/PAUSAR_DEV.md) explica los
+comandos `.\deploy\dev.ps1 pause`, `start` y `status`, la actualización opcional
+de DuckDNS y los costes que permanecen al conservar discos, ECR y S3.
+
+```mermaid
+flowchart LR
+    U[Usuario] --> DNS[DuckDNS]
+    DNS --> C[Caddy · HTTPS y contraseña]
+    subgraph EC2[EC2 DEV · Ubuntu · Irlanda]
+        C --> F[Frontend Streamlit]
+        F --> B[Backend FastAPI]
+        D[(EBS de datos · ChromaDB y outputs)] --- F
+        D --- B
+    end
+    ECR[ECR · imágenes versionadas] -. descarga .-> EC2
+    TF[Terraform] -. gestiona .-> EC2
+    TF -. estado compartido .-> S3[S3]
+    F --> IA[OpenAI]
+    B --> IA
 ```
 
-`compose.ec2.yml` define frontend y backend; `compose.public.yml` añade Caddy.
-Los archivos se combinan para ejecutar los tres servicios en la misma EC2.
+| Elemento | Configuración actual |
+|---|---|
+| Cuenta / región | DEV `086358667619` / `eu-west-1` |
+| Máquina | `t3.medium`, Ubuntu 24.04, una instancia |
+| Contenedores | Frontend, backend y Caddy; ChromaDB no tiene contenedor propio |
+| Discos | Sistema 20 GiB y datos 10 GiB, EBS gp3 cifrados |
+| Aplicación y entorno remoto | `/srv/homologaciones/app/` y su `.env.dev` |
+| Datos y configuración Caddy | `/srv/homologaciones/chroma_db/`, `outputs/` y `caddy/` |
+| Acceso web | HTTPS público con autenticación básica compartida de Caddy |
+| Acceso administrativo | SSH desde una IP /32, clave privada externa al repositorio |
+| Puertos | 80/443 públicos; backend y 8501 cerrados al exterior |
+| Modelos | API externa OpenAI; sin migración a Bedrock todavía |
 
-### Persistencia y operación
+La [guía de infraestructura y operación DEV](infra/README.md#7-transferencia-inicial-y-arranque-privado)
+documenta los pasos ya realizados y los comandos para repetirlos: transferencia de
+ChromaDB, entorno remoto, descarga con el rol EC2, túnel SSH, DuckDNS y publicación
+con Caddy. Los apartados finales incluyen actualizaciones, reinicio, diagnóstico
+y costes al detener el entorno.
 
-- ChromaDB y `outputs` se montan desde el disco EBS: no hace falta reindexar al reiniciar.
-- Los certificados HTTPS permanecen en volúmenes Docker; no usar `down -v`.
-- Para ahorrar cómputo, detener EC2 desde AWS. El disco conservado sigue facturándose.
-- Al arrancar de nuevo, comprobar la IP pública y actualizar DuckDNS si cambia.
-- El estado de los proyectos en revisión sigue en memoria y se pierde al reiniciar.
-- La contraseña de Caddy protege el acceso, pero no implementa usuarios ni aislamiento de expedientes.
+No repetir la transferencia inicial sobre un servidor en uso. Las actualizaciones
+de código cambian las imágenes, preservando configuración, índice y documentos.
+La IP pública no está reservada: al cambiar tras una parada y arranque, actualizar
+DuckDNS. Los certificados Caddy están en volúmenes Docker del disco de sistema;
+los datos de la aplicación están en el volumen EBS separado. Ninguno de estos
+almacenamientos sustituye una copia de seguridad.

@@ -1,5 +1,17 @@
 # Despliegue del piloto en AWS EC2
 
+**Ruta histórica del piloto manual.** Esta guía conserva el procedimiento de
+creación desde la consola y construcción en el servidor. El entorno DEV del equipo
+se desplegó el 5 de noviembre de 2026 con Terraform, imágenes en ECR y configuración
+por entorno: utilizar [la guía actual](../infra/README.md) para ese despliegue y el
+[apartado 14 del README](../README.md#14-despliegue-en-aws) como punto de entrada.
+No mezclar sus rutas, usuarios iniciales ni comandos de construcción con los del
+DEV actual. Las comprobaciones generales de SSH y diagnóstico siguen siendo útiles.
+
+Para la configuración separada DEV/PROD y el nuevo Dockerfile común, ver primero
+[Base Docker y configuración de entornos](BASE_DESPLIEGUE.md). Los comandos de
+esta guía mantienen el modo compatible con un único archivo `.env`.
+
 Guía desde una cuenta AWS hasta la aplicación privada o pública con HTTPS y
 contraseña. Los comandos distinguen **PowerShell local (Windows)** de
 **Ubuntu remoto (EC2)**. No ejecutes comandos PowerShell en Ubuntu ni al revés.
@@ -28,8 +40,8 @@ flowchart TD
 - Una EC2 `t3.medium` (2 vCPU, 4 GiB RAM), Ubuntu Server 24.04 LTS x86-64,
   en Irlanda (`eu-west-1`), modalidad On-Demand.
 - Un disco raíz EBS gp3 de 30 GiB cifrado, 3000 IOPS y 125 MiB/s.
-- `compose.ec2.yml` define backend y frontend. Ambos usan `Dockerfile.frontend`
-  para disponer de Python, Node.js y el paquete `docx`.
+- `compose.ec2.yml` define backend y frontend. Usan los destinos `backend` y
+  `frontend` del `Dockerfile` común con Python, Node.js y el paquete `docx`.
 - `compose.public.yml` añade Caddy: los dos archivos se combinan, no se ejecutan
   como dos proyectos independientes.
 - ChromaDB es una librería con almacenamiento local, no otro contenedor.
@@ -159,7 +171,7 @@ completo, no solo `chroma.sqlite3`: también necesita sus subdirectorios vectori
 Crear el paquete con una lista explícita de entradas:
 
 ```powershell
-tar -czf "$env:TEMP\homologaciones-deploy.tar.gz" --exclude=__pycache__ --exclude=users.caddy --exclude="*.pyc" --exclude="*.pem" --exclude="*.key" compose.ec2.yml compose.public.yml Dockerfile.frontend requirements.txt package.json package-lock.json .dockerignore .env.example backend frontend proyecto_tecnico scripts_graph/graph.json scripts_index/chroma_db json deploy
+tar -czf "$env:TEMP\homologaciones-deploy.tar.gz" --exclude=__pycache__ --exclude=users.caddy --exclude="*.pyc" --exclude="*.pem" --exclude="*.key" compose.ec2.yml compose.public.yml Dockerfile requirements.txt package.json package-lock.json .dockerignore .env.example backend frontend proyecto_tecnico scripts_graph/graph.json scripts_index/chroma_db json deploy
 tar -tzf "$env:TEMP\homologaciones-deploy.tar.gz"
 ```
 
@@ -179,6 +191,7 @@ tar -xzf ~/homologaciones-deploy.tar.gz -C ~/proyecto-homologaciones
 cd ~/proyecto-homologaciones
 ls -lh compose.ec2.yml scripts_graph/graph.json scripts_index/chroma_db/chroma.sqlite3
 mkdir -p outputs
+ls -ldn outputs scripts_index/chroma_db
 cp .env.example .env
 chmod 600 .env
 nano .env
@@ -188,6 +201,8 @@ Configurar la clave OpenAI, los modelos utilizados localmente y las trazas segú
 necesidad. El modelo de embeddings debe coincidir con el índice. Guardar con
 Ctrl+O, Intro; salir con Ctrl+X. No mostrar `.env` en logs ni compartirlo.
 El Compose configura `BACKEND_URL=http://backend:8000` para el frontend.
+La aplicación se ejecuta con UID/GID 1000: comprobar permisos de escritura de
+`outputs` y Chroma antes de arrancar, como explica la guía de base Docker.
 
 ## 7. Arrancar y validar en privado (Ubuntu remoto)
 

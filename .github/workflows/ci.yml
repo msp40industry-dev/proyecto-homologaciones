@@ -1,0 +1,89 @@
+name: Validar PR
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests Python
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      OPENAI_API_KEY: sk-test-placeholder
+      PROVEEDOR_RAZONAMIENTO: openai
+      PROVEEDOR_REDACCION: openai
+      AWS_ACCESS_KEY_ID: testing
+      AWS_SECRET_ACCESS_KEY: testing
+      AWS_EC2_METADATA_DISABLED: 'true'
+      LANGCHAIN_TRACING_V2: 'false'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt pytest==8.3.5
+      - name: Comprobar dependencias y ejecutar tests sin APIs reales
+        run: |
+          python -m pip check
+          python -m pytest -p no:cacheprovider tests/ -q
+
+  docker:
+    name: Construir frontend y backend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Construir backend sin publicar
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: backend
+          push: false
+          cache-from: type=gha,scope=app
+          cache-to: type=gha,mode=max,scope=app
+      - name: Construir frontend sin publicar
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: frontend
+          push: false
+          cache-from: type=gha,scope=app
+
+  terraform:
+    name: Validar Terraform (${{ matrix.directory }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: [infra/bootstrap, infra/environments/dev]
+    defaults:
+      run:
+        working-directory: ${{ matrix.directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.17.1'
+          terraform_wrapper: false
+      - name: Comprobar formato de los archivos versionados
+        run: |
+          git ls-files -z -- '*.tf' | xargs -0 -r terraform fmt -check
+      - name: Inicializar sin acceder al estado S3
+        run: terraform init -backend=false -input=false -lockfile=readonly
+      - name: Validar configuración
+        run: terraform validate -no-color

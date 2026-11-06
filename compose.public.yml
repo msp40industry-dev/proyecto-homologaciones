@@ -7,13 +7,19 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?Configura PUBLIC_DOMAIN en .env}
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?Configura PUBLIC_DOMAIN en el archivo de entorno seleccionado}
     volumes:
-      - ./deploy/caddy:/etc/caddy:ro
+      - type: bind
+        source: ${CADDY_CONFIG_PATH:-./deploy/caddy}
+        target: /etc/caddy
+        read_only: true
+        bind:
+          create_host_path: false
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - frontend
+      frontend:
+        condition: service_healthy
     logging:
       driver: json-file
       options:

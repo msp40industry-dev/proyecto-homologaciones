@@ -3,6 +3,11 @@ hm_venv/
 venv/
 outputs/
 .env
+.env*
+**/.env*
+deploy/caddy/users.caddy
+data/
+v0_backup/
 .git/
 __pycache__/
 *.pyc
