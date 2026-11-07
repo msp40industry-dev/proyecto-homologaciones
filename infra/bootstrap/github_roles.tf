@@ -1,8 +1,8 @@
-# Primera fase: solo autenticación. No adjuntar permisos administrativos.
-# Los permisos de publicación/despliegue se añadirán tras comprobar OIDC.
+# Acceso de GitHub desde main. Permisos de publicación acotados en github_ecr.tf;
+# sin permisos administrativos, de Terraform ni de operación de la EC2.
 resource "aws_iam_role" "github_deploy" {
   name                 = "homologaciones-dev-github-deploy"
-  description          = "GitHub Actions desde main; inicialmente solo prueba de identidad"
+  description          = "GitHub Actions desde main; publicacion de imagenes en ECR DEV"
   max_session_duration = 3600
 
   assume_role_policy = jsonencode({
@@ -26,6 +26,6 @@ resource "aws_iam_role" "github_deploy" {
 }
 
 output "github_deploy_role_arn" {
-  description = "Rol para la prueba OIDC; sin permisos de despliegue en esta fase."
+  description = "Rol OIDC de GitHub para publicar en ECR DEV; no opera la EC2."
   value       = aws_iam_role.github_deploy.arn
 }
