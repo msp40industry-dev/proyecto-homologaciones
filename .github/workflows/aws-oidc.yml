@@ -1,0 +1,41 @@
+name: Comprobar OIDC en AWS DEV
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  identity:
+    name: Identidad AWS mediante OIDC
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      # Sin checkout ni ejecución de código de PR. El rol confía solo en main.
+      - name: Obtener credenciales temporales de DEV
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::086358667619:role/homologaciones-dev-github-deploy
+          aws-region: eu-west-1
+          audience: sts.amazonaws.com
+          allowed-account-ids: '086358667619'
+          role-session-name: github-oidc-${{ github.run_id }}
+          role-duration-seconds: 900
+          unset-current-credentials: true
+      - name: Comprobar cuenta y rol sin desplegar
+        shell: bash
+        run: |
+          set -euo pipefail
+          aws sts get-caller-identity --no-cli-pager
+          account=$(aws sts get-caller-identity --query Account --output text)
+          arn=$(aws sts get-caller-identity --query Arn --output text)
+          test "$account" = '086358667619'
+          case "$arn" in
+            arn:aws:sts::086358667619:assumed-role/homologaciones-dev-github-deploy/*) ;;
+            *) echo 'Rol inesperado'; exit 1 ;;
+          esac
