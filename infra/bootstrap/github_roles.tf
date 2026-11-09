@@ -1,5 +1,5 @@
-# Acceso de GitHub desde main. Permisos de publicación acotados en github_ecr.tf;
-# sin permisos administrativos, de Terraform ni de operación de la EC2.
+# Acceso de GitHub desde main. Publicación en github_ecr.tf y operación de la
+# instancia DEV en github_ec2_deploy.tf; sin permisos administrativos ni Terraform.
 resource "aws_iam_role" "github_deploy" {
   name                 = "homologaciones-dev-github-deploy"
   description          = "GitHub Actions desde main; publicacion de imagenes en ECR DEV"
@@ -26,6 +26,6 @@ resource "aws_iam_role" "github_deploy" {
 }
 
 output "github_deploy_role_arn" {
-  description = "Rol OIDC de GitHub para publicar en ECR DEV; no opera la EC2."
+  description = "Rol OIDC de GitHub para ECR y despliegue en la instancia DEV autorizada."
   value       = aws_iam_role.github_deploy.arn
 }
