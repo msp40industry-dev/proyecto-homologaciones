@@ -1,4 +1,4 @@
-name: Validar y publicar imagenes DEV
+name: Validar, publicar y desplegar DEV
 
 on:
   pull_request:
@@ -11,7 +11,9 @@ permissions:
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  # PR: cancelar checks obsoletos. Main: no interrumpir una actualización o su
+  # paso de apagado; los despliegues se procesan sin cancelación automática.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   tests:
@@ -88,12 +90,25 @@ jobs:
       - name: Validar configuración
         run: terraform validate -no-color
 
+  release:
+    name: Preparar version DEV
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [tests, docker, terraform]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+    steps:
+      - name: Fijar etiqueta compartida de esta entrega
+        id: version
+        run: echo "tag=sha-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+
   publish:
     name: Publicar ${{ matrix.service }} en ECR DEV
     # PR: solo validación. Publicar exclusivamente tras un push a main; una
     # ejecución manual del CI tampoco publica ni enciende la EC2.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [tests, docker, terraform]
+    needs: [tests, docker, terraform, release]
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     permissions:
@@ -125,11 +140,12 @@ jobs:
         id: image
         env:
           SERVICE: ${{ matrix.service }}
+          RELEASE_TAG: ${{ needs.release.outputs.tag }}
         run: |
           set -euo pipefail
-          # El SHA permite identificar el código; run_id y run_attempt evitan
-          # sobrescribir una etiqueta ECR inmutable al repetir una ejecución.
-          tag="sha-${GITHUB_SHA}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          # Usar siempre la versión del job release, también al repetir solo
+          # jobs fallidos. No calcular otro tag con el run_attempt del reintento.
+          tag="$RELEASE_TAG"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "uri=${ECR_REGISTRY}/homologaciones-dev/${SERVICE}:$tag" >> "$GITHUB_OUTPUT"
       - name: Autenticar Docker en ECR
@@ -161,8 +177,67 @@ jobs:
             printf -- '- Commit: %s\n' "$GITHUB_SHA"
             printf -- '- Imagen: %s\n' "$IMAGE_URI"
             printf -- '- Digest: %s\n' "$IMAGE_DIGEST"
-            printf '\nPublicar en ECR no actualiza ni enciende la EC2.\n'
+            printf '\nEl job de despliegue espera a que se publiquen ambas imagenes.\n'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Cerrar sesión Docker
         if: always()
         run: docker logout "$ECR_REGISTRY"
+
+  deploy:
+    name: Actualizar EC2 DEV y restaurar estado
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [release, publish]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    concurrency:
+      group: ec2-homologaciones-dev
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      RELEASE_TAG: ${{ needs.release.outputs.tag }}
+      AWS_RETRY_MODE: standard
+      AWS_MAX_ATTEMPTS: '3'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Preparar registro temporal del ciclo de vida
+        run: echo "DEPLOY_STATE_FILE=${RUNNER_TEMP}/homologaciones-dev-state.json" >> "$GITHUB_ENV"
+      - name: Obtener credenciales temporales de despliegue
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::086358667619:role/homologaciones-dev-github-deploy
+          aws-region: eu-west-1
+          audience: sts.amazonaws.com
+          allowed-account-ids: '086358667619'
+          role-session-name: github-deploy-${{ github.run_id }}
+          role-duration-seconds: 3600
+          unset-current-credentials: true
+      - name: Guardar estado inicial y preparar EC2 y SSM
+        run: python deploy/ec2_lifecycle.py prepare --state-file "$DEPLOY_STATE_FILE"
+      - name: Ejecutar y comprobar el documento de despliegue
+        run: python deploy/ec2_lifecycle.py execute --state-file "$DEPLOY_STATE_FILE" --image-tag "$RELEASE_TAG"
+      - name: Restaurar el estado inicial de la EC2
+        if: always()
+        run: |
+          if [ -n "${DEPLOY_STATE_FILE:-}" ]; then
+            python deploy/ec2_lifecycle.py restore --state-file "$DEPLOY_STATE_FILE"
+          fi
+      - name: Resumen del despliegue
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path(os.environ.get('DEPLOY_STATE_FILE', ''))
+          state = json.loads(path.read_text()) if path.is_file() else {}
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('### Despliegue EC2 DEV\n\n')
+              summary.write(f"- Version: {os.environ['RELEASE_TAG']}\n")
+              summary.write(f"- Estado inicial: {state.get('initial_state', 'no registrado')}\n")
+              summary.write(f"- Actualizacion confirmada: {state.get('deployment_succeeded', False)}\n")
+              summary.write(f"- Ciclo de vida finalizado: {state.get('restored', False)}\n")
+              summary.write('\nSi DEV estaba apagado, debe volver a stopped. Si falla la limpieza, comprobar AWS y pausarlo manualmente.\n')
+          PY
